@@ -10,6 +10,6 @@ const Div = styled.div`
   overflow: scroll;
 `;
 
-export default function CodeResult() {
-  return <Div>함수 실행 결과</Div>;
+export default function CodeResult({ result }) {
+  return <Div>{result}</Div>;
 }

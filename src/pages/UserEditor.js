@@ -2,6 +2,7 @@ import styled from "styled-components";
 import CodeInput from "../component/CodeInput";
 import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
+import { useEffect, useState } from "react";
 
 const Button = styled.button`
   display: block;
@@ -16,12 +17,40 @@ const Button = styled.button`
 `;
 
 export default function UserEditor() {
+  const [userInput, setUserInput] = useState("");
+  const [userExecution, setUserExecution] = useState("");
+  const [codeResult, setCodeResult] = useState("");
+  const { ipcRenderer } = window.require("electron");
+
+  function handleUserInput(value) {
+    setUserInput(value);
+  }
+
+  function handleUserExeution(value) {
+    setUserExecution(value);
+  }
+
+  function sendCode() {
+    ipcRenderer.send("userCode", { userInput, userExecution });
+  }
+
+  useEffect(() => {
+    ipcRenderer.on("userCode-reply", (event, payload) => {
+      console.log(payload);
+      setCodeResult(payload);
+    });
+
+    return () => {
+      ipcRenderer.removeAllListeners("userCode-reply");
+    };
+  }, []);
+
   return (
     <>
-      <CodeInput />
-      <CodeExecution />
-      <Button>제출하기</Button>
-      <CodeResult />
+      <CodeInput value={userInput} onChange={handleUserInput} />
+      <CodeExecution value={userExecution} onChange={handleUserExeution} />
+      <Button onClick={sendCode}>제출하기</Button>
+      <CodeResult result={codeResult} />
     </>
   );
 }

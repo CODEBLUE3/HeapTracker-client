@@ -1,4 +1,5 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
+const codeParser = require("../utils/codeParser");
 
 let mainWindow;
 
@@ -11,12 +12,14 @@ function createWindow() {
       contextIsolation: false,
     },
   });
+  mainWindow = win;
   win.loadURL("http://localhost:3000");
 }
 
 app.whenReady().then(() => {
   createWindow();
 });
+
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();

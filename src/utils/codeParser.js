@@ -31,22 +31,22 @@ module.exports = class modifyCode {
       this.controlNodeType(node, node.type);
     };
 
-    this.insertCodePosition = (code, position, nodeAt, type) => {
-      const trackingFunctionCode = "m(" + nodeAt + ", null);";
+    this.insertCodePosition = (code, insertPosition, nodePosition) => {
+      const trackingFunctionCode = "m(" + nodePosition + ", null);";
       const modifiedCode =
-        code.substring(0, position + this.insertLength) +
+        code.substring(0, insertPosition + this.insertLength) +
         trackingFunctionCode +
-        code.substring(position + this.insertLength);
+        code.substring(insertPosition + this.insertLength);
       this.insertLength += trackingFunctionCode.length;
       return modifiedCode;
     };
 
-    this.insertCodeType = (code, position, nodeAt, type) => {
-      const trackingFunctionCode = 'm(null, "' + type + '");';
+    this.insertCodeType = (code, insertPosition, nodeType) => {
+      const trackingFunctionCode = 'm(null, "' + nodeType + '");';
       const modifiedCode =
-        code.substring(0, position + this.insertLength) +
+        code.substring(0, insertPosition + this.insertLength) +
         trackingFunctionCode +
-        code.substring(position + this.insertLength);
+        code.substring(insertPosition + this.insertLength);
       this.insertLength += trackingFunctionCode.length;
       return modifiedCode;
     };
@@ -57,15 +57,13 @@ module.exports = class modifyCode {
         case "WhileStatement":
         case "DoWhileStatement":
         case "SwitchStatement":
-          this.code = this.insertCodeType(this.code, node.start, null, type);
+          this.code = this.insertCodeType(this.code, node.start, type);
           break;
         case "VariableDeclarator":
-          console.log("VariableDeclarator", node.start);
           this.code = this.insertCodePosition(
             this.code,
             node.end + 1,
             node.start,
-            null,
           );
           break;
       }

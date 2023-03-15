@@ -8,7 +8,7 @@ export default function CodeInput() {
       <CodeMirror
         value="CodeInput"
         height="200px"
-        extensions={[javascript({ jsx: true })]}
+        extensions={[javascript({ jsx: false })]}
       />
     </div>
   );

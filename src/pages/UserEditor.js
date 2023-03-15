@@ -17,11 +17,11 @@ const Button = styled.button`
 
 export default function UserEditor() {
   return (
-    <div>
+    <>
       <CodeInput />
       <CodeExecution />
       <Button>제출하기</Button>
       <CodeResult />
-    </div>
+    </>
   );
 }

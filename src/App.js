@@ -2,19 +2,6 @@ import React from "react";
 import styled from "styled-components";
 import UserEditor from "./pages/UserEditor";
 
-function App() {
-  return (
-    <Main>
-      <LeftContainer>
-        <UserEditor />
-      </LeftContainer>
-      <RightContainer>
-        <div>chart</div>
-      </RightContainer>
-    </Main>
-  );
-}
-
 const Main = styled.div`
   background-color: #fafafa;
   display: flex;
@@ -37,4 +24,15 @@ const RightContainer = styled.div`
   margin: 5px;
 `;
 
-export default App;
+export default function App() {
+  return (
+    <Main>
+      <LeftContainer>
+        <UserEditor />
+      </LeftContainer>
+      <RightContainer>
+        <div>chart</div>
+      </RightContainer>
+    </Main>
+  );
+}

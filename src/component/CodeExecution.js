@@ -8,7 +8,7 @@ export default function CodeExecution() {
       <CodeMirror
         value="CodeExecution"
         height="100px"
-        extensions={[javascript({ jsx: true })]}
+        extensions={[javascript({ jsx: false })]}
       />
     </div>
   );

@@ -2,10 +2,10 @@ import React, { useEffect } from "react";
 //import styled from "styled-components";
 
 //축
-const XAXIS_PADDING = 10;
-const YAXIS_PADDING = 25;
+const XAXIS_PADDING = 25;
+const YAXIS_PADDING = 50;
 const DURATION = 1000 * 30;
-const MAX_VALUE = 100;
+const MAX_VALUE = 600000;
 const Y_TICK_COUNT = 5;
 const TOP_PADDING = 15;
 const EX_TEXT = "00:00";
@@ -59,6 +59,7 @@ function Chart() {
       ctx.lineTo(YAXIS_PADDING, chartHeight + TOP_PADDING);
       const yInterval = MAX_VALUE / (Y_TICK_COUNT - 1);
       ctx.textAlign = "right";
+      ctx.textBaseline = "middle";
       for (let i = 0; i < Y_TICK_COUNT; i++) {
         const value = i * yInterval;
         const yPoint =
@@ -72,7 +73,7 @@ function Chart() {
 
       let currentTime = this.startTime - (this.startTime % this.xTimeInterval);
       ctx.textAlign = "center";
-
+      ctx.textBaseline = "top";
       while (currentTime < this.endTime + this.xTimeInterval) {
         const xpoint = ((currentTime - this.startTime) / DURATION) * chartWidth;
         const date = new Date(currentTime);

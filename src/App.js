@@ -1,40 +1,40 @@
 import React from "react";
 import styled from "styled-components";
 
+import UserEditor from "./pages/UserEditor";
 import Chart from "./component/Chart";
 
-function App() {
-  return (
-    <Main>
-      <LeftContainer></LeftContainer>
-      <RightContainer>
-        <Chart />
-      </RightContainer>
-    </Main>
-  );
-}
-
 const Main = styled.div`
-  position: fixed;
+  background-color: #fafafa;
   display: flex;
   width: 100%;
   flex-direction: row;
 `;
 
 const LeftContainer = styled.div`
-  background: #ffffdd;
   float: left;
   width: 48%;
   flex-direction: column;
   margin: 5px;
+  padding: 10px;
 `;
 
 const RightContainer = styled.div`
-  background: #ddffff;
   float: right;
   width: 48%;
   flex-direction: column;
   margin: 5px;
 `;
 
-export default App;
+export default function App() {
+  return (
+    <Main>
+      <LeftContainer>
+        <UserEditor />
+      </LeftContainer>
+      <RightContainer>
+        <Chart />
+      </RightContainer>
+    </Main>
+  );
+}

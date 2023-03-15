@@ -1,29 +1,6 @@
-import { parse, parseExpressionAt } from "acorn";
+const { parse, parseExpressionAt } = require("acorn");
 
-export function getMemoryTrackingCode(code) {
-  try {
-    const usercode = code;
-    const astNodes = parse(usercode, { ecmaVersion: 2020 });
-    const mycode = modifyCode.modifyRun(astNodes, usercode);
-    return mycode;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
-
-export function getPositionCodeInfo(code, pos) {
-  try {
-    const usercode = code;
-    const astNodes = parseExpressionAt(usercode, pos, { ecmaVersion: 2020 });
-    return astNodes;
-  } catch (error) {
-    console.error(error);
-    return null;
-  }
-}
-
-class modifyCode {
+module.exports = class modifyCode {
   constructor(nodes, code) {
     this.code = code;
     this.nodes = nodes;
@@ -54,8 +31,18 @@ class modifyCode {
       this.controlNodeType(node, node.type);
     };
 
-    this.insertCode = (code, position, start, end) => {
-      const trackingFunctionCode = "m(" + start + ", " + end + ");";
+    this.insertCodePosition = (code, position, nodeAt, type) => {
+      const trackingFunctionCode = "m(" + nodeAt + ", null);";
+      const modifiedCode =
+        code.substring(0, position + this.insertLength) +
+        trackingFunctionCode +
+        code.substring(position + this.insertLength);
+      this.insertLength += trackingFunctionCode.length;
+      return modifiedCode;
+    };
+
+    this.insertCodeType = (code, position, nodeAt, type) => {
+      const trackingFunctionCode = 'm(null, "' + type + '");';
       const modifiedCode =
         code.substring(0, position + this.insertLength) +
         trackingFunctionCode +
@@ -65,29 +52,21 @@ class modifyCode {
     };
 
     this.controlNodeType = (node, type) => {
-      // eslint-disable-next-line default-case
       switch (type) {
         case "ForStatement":
         case "WhileStatement":
+        case "DoWhileStatement":
         case "SwitchStatement":
-          this.code = this.insertCode(
-            this.code,
-            node.start,
-            node.start,
-            node.end,
-          );
+          this.code = this.insertCodeType(this.code, node.start, null, type);
           break;
         case "VariableDeclarator":
           console.log("VariableDeclarator", node.start);
-          this.code = this.insertCode(
+          this.code = this.insertCodePosition(
             this.code,
             node.end + 1,
             node.start,
-            node.end,
+            null,
           );
-          break;
-        case "CallExpression":
-          console.log("CallExpression", node.start, node.end);
           break;
       }
     };
@@ -101,4 +80,29 @@ class modifyCode {
     this.parseNodeObject(this.nodes);
     return this.code;
   }
-}
+
+  static getMemoryTrackingCode(code) {
+    try {
+      const usercode = code;
+      const astNodes = parse(usercode, { ecmaVersion: 2020 });
+      const mycode = modifyCode.modifyRun(astNodes, usercode);
+      return mycode;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+
+  static getPositionCodeInfo(code, position) {
+    try {
+      const usercode = code;
+      const astNodes = parseExpressionAt(usercode, position, {
+        ecmaVersion: 2020,
+      });
+      return astNodes;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+};

@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "main": "./src/electron/main.js",
-  "type": "module",
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.4",
     "@testing-library/jest-dom": "^5.16.5",

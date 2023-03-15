@@ -1,6 +1,4 @@
-// const codeParser = require("./codeParser");
-
-import { getMemoryTrackingCode, getPositionCodeInfo } from "./codeParser.js";
+const codeParser = require("./codeParser.js");
 
 const usercode = `function challenge(N, A, B) {
   var problem = new Array(N);
@@ -37,12 +35,9 @@ const usercode = `function challenge(N, A, B) {
   }
 
   let kind = "asdf";
-
   return result;
 }`;
 
-const mycode = getMemoryTrackingCode(usercode);
-console.log("mycode", mycode);
+const mycode = codeParser.getMemoryTrackingCode(usercode);
 
-const codeinfo = getPositionCodeInfo(usercode, 362);
-console.log("codeinfo", codeinfo);
+const codeinfo = codeParser.getPositionCodeInfo(usercode, 96);

@@ -28,7 +28,10 @@
     "electron": "wait-on http://localhost:3000 && electron .",
     "package": "electron-forge package",
     "make": "electron-forge make",
-    "startt": "electron-forge start"
+    "startt": "electron-forge start",
+    "postinstall": "husky install",
+    "format": "prettier --cache --write .",
+    "lint": "eslint --cache ."
   },
   "eslintConfig": {
     "extends": [
@@ -49,6 +52,10 @@
     ]
   },
   "devDependencies": {
-    "@electron-forge/cli": "^6.0.5"
+    "@electron-forge/cli": "^6.0.5",
+    "eslint": "^8.36.0",
+    "eslint-config-prettier": "^8.7.0",
+    "husky": "^8.0.3",
+    "prettier": "^2.8.4"
   }
 }

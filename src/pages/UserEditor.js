@@ -31,7 +31,7 @@ export default function UserEditor() {
 
   function sendCode() {
     window.electronAPI.sendCode(userInput, userExecution);
-    window.electronAPI.replayCode(setCodeResult);
+    window.electronAPI.replyCode(setCodeResult);
   }
 
   return (

@@ -31,17 +31,8 @@ export default function UserEditor() {
 
   function sendCode() {
     window.electronAPI.sendCode(userInput, userExecution);
-    //ipcRenderer.send("userCode", { userInput, userExecution });
+    window.electronAPI.replayCode(setCodeResult);
   }
-
-  useEffect(() => {
-    // ipcRenderer.on("userCode-reply", (event, payload) => {
-    //   setCodeResult(payload);
-    // });
-    // return () => {
-    //   ipcRenderer.removeAllListeners("userCode-reply");
-    // };
-  }, []);
 
   return (
     <>

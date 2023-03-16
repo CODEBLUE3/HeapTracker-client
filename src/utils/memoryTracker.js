@@ -2,7 +2,7 @@ module.exports = function MemoryTracker() {
   this.storage = [];
   this.count = 0;
 
-  this.setStorage = function (start, type) {
+  this.setStorage = function (codePosition, codeType) {
     this.count++;
 
     const newTracking = {
@@ -10,8 +10,8 @@ module.exports = function MemoryTracker() {
       totalMemory: process.memoryUsage().heapTotal,
       usedMemory: process.memoryUsage().heapUsed,
       timeStamp: new Date().getTime(),
-      startLine: start,
-      type: type,
+      codePosition,
+      codeType,
     };
 
     this.storage.push(newTracking);

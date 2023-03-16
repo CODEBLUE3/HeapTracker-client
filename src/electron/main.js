@@ -1,23 +1,29 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const codeParser = require("../utils/codeParser");
-
-let mainWindow;
+const path = require("path");
+const vm = require("vm");
 
 function createWindow() {
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1200,
+    height: 800,
     webPreferences: {
       nodeIntegration: true,
-      contextIsolation: false,
+      contextIsolation: true,
+      preload: path.join(__dirname, "preload.js"),
     },
   });
-  mainWindow = win;
+
   win.loadURL("http://localhost:3000");
 }
 
 app.whenReady().then(() => {
   createWindow();
+
+  app.on("activate", () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+      createWindow();
+    }
+  });
 });
 
 app.on("window-all-closed", () => {
@@ -26,12 +32,7 @@ app.on("window-all-closed", () => {
   }
 });
 
-app.on("activate", () => {
-  if (mainWindow === null) {
-    createWindow();
-  }
-});
-
 ipcMain.on("userCode", (event, payload) => {
+  const { userInput, userExecution } = payload;
   event.reply("userCode-reply", "Code Result");
 });

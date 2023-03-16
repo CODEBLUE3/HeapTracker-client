@@ -3,7 +3,7 @@ import useInterval from "../hooks/useInterval";
 import LineChart from "../utils/msChart";
 //import styled from "styled-components";
 
-function Chart() {
+export default function Chart() {
   const [chart, setChart] = useState();
 
   useInterval(() => {
@@ -18,5 +18,3 @@ function Chart() {
 
   return <canvas id="lineChart" width="400px" height="300px"></canvas>;
 }
-
-export default Chart;

@@ -73,8 +73,8 @@ export default class LineChart {
     ctx.lineTo(canvasWidth, chartHeight + TOP_PADDING);
     ctx.stroke();
 
-    //차트 안 데이터만 보이게 하는 로직 -> store과 연관된다.
-    //x축과 y축이 시작되는 곳이 위치가 된다.
+    // 차트 안 데이터만 보이게 하는 로직 -> store과 연관된다.
+    // x축과 y축이 시작되는 곳이 위치가 된다.
     ctx.save();
     ctx.beginPath();
     ctx.rect(Y_PADDING, 0, chartWidth, canvasHeight);

@@ -49,18 +49,39 @@ export default class LineChart {
     this.chartWidth = this.canvasWidth - Y_PADDING;
     this.chartHeight = this.canvasHeight - X_PADDING - TOP_PADDING;
 
-    this.durationTime = durationTime * 1000;
+    this.durationTime = durationTime; // 재생 시간
+    this.intervalID = 0; // 다시 그리기 interval ID
+    this.currentPosition = 0; // 차트 그리기 기준 배열 인덱스
+
+    this.maxMemoryValue = 0; // value 최대값
+    this.minMemoryValue = Infinity; // value 최소값
+    this.maxTimeValue = 0; // Time 최대값
+    this.minTimeValue = Infinity; // Time 최소값
+    this.heightPixelWeights = 0; // 높이 1 pixel 에 value 표현 가중치
+    this.widthPixelWeights = 0; // 너비 1 pixel에 time 표현 가중치
+
+    this.parseMemoryArray(); // heightPixelWeights 얻기
+    return this;
+  }
+
+  playback = () => {
+    if (this.intervalID < 1) {
+      this.intervalID = setInterval(() => {
+        this.updateData();
+      }, this.durationTime / (this.data.at(-1).timestamp - this.data.at(0).timestamp));
+    }
+  };
+
+  pause = () => {
+    clearInterval(this.intervalID);
+    this.intervalID = 0;
+  };
+
+  stop = () => {
+    clearInterval(this.intervalID);
     this.intervalID = 0;
     this.currentPosition = 0;
-
-    this.maxMemoryValue = 0;
-    this.minMemoryValue = Infinity;
-    this.heightPixelWeights = 0;
-    this.widthPixelWeights = 0;
-
-    this.parseMemoryArray();
-    this.setTime();
-  }
+  };
 
   //시간을 실시간으로 세팅하는 함수
   setTime = () => {
@@ -135,6 +156,7 @@ export default class LineChart {
           this.heightPixelWeights * item.memory;
 
         ctx.lineTo(xPosition, yPosition);
+        ctx.ellipse(xPosition, yPosition, 5, 5, 0, 0, 3 * Math.PI);
 
         ctx.fillText(
           new Date(item.timestamp).getMilliseconds(),

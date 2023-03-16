@@ -20,7 +20,6 @@ export default function UserEditor() {
   const [userInput, setUserInput] = useState("");
   const [userExecution, setUserExecution] = useState("");
   const [codeResult, setCodeResult] = useState("");
-  const { ipcRenderer } = window.require("electron");
 
   function handleUserInput(value) {
     setUserInput(value);
@@ -31,17 +30,17 @@ export default function UserEditor() {
   }
 
   function sendCode() {
-    ipcRenderer.send("userCode", { userInput, userExecution });
+    window.electronAPI.sendCode(userInput, userExecution);
+    //ipcRenderer.send("userCode", { userInput, userExecution });
   }
 
   useEffect(() => {
-    ipcRenderer.on("userCode-reply", (event, payload) => {
-      setCodeResult(payload);
-    });
-
-    return () => {
-      ipcRenderer.removeAllListeners("userCode-reply");
-    };
+    // ipcRenderer.on("userCode-reply", (event, payload) => {
+    //   setCodeResult(payload);
+    // });
+    // return () => {
+    //   ipcRenderer.removeAllListeners("userCode-reply");
+    // };
   }, []);
 
   return (

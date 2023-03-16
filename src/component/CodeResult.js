@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Div = styled.div`
+const Terminal = styled.div`
   background-color: black;
   color: white;
   height: 200px;
@@ -11,5 +11,5 @@ const Div = styled.div`
 `;
 
 export default function CodeResult({ result }) {
-  return <Div>{result}</Div>;
+  return <Terminal>{result}</Terminal>;
 }

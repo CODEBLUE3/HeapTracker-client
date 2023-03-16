@@ -3,7 +3,7 @@ import { javascript } from "@codemirror/lang-javascript";
 
 export default function CodeExecution({ value, onChange }) {
   return (
-    <div>
+    <>
       <div>코드 실행문 입력</div>
       <CodeMirror
         value={value}
@@ -11,6 +11,6 @@ export default function CodeExecution({ value, onChange }) {
         extensions={[javascript({ jsx: false })]}
         onChange={onChange}
       />
-    </div>
+    </>
   );
 }

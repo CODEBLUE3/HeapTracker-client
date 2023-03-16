@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-const Div = styled.div`
+const Terminal = styled.div`
   background-color: black;
   color: white;
   height: 200px;
@@ -10,6 +10,6 @@ const Div = styled.div`
   overflow: scroll;
 `;
 
-export default function CodeResult() {
-  return <Div>함수 실행 결과</Div>;
+export default function CodeResult({ result }) {
+  return <Terminal>{result}</Terminal>;
 }

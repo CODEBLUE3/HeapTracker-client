@@ -33,6 +33,10 @@ app.on("window-all-closed", () => {
 });
 
 ipcMain.on("userCode", (event, payload) => {
+  //사용자에게 받은 코드
   const { userInput, userExecution } = payload;
-  event.reply("userCode-reply", "Code Result");
+
+  const result = userInput + userExecution;
+
+  event.reply("userCode-reply", result);
 });

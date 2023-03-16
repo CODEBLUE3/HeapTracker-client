@@ -36,7 +36,6 @@ export default function UserEditor() {
 
   useEffect(() => {
     ipcRenderer.on("userCode-reply", (event, payload) => {
-      console.log(payload);
       setCodeResult(payload);
     });
 

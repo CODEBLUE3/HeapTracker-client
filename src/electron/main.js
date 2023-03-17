@@ -36,7 +36,27 @@ ipcMain.on("userCode", (event, payload) => {
   //사용자에게 받은 코드
   const { userInput, userExecution } = payload;
 
-  const result = userInput + userExecution;
+  //vm을 실행시키는 context의 설정입니다.
+  //설정 시 vm환경에서 사용할 수 있게 됩니다.
+  const context = {
+    console,
+    require,
+    process: {
+      memoryUsage: process.memoryUsage,
+    },
+    setTimeout,
+  };
+  vm.createContext(context);
 
-  event.reply("userCode-reply", result);
+  let result;
+  let isError = false;
+
+  try {
+    result = vm.runInNewContext(userInput + userExecution, context);
+  } catch (errer) {
+    result = errer.message;
+    isError = true;
+  }
+
+  event.reply("userCode-reply", { result, isError });
 });

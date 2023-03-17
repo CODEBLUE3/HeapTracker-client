@@ -30,9 +30,16 @@ export default function UserEditor() {
   }
 
   function sendCode() {
-    window.electronAPI.sendCode(userInput, userExecution);
-    window.electronAPI.replyCode(setCodeResult);
+    window.electronAPI.validateUserCode(userInput, userExecution);
+    window.electronAPI.getCodeResult(setCodeResult);
   }
+
+  useEffect(() => {
+    if (!codeResult.isError) {
+      console.log("codeResult.isError", codeResult.isError);
+      window.electronAPI.executeHeapTracker(userInput, userExecution);
+    }
+  }, [codeResult]);
 
   return (
     <>

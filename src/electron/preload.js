@@ -5,7 +5,9 @@ contextBridge.exposeInMainWorld("electronAPI", {
     ipcRenderer.send("userCode", { userInput, userExecution }),
   replyCode: (setCodeResult) =>
     ipcRenderer.on("userCode-reply", (event, payload) => {
-      setCodeResult(payload);
+      const { result, isError } = payload;
+      console.log(isError);
+      setCodeResult(result);
     }),
   removeAllListeners: (event) => ipcRenderer.removeAllListeners(event),
 });

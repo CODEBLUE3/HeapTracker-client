@@ -16,6 +16,7 @@ module.exports = class modifyCode {
 
     this.parseNodeObject = (node) => {
       if (!node) return;
+      this.findNodeType(node, node.type);
       if (node.body) {
         if (node.body.length) {
           this.parseNodeArray(node.body);
@@ -28,11 +29,11 @@ module.exports = class modifyCode {
         this.parseNodeArray(node.declarations);
       }
 
-      this.controlNodeType(node, node.type);
+      this.lastFindNodeType(node, node.type);
     };
 
     this.insertCodePosition = (code, insertPosition, nodePosition) => {
-      const trackingFunctionCode = "m(" + nodePosition + ", null);";
+      const trackingFunctionCode = `m(${nodePosition}, null);`;
       const modifiedCode =
         code.substring(0, insertPosition + this.insertLength) +
         trackingFunctionCode +
@@ -42,7 +43,7 @@ module.exports = class modifyCode {
     };
 
     this.insertCodeType = (code, insertPosition, nodeType) => {
-      const trackingFunctionCode = 'm(null, "' + nodeType + '");';
+      const trackingFunctionCode = `m(null, "${nodeType}");`;
       const modifiedCode =
         code.substring(0, insertPosition + this.insertLength) +
         trackingFunctionCode +
@@ -51,7 +52,7 @@ module.exports = class modifyCode {
       return modifiedCode;
     };
 
-    this.controlNodeType = (node, type) => {
+    this.findNodeType = (node, type) => {
       switch (type) {
         case "ForStatement":
         case "WhileStatement":
@@ -59,6 +60,11 @@ module.exports = class modifyCode {
         case "SwitchStatement":
           this.code = this.insertCodeType(this.code, node.start, type);
           break;
+      }
+    };
+
+    this.lastFindNodeType = (node, type) => {
+      switch (type) {
         case "VariableDeclarator":
           this.code = this.insertCodePosition(
             this.code,
@@ -81,10 +87,8 @@ module.exports = class modifyCode {
 
   static getMemoryTrackingCode(code) {
     try {
-      const usercode = code;
-      const astNodes = parse(usercode, { ecmaVersion: 2020 });
-      const mycode = modifyCode.modifyRun(astNodes, usercode);
-      return mycode;
+      const astNodes = parse(code, { ecmaVersion: 2020 });
+      return modifyCode.modifyRun(astNodes, code);
     } catch (error) {
       console.error(error);
       return null;
@@ -93,11 +97,9 @@ module.exports = class modifyCode {
 
   static getPositionCodeInfo(code, position) {
     try {
-      const usercode = code;
-      const astNodes = parseExpressionAt(usercode, position, {
+      return parseExpressionAt(code, position, {
         ecmaVersion: 2020,
       });
-      return astNodes;
     } catch (error) {
       console.error(error);
       return null;

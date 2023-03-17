@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import LineChart from "../utils/msChart";
 import styled from "styled-components";
+import { color, style } from "../styles/styleCode";
 
 const Button = styled.button`
   display: flex;
@@ -11,10 +12,10 @@ const Button = styled.button`
   font-size: 18px;
   height: 30px;
   width: 100px;
-  background-color: #1e90ff;
+  background-color: ${color.blue};
   margin: 10px;
   border: none;
-  border-radius: 20px;
+  border-radius: ${style.borderRadius};
 `;
 
 const Controller = styled.div`

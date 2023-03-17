@@ -1,12 +1,14 @@
 import React from "react";
 import styled from "styled-components";
+import { color, style } from "../styles/styleCode";
 
 const StyledWrapper = styled.div`
   ul {
     padding: 20px;
     height: 40vh;
 
-    background-color: white;
+    background-color: ${color.white};
+    border-radius: ${style.borderRadius};
   }
 
   .title {

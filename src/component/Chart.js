@@ -12,7 +12,7 @@ const Button = styled.button`
   font-size: 18px;
   height: 30px;
   width: 100px;
-  background-color: ${color.blue};
+  background-color: ${color.defaultButton};
   margin: 10px;
   border: none;
   border-radius: ${style.borderRadius};

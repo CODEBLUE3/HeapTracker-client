@@ -1,6 +1,7 @@
 const color = {
-  white: "#FFFFFF",
-  blue: "#1e90ff",
+  defaultBackground: "#fafafa",
+  defaultBoxBackground: "#FFFFFF",
+  defaultButton: "#1e90ff",
 };
 
 const style = {

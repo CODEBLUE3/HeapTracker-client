@@ -7,7 +7,7 @@ const StyledWrapper = styled.div`
     padding: 20px;
     height: 40vh;
 
-    background-color: ${color.white};
+    background-color: ${color.defaultBoxBackground};
     border-radius: ${style.borderRadius};
   }
 
@@ -40,12 +40,12 @@ const StyledWrapper = styled.div`
 
 export default function ChartResult({ data }) {
   const totalRunTime = data ? String(data[data.length - 1].timeStamp) : "";
-  const max_Memory = data
+  const maxMemory = data
     ? data.reduce((prev, current) =>
         prev.usedMemory > current.usedMemory ? prev : current,
       ).usedMemory
     : "";
-  const min_Memory = data
+  const minMemory = data
     ? data.reduce((prev, current) =>
         prev.usedMemory < current.usedMemory ? prev : current,
       ).usedMemory
@@ -61,11 +61,11 @@ export default function ChartResult({ data }) {
         </li>
         <li className="info">
           <div className="name">MAX MEMORY</div>
-          <div className="data">{max_Memory}bytes</div>
+          <div className="data">{maxMemory}bytes</div>
         </li>
         <li className="info">
           <div className="name">MIN MEMORY</div>
-          <div className="data">{min_Memory}bytes</div>
+          <div className="data">{minMemory}bytes</div>
         </li>
       </ul>
     </StyledWrapper>

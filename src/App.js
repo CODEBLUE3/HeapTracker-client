@@ -1,12 +1,13 @@
 import React from "react";
 import styled from "styled-components";
+import { color } from "./styles/styleCode";
 
 import UserEditor from "./pages/UserEditor";
 import OutputResult from "./pages/OutputResult";
 import GlobalStyle from "./styles/GlobalStyle";
 
 const Main = styled.div`
-  background-color: #fafafa;
+  background-color: ${color.defaultBackground};
   display: flex;
   width: 100%;
   flex-direction: row;

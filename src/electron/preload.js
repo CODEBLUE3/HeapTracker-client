@@ -1,13 +1,15 @@
 const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electronAPI", {
-  sendCode: (userInput, userExecution) =>
+  validateUserCode: (userInput, userExecution) =>
     ipcRenderer.send("userCode", { userInput, userExecution }),
-  replyCode: (setCodeResult) =>
-    ipcRenderer.on("userCode-reply", (event, payload) => {
-      const { result, isError } = payload;
-      console.log(isError);
-      setCodeResult(result);
-    }),
+  getCodeResult: (codeResult) =>
+    ipcRenderer.on("codeResult", (event, payload) => codeResult(payload)),
+  executeHeapTracker: (userInput, userExecution) =>
+    ipcRenderer.send("heapTracker", { userInput, userExecution }),
+  getTrackingArray: (trackingResult) =>
+    ipcRenderer.on("trackingResult", (event, payload) =>
+      trackingResult(payload),
+    ),
   removeAllListeners: (event) => ipcRenderer.removeAllListeners(event),
 });

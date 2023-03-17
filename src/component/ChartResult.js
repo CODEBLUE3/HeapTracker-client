@@ -39,7 +39,7 @@ const StyledWrapper = styled.div`
 `;
 
 export default function ChartResult({ data }) {
-  const totalRunTime = data ? data[data.length - 1].timeStamp : "";
+  const totalRunTime = data ? String(data[data.length - 1].timeStamp) : "";
   const max_Memory = data
     ? data.reduce((prev, current) =>
         prev.usedMemory > current.usedMemory ? prev : current,
@@ -57,15 +57,15 @@ export default function ChartResult({ data }) {
         <li className="title">RESULT</li>
         <li className="info">
           <div className="name">TOTAL RUN TIME</div>
-          <div className="data">{totalRunTime}</div>
+          <div className="data">{totalRunTime} ns</div>
         </li>
         <li className="info">
           <div className="name">MAX MEMORY</div>
-          <div className="data">{max_Memory}</div>
+          <div className="data">{max_Memory}bytes</div>
         </li>
         <li className="info">
           <div className="name">MIN MEMORY</div>
-          <div className="data">{min_Memory}</div>
+          <div className="data">{min_Memory}bytes</div>
         </li>
       </ul>
     </StyledWrapper>

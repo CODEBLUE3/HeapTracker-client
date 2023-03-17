@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import LineChart from "../utils/msChart";
 import styled from "styled-components";
 
+const CHART_DURATION_TIME = 5000;
+
 const Button = styled.button`
   display: flex;
   justify-content: center;
@@ -24,20 +26,31 @@ const Controller = styled.div`
 export default function Chart() {
   const [chart, setChart] = useState();
 
+  const setMemoryArray = (datas) => {
+    console.log(datas);
+    setChart(new LineChart("lineChart", datas.result, CHART_DURATION_TIME));
+  };
+
   useEffect(() => {
-    setChart(new LineChart("lineChart", 5000));
+    window.electronAPI.getTrackingArray(setMemoryArray);
   }, []);
 
   function handleChartPlay() {
-    chart.playback();
+    if (chart) {
+      chart.playback();
+    }
   }
 
   function handleChartPause() {
-    chart.pause();
+    if (chart) {
+      chart.pause();
+    }
   }
 
   function handleChartStop() {
-    chart.stop();
+    if (chart) {
+      chart.stop();
+    }
   }
 
   return (

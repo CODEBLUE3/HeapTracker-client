@@ -2,7 +2,7 @@ import styled from "styled-components";
 import CodeInput from "../component/CodeInput";
 import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Button = styled.button`
   display: block;

@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 
 import UserEditor from "./pages/UserEditor";
-import Chart from "./component/Chart";
+import OutputResult from "./pages/OutputResult";
 
 const Main = styled.div`
   background-color: #fafafa;
@@ -33,7 +33,7 @@ export default function App() {
         <UserEditor />
       </LeftContainer>
       <RightContainer>
-        <Chart />
+        <OutputResult />
       </RightContainer>
     </Main>
   );

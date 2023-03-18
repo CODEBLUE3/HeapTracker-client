@@ -1,3 +1,5 @@
+const PI = Math.PI;
+
 module.exports = class Circle {
   constructor(x, y, radius, ctx, data) {
     this.x = x;
@@ -8,7 +10,7 @@ module.exports = class Circle {
 
     this.draw = () => {
       this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+      this.ctx.arc(this.x, this.y, this.radius, 0, 2 * PI);
       this.ctx.fillStyle = "red";
       this.ctx.fill();
 
@@ -17,18 +19,11 @@ module.exports = class Circle {
 
     this.reDraw = () => {
       this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI);
+      this.ctx.arc(this.x, this.y, this.radius, 0, 2 * PI);
       this.ctx.fillStyle = "blue";
       this.ctx.fill();
 
       return this;
-    };
-
-    this.getSize = () => {
-      return {
-        width: this.radius * 2,
-        height: this.radius * 2,
-      };
     };
 
     this.getPosition = () => {
@@ -42,10 +37,9 @@ module.exports = class Circle {
 
     this.isMouseOver = (x, y) => {
       const position = this.getPosition();
-      const size = this.getSize();
       const radius = this.radius;
-      const centerX = position.x + size.width / 2;
-      const centerY = position.y + size.height / 2;
+      const centerX = position.x + radius;
+      const centerY = position.y + radius;
 
       return (
         Math.round(

@@ -2,15 +2,16 @@ import styled from "styled-components";
 import CodeInput from "../component/CodeInput";
 import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { color } from "../styles/styleCode";
 
 const Button = styled.button`
   display: block;
-  color: white;
+  color: ${color.defaultBoxBackground};
   font-size: 20px;
   height: 50px;
   width: 200px;
-  background-color: #1e90ff;
+  background-color: ${color.defaultButton};
   margin: 10px;
   border: none;
   border-radius: 20px;

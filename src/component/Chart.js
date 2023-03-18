@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import LineChart from "../utils/msChart";
 import styled from "styled-components";
+import { color, style } from "../styles/styleCode";
 
 const CHART_DURATION_TIME = 5000;
 
@@ -13,10 +14,10 @@ const Button = styled.button`
   font-size: 18px;
   height: 30px;
   width: 100px;
-  background-color: #1e90ff;
+  background-color: ${color.defaultButton};
   margin: 10px;
   border: none;
-  border-radius: 20px;
+  border-radius: ${style.borderRadius};
 `;
 
 const Controller = styled.div`

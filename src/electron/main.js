@@ -1,5 +1,4 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
-const { type } = require("os");
 const path = require("path");
 const vm = require("vm");
 const { getMemoryTrackingCode } = require("../utils/codeParser");
@@ -35,7 +34,7 @@ app.on("window-all-closed", () => {
   }
 });
 
-ipcMain.on("userCode", (event, payload) => {
+ipcMain.on("validateUserCode", (event, payload) => {
   const { userInput, userExecution } = payload;
   const targetCode = userInput + userExecution;
   const context = {
@@ -63,14 +62,13 @@ ipcMain.on("userCode", (event, payload) => {
     isError = true;
   }
 
-  event.reply("codeResult", { result, isError });
+  event.reply("validateUserCodeReply", { result, isError });
 });
 
-ipcMain.on("heapTracker", (event, payload) => {
+ipcMain.on("executeHeapTracker", (event, payload) => {
   const { userInput, userExecution } = payload;
 
   const targetCode = getMemoryTrackingCode(userInput) + userExecution;
-
   const memoryTracker = new MemoryTracker();
   const m = memoryTracker.setStorage.bind(memoryTracker);
 
@@ -100,5 +98,5 @@ ipcMain.on("heapTracker", (event, payload) => {
     isError = true;
   }
 
-  event.reply("trackingResult", { result, isError });
+  event.reply("executeHeapTrackerReply", { result, isError });
 });

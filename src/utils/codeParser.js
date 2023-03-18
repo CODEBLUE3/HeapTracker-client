@@ -16,7 +16,9 @@ module.exports = class modifyCode {
 
     this.parseNodeObject = (node) => {
       if (!node) return;
+
       this.findNodeType(node, node.type);
+
       if (node.body) {
         if (node.body.length) {
           this.parseNodeArray(node.body);
@@ -34,21 +36,27 @@ module.exports = class modifyCode {
 
     this.insertCodePosition = (code, insertPosition, nodePosition) => {
       const trackingFunctionCode = `m(${nodePosition}, null);`;
+
       const modifiedCode =
         code.substring(0, insertPosition + this.insertLength) +
         trackingFunctionCode +
         code.substring(insertPosition + this.insertLength);
+
       this.insertLength += trackingFunctionCode.length;
+
       return modifiedCode;
     };
 
     this.insertCodeType = (code, insertPosition, nodeType) => {
       const trackingFunctionCode = `m(null, "${nodeType}");`;
+
       const modifiedCode =
         code.substring(0, insertPosition + this.insertLength) +
         trackingFunctionCode +
         code.substring(insertPosition + this.insertLength);
+
       this.insertLength += trackingFunctionCode.length;
+
       return modifiedCode;
     };
 

@@ -1,6 +1,8 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const vm = require("vm");
+const { getMemoryTrackingCode } = require("../utils/codeParser");
+const MemoryTracker = require("../utils/memoryTracker");
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -32,9 +34,10 @@ app.on("window-all-closed", () => {
   }
 });
 
-ipcMain.on("userCode", (event, payload) => {
+ipcMain.on("validateUserCode", (event, payload) => {
   const { userInput, userExecution } = payload;
   const targetCode = userInput + userExecution;
+
   const context = {
     console,
     setTimeout,
@@ -45,9 +48,8 @@ ipcMain.on("userCode", (event, payload) => {
       },
     },
   };
-  const options = {
-    timeout: 2000,
-  };
+
+  const options = { timeout: 2000 };
   let result;
   let isError = false;
 
@@ -60,5 +62,41 @@ ipcMain.on("userCode", (event, payload) => {
     isError = true;
   }
 
-  event.reply("userCode-reply", { result, isError });
+  event.reply("validateUserCodeReply", { result, isError });
+});
+
+ipcMain.on("executeHeapTracker", (event, payload) => {
+  const { userInput, userExecution } = payload;
+
+  const targetCode = getMemoryTrackingCode(userInput) + userExecution;
+  const memoryTracker = new MemoryTracker();
+  const m = memoryTracker.setStorage.bind(memoryTracker);
+
+  const context = {
+    console,
+    setTimeout,
+    setInterval,
+    process: {
+      exit: () => {
+        throw new Error("process.exit() is not allowed");
+      },
+    },
+    m,
+  };
+
+  const options = { timeout: 2000 };
+  let result;
+  let isError = false;
+
+  vm.createContext(context);
+
+  try {
+    vm.runInNewContext(targetCode, context, options);
+    result = memoryTracker.getStorage();
+  } catch (errer) {
+    result = errer.message;
+    isError = true;
+  }
+
+  event.reply("executeHeapTrackerReply", { result, isError });
 });

@@ -9,7 +9,7 @@ module.exports = function MemoryTracker() {
       count: this.count,
       totalMemory: process.memoryUsage().heapTotal,
       usedMemory: process.memoryUsage().heapUsed,
-      timeStamp: new Date().getTime(),
+      timeStamp: process.hrtime.bigint(),
       codePosition,
       codeType,
     };

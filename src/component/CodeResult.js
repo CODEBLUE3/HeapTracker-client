@@ -12,5 +12,11 @@ const Terminal = styled.div`
 `;
 
 export default function CodeResult({ result }) {
-  return <Terminal>{result}</Terminal>;
+  return (
+    <Terminal style={{ color: result.isError ? "red" : "white" }}>
+      code exec success : {result.isError ? "failed" : "ok"}
+      <br />
+      {result.result}
+    </Terminal>
+  );
 }

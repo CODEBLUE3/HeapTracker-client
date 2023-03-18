@@ -37,6 +37,7 @@ app.on("window-all-closed", () => {
 ipcMain.on("validateUserCode", (event, payload) => {
   const { userInput, userExecution } = payload;
   const targetCode = userInput + userExecution;
+
   const context = {
     console,
     setTimeout,
@@ -47,9 +48,8 @@ ipcMain.on("validateUserCode", (event, payload) => {
       },
     },
   };
-  const options = {
-    timeout: 2000,
-  };
+
+  const options = { timeout: 2000 };
   let result;
   let isError = false;
 
@@ -83,13 +83,13 @@ ipcMain.on("executeHeapTracker", (event, payload) => {
     },
     m,
   };
-  const options = {
-    timeout: 2000,
-  };
+
+  const options = { timeout: 2000 };
   let result;
   let isError = false;
 
   vm.createContext(context);
+
   try {
     vm.runInNewContext(targetCode, context, options);
     result = memoryTracker.getStorage();

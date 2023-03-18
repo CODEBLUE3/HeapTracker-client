@@ -31,12 +31,11 @@ export default function UserEditor() {
 
   function sendCode() {
     window.electronAPI.validateUserCode(userInput, userExecution);
-    window.electronAPI.getCodeResult(setCodeResult);
+    window.electronAPI.validateUserCodeReply(setCodeResult);
   }
 
   useEffect(() => {
     if (!codeResult.isError) {
-      console.log("codeResult.isError", codeResult.isError);
       window.electronAPI.executeHeapTracker(userInput, userExecution);
     }
   }, [codeResult]);

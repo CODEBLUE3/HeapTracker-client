@@ -27,12 +27,11 @@ export default function Chart() {
   const [chart, setChart] = useState();
 
   const setMemoryArray = (datas) => {
-    console.log(datas);
     setChart(new LineChart("lineChart", datas.result, CHART_DURATION_TIME));
   };
 
   useEffect(() => {
-    window.electronAPI.getTrackingArray(setMemoryArray);
+    window.electronAPI.executeHeapTrackerReply(setMemoryArray);
   }, []);
 
   function handleChartPlay() {

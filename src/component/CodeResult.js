@@ -13,7 +13,7 @@ export default function CodeResult({ result }) {
   return (
     <Terminal style={{ color: result.isError ? "red" : "white" }}>
       code exec success : {result.isError ? "failed" : "ok"}
-      <br></br>
+      <br />
       {result.result}
     </Terminal>
   );

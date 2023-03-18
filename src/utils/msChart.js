@@ -1,9 +1,12 @@
+import Circle from "./circle";
+
 //축
 const X_PADDING = 25;
 const Y_PADDING = 50;
 const TOP_PADDING = 15;
 const VIEW_NODE_COUNT = 10;
 const Y_TICK_COUNT = 5;
+const NODE_RADIUS = 5;
 
 export default class LineChart {
   constructor(id, durationTime) {
@@ -60,7 +63,23 @@ export default class LineChart {
     this.heightPixelWeights = 0; // 높이 1 pixel 에 value 표현 가중치
     this.widthPixelWeights = 0; // 너비 1 pixel에 time 표현 가중치
 
+    this.circle = [];
+
+    this.canvas.addEventListener("mousemove", (e) => {
+      const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
+      const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
+
+      if (this.circle.length > 0) {
+        this.circle.forEach((item) => {
+          if (item.isMouseOver(cursorPositionX, cursorPositionY)) {
+            item.reDraw();
+          }
+        });
+      }
+    });
+
     this.parseMemoryArray(); // heightPixelWeights 얻기
+
     return this;
   }
 
@@ -156,8 +175,16 @@ export default class LineChart {
           this.heightPixelWeights * item.memory;
 
         ctx.lineTo(xPosition, yPosition);
-        ctx.ellipse(xPosition, yPosition, 5, 5, 0, 0, 3 * Math.PI);
+        ctx.stroke();
+        ctx.save();
 
+        this.circle.push(
+          new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item).draw(),
+        );
+
+        ctx.moveTo(xPosition, yPosition);
+
+        ctx.fillStyle = "black";
         ctx.fillText(
           new Date(item.timestamp).getMilliseconds(),
           xPosition,
@@ -174,6 +201,7 @@ export default class LineChart {
       return;
     }
 
+    this.circle.length = 0;
     this.drawChart();
     this.currentPosition += 1;
 

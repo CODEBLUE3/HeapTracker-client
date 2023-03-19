@@ -52,7 +52,7 @@ export default class LineChart {
             modal.style.left = e.pageX + "px";
             modal.style.top = e.pageY + "px";
 
-            modal.innerText = "모달 내용입니다.";
+            modal.innerText = `${item.data.memory}`;
             item.reDraw();
           }
         });

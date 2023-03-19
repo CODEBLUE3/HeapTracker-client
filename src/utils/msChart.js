@@ -1,4 +1,5 @@
 import Circle from "./circle";
+import { color } from "../styles/styleCode";
 
 const X_PADDING = 25;
 const Y_PADDING = 50;
@@ -42,13 +43,24 @@ export default class LineChart {
       if (this.snapshotCircle.length > 0) {
         this.snapshotCircle.forEach((item) => {
           if (item.isMouseOver(cursorPositionX, cursorPositionY)) {
+            const modal = document.getElementById("chartModal");
+
+            modal.style.position = "absolute";
+            modal.style.backgroundColor = `${color.chartModal}`;
+            modal.style.borderRadius = "10px";
+            modal.style.padding = "10px 20px";
+            modal.style.left = e.pageX + "px";
+            modal.style.top = e.pageY + "px";
+
+            modal.innerText = "모달 내용입니다.";
             item.reDraw();
           }
         });
       }
     });
 
-    this.parseMemoryArray();
+    this.parseMemoryArray(); // heightPixelWeights 얻기
+
     return this;
   }
 

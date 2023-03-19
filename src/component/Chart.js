@@ -54,7 +54,8 @@ export default function Chart({ data }) {
 
   return (
     <>
-      <canvas id="lineChart" width="500px" height="300px"></canvas>
+      <canvas id="lineChart" width="400px" height="300px"></canvas>
+      <div id="chartModal"></div>
       <Controller>
         <Button onClick={handleChartPlay}>시작</Button>
         <Button onClick={handleChartPause}>일시정지</Button>

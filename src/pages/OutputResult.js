@@ -5,9 +5,27 @@ import ChartResult from "../component/ChartResult";
 
 export default function OutputResult() {
   const [chartData, setChartData] = useState();
+  const [chartResult, setChartResult] = useState({});
 
   const setMemoryArray = (data) => {
-    setChartData(data);
+    if (data.result.length > 0) {
+      let minMemory = Infinity;
+      let maxMemory = 0;
+
+      data.result.forEach((element) => {
+        minMemory = Math.min(minMemory, element.usedMemory);
+        maxMemory = Math.max(maxMemory, element.usedMemory);
+      });
+
+      setChartResult({
+        duration: data.result.at(-1).timeStamp - data.result.at(0).timeStamp,
+        minMemory: minMemory,
+        maxMemory: maxMemory,
+        count: data.result.length,
+      });
+
+      setChartData(data);
+    }
   };
 
   useEffect(() => {
@@ -17,7 +35,7 @@ export default function OutputResult() {
   return (
     <>
       <Chart data={chartData} />
-      <ChartResult data={chartData} />
+      <ChartResult resultData={chartResult} />
     </>
   );
 }

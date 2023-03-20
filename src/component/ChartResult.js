@@ -38,25 +38,7 @@ const StyledWrapper = styled.div`
   }
 `;
 
-export default function ChartResult({ data }) {
-  const [RunTime, setRunTime] = useState();
-  const [maxMemory, setmaxMemory] = useState();
-  const [minMemory, setminMemory] = useState();
-  const [nodeCount, setnodeCount] = useState();
-
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-
-    if (data.result.length > 0) {
-      setRunTime(Number(data.result.at(-1).timeStamp));
-      setmaxMemory(data.result.maxMemoryText);
-      setminMemory(data.result.minMemoryText);
-      setnodeCount(data.result.length);
-    }
-  }, [data]);
-
+export default function ChartResult({ resultData }) {
   return (
     <StyledWrapper>
       <ul>
@@ -64,20 +46,22 @@ export default function ChartResult({ data }) {
         <li className="info">
           <div className="name">TOTAL RUN TIME</div>
           <div className="data">
-            {RunTime}ns, {Math.round(RunTime / 1000000)}ms
+            {Number(resultData.duration)}ns,{" "}
+            {Math.floor(Number(resultData.duration) / 1000000)}
+            ms
           </div>
         </li>
         <li className="info">
           <div className="name">MAX MEMORY</div>
-          <div className="data">{maxMemory}bytes</div>
+          <div className="data">{resultData.maxMemory}bytes</div>
         </li>
         <li className="info">
           <div className="name">MIN MEMORY</div>
-          <div className="data">{minMemory}bytes</div>
+          <div className="data">{resultData.minMemory}bytes</div>
         </li>
         <li className="info">
           <div className="name">TOTAL NODE COUNT</div>
-          <div className="data">{nodeCount}</div>
+          <div className="data">{resultData.count}</div>
         </li>
       </ul>
     </StyledWrapper>

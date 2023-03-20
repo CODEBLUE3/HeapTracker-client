@@ -48,8 +48,6 @@ export default class LineChart {
     });
 
     this.parseMemoryArray(); // heightPixelWeights 얻기
-    data.maxMemoryText = this.maxMemoryText;
-    data.minMemoryText = this.minMemoryText;
     return this;
   }
 
@@ -157,8 +155,6 @@ export default class LineChart {
         ctx.lineTo(xPosition, yPosition);
         ctx.stroke();
         ctx.save();
-
-        console.log("yPosition", yPosition);
 
         this.circle.push(
           new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item),

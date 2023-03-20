@@ -68,7 +68,6 @@ module.exports = class modifyCode {
             node.end + 1,
             node.start,
           );
-
           break;
       }
     };

@@ -7,6 +7,7 @@ module.exports = class Circle {
     this.radius = radius;
     this.ctx = ctx;
     this.data = data;
+    this.modal = null;
 
     this.draw = () => {
       this.ctx.beginPath();
@@ -40,12 +41,26 @@ module.exports = class Circle {
       const radius = this.radius;
       const centerX = position.x + radius;
       const centerY = position.y + radius;
-
-      return (
-        Math.round(
-          Math.sqrt(Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2)),
-        ) <= radius
+      const distance = Math.sqrt(
+        Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2),
       );
+
+      if (Math.round(distance) <= radius) {
+        if (!this.modal) {
+          this.modal = document.createElement("div");
+          this.modal.id = `chartModal-${this.data.timestamp}`;
+          document.body.appendChild(this.modal);
+        }
+
+        return true;
+      } else {
+        if (this.modal) {
+          document.body.removeChild(this.modal);
+          this.modal = null;
+        }
+      }
+
+      return false;
     };
 
     return this;

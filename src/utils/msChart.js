@@ -43,17 +43,20 @@ export default class LineChart {
       if (this.snapshotCircle.length > 0) {
         this.snapshotCircle.forEach((item) => {
           if (item.isMouseOver(cursorPositionX, cursorPositionY)) {
-            const modal = document.getElementById("chartModal");
+            const modal = document.getElementById(`${item.modal.id}`);
 
+            modal.style.visibility = "visible";
             modal.style.position = "absolute";
+            modal.style.left = e.pageX + "px";
+            modal.style.top = e.pageY + "px";
             modal.style.backgroundColor = `${color.chartModal}`;
             modal.style.borderRadius = "10px";
             modal.style.padding = "10px 20px";
-            modal.style.left = e.pageX + "px";
-            modal.style.top = e.pageY + "px";
+            modal.innerText = `${item.data.timestamp}`;
 
-            modal.innerText = `${item.data.memory}`;
             item.reDraw();
+          } else {
+            item.draw();
           }
         });
       }

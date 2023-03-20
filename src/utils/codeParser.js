@@ -34,6 +34,44 @@ module.exports = class modifyCode {
       this.lastFindNodeType(node, node.type);
     };
 
+    this.findNodeType = (node, type) => {
+      switch (type) {
+        case "ForStatement":
+        case "WhileStatement":
+        case "DoWhileStatement":
+        case "SwitchStatement":
+        case "ForOfStatement":
+          this.code = this.insertCodeType(this.code, node.start, type);
+          break;
+        case "FunctionDeclaration":
+        case "ArrowFunctionExpression":
+          if (node.body) {
+            this.code = this.insertCodeType(
+              this.code,
+              node.body.start + 1,
+              type + " " + (node.id ? node.id.name : ""),
+            );
+          }
+          break;
+      }
+    };
+
+    this.lastFindNodeType = (node, type) => {
+      switch (type) {
+        case "VariableDeclarator":
+          if (node.init.type === "ArrowFunctionExpression") {
+            this.parseNodeObject(node.init);
+          }
+
+          this.code = this.insertCodePosition(
+            this.code,
+            node.end + 1,
+            node.start,
+          );
+          break;
+      }
+    };
+
     this.insertCodePosition = (code, insertPosition, nodePosition) => {
       const trackingFunctionCode = `m(${nodePosition}, null);`;
 
@@ -58,29 +96,6 @@ module.exports = class modifyCode {
       this.insertLength += trackingFunctionCode.length;
 
       return modifiedCode;
-    };
-
-    this.findNodeType = (node, type) => {
-      switch (type) {
-        case "ForStatement":
-        case "WhileStatement":
-        case "DoWhileStatement":
-        case "SwitchStatement":
-          this.code = this.insertCodeType(this.code, node.start, type);
-          break;
-      }
-    };
-
-    this.lastFindNodeType = (node, type) => {
-      switch (type) {
-        case "VariableDeclarator":
-          this.code = this.insertCodePosition(
-            this.code,
-            node.end + 1,
-            node.start,
-          );
-          break;
-      }
     };
   }
 

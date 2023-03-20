@@ -38,34 +38,30 @@ const StyledWrapper = styled.div`
   }
 `;
 
-export default function ChartResult({ data }) {
-  const totalRunTime = data ? String(data[data.length - 1].timeStamp) : "";
-  const maxMemory = data
-    ? data.reduce((prev, current) =>
-        prev.usedMemory > current.usedMemory ? prev : current,
-      ).usedMemory
-    : "";
-  const minMemory = data
-    ? data.reduce((prev, current) =>
-        prev.usedMemory < current.usedMemory ? prev : current,
-      ).usedMemory
-    : "";
-
+export default function ChartResult({ resultData }) {
   return (
     <StyledWrapper>
       <ul>
         <li className="title">RESULT</li>
         <li className="info">
           <div className="name">TOTAL RUN TIME</div>
-          <div className="data">{totalRunTime} ns</div>
+          <div className="data">
+            {Number(resultData.duration)}ns,{" "}
+            {Math.floor(Number(resultData.duration) / 1000000)}
+            ms
+          </div>
         </li>
         <li className="info">
           <div className="name">MAX MEMORY</div>
-          <div className="data">{maxMemory}bytes</div>
+          <div className="data">{resultData.maxMemory}bytes</div>
         </li>
         <li className="info">
           <div className="name">MIN MEMORY</div>
-          <div className="data">{minMemory}bytes</div>
+          <div className="data">{resultData.minMemory}bytes</div>
+        </li>
+        <li className="info">
+          <div className="name">TOTAL NODE COUNT</div>
+          <div className="data">{resultData.count}</div>
         </li>
       </ul>
     </StyledWrapper>

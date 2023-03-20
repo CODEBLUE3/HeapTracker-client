@@ -18,7 +18,7 @@ export default class LineChart {
     this.chartWidth = this.canvasWidth - Y_PADDING;
     this.chartHeight = this.canvasHeight - X_PADDING - TOP_PADDING;
 
-    this.chartDurationTime = durationTime; // 재생 시간
+    this.chartDurationTime = durationTime;
     this.excuteDurationTime = 0;
     this.intervalID = 0;
     this.currentPosition = 0;
@@ -47,7 +47,7 @@ export default class LineChart {
       }
     });
 
-    this.parseMemoryArray(); // heightPixelWeights 얻기
+    this.parseMemoryArray();
     return this;
   }
 
@@ -108,18 +108,14 @@ export default class LineChart {
     }
   };
 
-  //차트를 그리는 함수
   drawChart = () => {
     const { ctx, canvasWidth, canvasHeight, chartHeight, chartWidth } = this;
 
-    //이전에 그려진 함수를 제거하는 로직(동적인 움직임을 위해)
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
-    //데이터를 그리기 시작
     ctx.beginPath();
     ctx.moveTo(Y_PADDING, TOP_PADDING);
 
-    //draw Y
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
     const yInterval =
       (this.maxMemoryText - this.minMemoryText) / (Y_TICK_COUNT - 1);

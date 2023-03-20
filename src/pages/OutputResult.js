@@ -2,13 +2,16 @@ import React, { useState, useEffect } from "react";
 
 import Chart from "../component/Chart";
 import ChartResult from "../component/ChartResult";
-import { chartMock } from "../mock/chartMock";
 
 export default function OutputResult() {
   const [chartData, setChartData] = useState();
 
+  const setMemoryArray = (data) => {
+    setChartData(data);
+  };
+
   useEffect(() => {
-    setChartData(chartMock);
+    window.electronAPI.executeHeapTrackerReply(setMemoryArray);
   }, []);
 
   return (

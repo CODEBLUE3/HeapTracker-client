@@ -1,7 +1,10 @@
 const color = {
-  defaultBackground: "#fafafa",
+  defaultBackground: "#fAfAfA",
   defaultBoxBackground: "#FFFFFF",
-  defaultButton: "#1e90ff",
+  defaultButton: "#1E90FF",
+  chartModal: "#DFDFE6",
+  chartDot: "#BFBDBD",
+  chartDotHover: "#1E90FF",
 };
 
 const style = {

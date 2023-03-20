@@ -1,4 +1,5 @@
 import Circle from "./circle";
+import { color } from "../styles/styleCode";
 
 const X_PADDING = 25;
 const Y_PADDING = 50;
@@ -42,13 +43,27 @@ export default class LineChart {
       if (this.snapshotCircle.length > 0) {
         this.snapshotCircle.forEach((item) => {
           if (item.isMouseOver(cursorPositionX, cursorPositionY)) {
-            item.reDraw();
+            const modal = document.getElementById(`${item.modal.id}`);
+
+            modal.style.visibility = "visible";
+            modal.style.position = "absolute";
+            modal.style.left = e.pageX + "px";
+            modal.style.top = e.pageY + "px";
+            modal.style.backgroundColor = `${color.chartModal}`;
+            modal.style.borderRadius = "10px";
+            modal.style.padding = "10px 20px";
+            modal.innerText = `${item.data.codeType}`;
+
+            item.draw(color.chartDotHover);
+          } else {
+            item.draw(color.chartDot);
           }
         });
       }
     });
 
-    this.parseMemoryArray();
+    this.parseMemoryArray(); // heightPixelWeights 얻기
+
     return this;
   }
 
@@ -169,7 +184,7 @@ export default class LineChart {
     // 동적으로 움직이는 한 장면에 노드를 표현하였습니다.
     // FIXME: 노드가 x축과 겹치는 현상 해결 필요.
     this.snapshotCircle.forEach((item) => {
-      item.draw();
+      item.draw(color.chartDot);
     });
 
     // x축 좌표 ns 표현

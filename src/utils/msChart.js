@@ -110,6 +110,8 @@ export default class LineChart {
 
   drawChart = () => {
     const { ctx, canvasWidth, canvasHeight, chartHeight, chartWidth } = this;
+    const xDistance =
+      this.data[this.data.length - 1].timeStamp / BigInt(this.data.length);
 
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -157,12 +159,19 @@ export default class LineChart {
         );
 
         ctx.moveTo(xPosition, yPosition);
-
-        ctx.fillStyle = "black";
-        ctx.fillText(item.timeStamp, xPosition, chartHeight + TOP_PADDING + 4);
       });
     ctx.stroke();
     ctx.restore();
+
+    for (let index = 0; index < VIEW_NODE_COUNT; index += 1) {
+      const xPosition = (this.chartWidth / VIEW_NODE_COUNT) * (index + 1);
+
+      ctx.fillText(
+        xDistance * BigInt(this.currentPosition) + xDistance * BigInt(index),
+        xPosition,
+        chartHeight + TOP_PADDING + 10,
+      );
+    }
   };
 
   updateData = () => {

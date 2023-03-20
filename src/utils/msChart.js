@@ -33,13 +33,14 @@ export default class LineChart {
     this.widthPixelWeights = 0;
 
     this.circle = [];
+    this.snapshotCircle = [];
 
     this.canvas.addEventListener("mousemove", (e) => {
       const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
       const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
 
-      if (this.circle.length > 0) {
-        this.circle.forEach((item) => {
+      if (this.snapshotCircle.length > 0) {
+        this.snapshotCircle.forEach((item) => {
           if (item.isMouseOver(cursorPositionX, cursorPositionY)) {
             item.reDraw();
           }
@@ -141,37 +142,52 @@ export default class LineChart {
 
     ctx.beginPath();
 
-    this.data
-      .slice(this.currentPosition, this.currentPosition + VIEW_NODE_COUNT)
-      .forEach((item, index) => {
-        const xPosition = (this.chartWidth / VIEW_NODE_COUNT) * (index + 1);
+    // 동적으로 움직이는 차트내 한 장면의 노드 갯수를 filter하고
+    // map으로 Circle객체를 생성하고 저장하였습니다.
+    this.snapshotCircle = this.data
+      .filter(
+        (item) =>
+          item.timeStamp > xDistance * BigInt(this.currentPosition) &&
+          item.timeStamp <
+            xDistance * BigInt(this.currentPosition + VIEW_NODE_COUNT),
+      )
+      .map((item) => {
+        const offset = 25;
+        const xPosition =
+          (this.chartWidth / (Number(xDistance) * VIEW_NODE_COUNT)) *
+            Number(item.timeStamp) -
+          (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
+          offset;
         const yPosition =
           TOP_PADDING +
           this.chartHeight -
           this.heightPixelWeights * item.usedMemory;
 
-        ctx.lineTo(xPosition, yPosition);
-        ctx.stroke();
-        ctx.save();
-
-        this.circle.push(
-          new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item),
-        );
-
-        ctx.moveTo(xPosition, yPosition);
+        return new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item);
       });
-    ctx.stroke();
-    ctx.restore();
 
+    // 동적으로 움직이는 한 장면에 노드를 표현하였습니다.
+    // FIXME: 노드가 x축과 겹치는 현상 해결 필요.
+    this.snapshotCircle.forEach((item) => {
+      item.draw();
+    });
+
+    // x축 좌표 ns 표현
     for (let index = 0; index < VIEW_NODE_COUNT; index += 1) {
       const xPosition = (this.chartWidth / VIEW_NODE_COUNT) * (index + 1);
 
+      ctx.fillStyle = "black";
       ctx.fillText(
-        xDistance * BigInt(this.currentPosition) + xDistance * BigInt(index),
+        (xDistance * BigInt(this.currentPosition) + xDistance * BigInt(index)) /
+          BigInt(1000),
         xPosition,
         chartHeight + TOP_PADDING + 10,
       );
     }
+
+    // FIXME: Circle method인 reDraw()로 인한 색변경 오류 발견. 해결 필요
+    ctx.stroke();
+    ctx.restore();
   };
 
   updateData = () => {

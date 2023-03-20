@@ -52,11 +52,11 @@ export default class LineChart {
             modal.style.backgroundColor = `${color.chartModal}`;
             modal.style.borderRadius = "10px";
             modal.style.padding = "10px 20px";
-            modal.innerText = `${item.data.timestamp}`;
+            modal.innerText = `${item.data.codeType}`;
 
-            item.reDraw();
+            item.draw(color.chartDotHover);
           } else {
-            item.draw();
+            item.draw(color.chartDot);
           }
         });
       }
@@ -184,7 +184,7 @@ export default class LineChart {
     // 동적으로 움직이는 한 장면에 노드를 표현하였습니다.
     // FIXME: 노드가 x축과 겹치는 현상 해결 필요.
     this.snapshotCircle.forEach((item) => {
-      item.draw();
+      item.draw(color.chartDot);
     });
 
     // x축 좌표 ns 표현

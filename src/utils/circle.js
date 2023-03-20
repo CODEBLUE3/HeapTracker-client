@@ -9,19 +9,10 @@ module.exports = class Circle {
     this.data = data;
     this.modal = null;
 
-    this.draw = () => {
+    this.draw = (color) => {
       this.ctx.beginPath();
       this.ctx.arc(this.x, this.y, this.radius, 0, 2 * PI);
-      this.ctx.fillStyle = "red";
-      this.ctx.fill();
-
-      return this;
-    };
-
-    this.reDraw = () => {
-      this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, this.radius, 0, 2 * PI);
-      this.ctx.fillStyle = "blue";
+      this.ctx.fillStyle = color;
       this.ctx.fill();
 
       return this;

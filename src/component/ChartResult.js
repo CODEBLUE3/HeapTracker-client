@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 
@@ -39,17 +39,23 @@ const StyledWrapper = styled.div`
 `;
 
 export default function ChartResult({ data }) {
-  const totalRunTime = data ? String(data[data.length - 1].timeStamp) : "";
-  const maxMemory = data
-    ? data.reduce((prev, current) =>
-        prev.usedMemory > current.usedMemory ? prev : current,
-      ).usedMemory
-    : "";
-  const minMemory = data
-    ? data.reduce((prev, current) =>
-        prev.usedMemory < current.usedMemory ? prev : current,
-      ).usedMemory
-    : "";
+  const [RunTime, setRunTime] = useState();
+  const [maxMemory, setmaxMemory] = useState();
+  const [minMemory, setminMemory] = useState();
+  const [nodeCount, setnodeCount] = useState();
+
+  useEffect(() => {
+    if (!data) {
+      return;
+    }
+
+    if (data.result.length > 0) {
+      setRunTime(Number(data.result.at(-1).timeStamp));
+      setmaxMemory(data.result.maxMemoryText);
+      setminMemory(data.result.minMemoryText);
+      setnodeCount(data.result.length);
+    }
+  }, [data]);
 
   return (
     <StyledWrapper>
@@ -57,7 +63,9 @@ export default function ChartResult({ data }) {
         <li className="title">RESULT</li>
         <li className="info">
           <div className="name">TOTAL RUN TIME</div>
-          <div className="data">{totalRunTime} ns</div>
+          <div className="data">
+            {RunTime}ns, {Math.round(RunTime / 1000000)}ms
+          </div>
         </li>
         <li className="info">
           <div className="name">MAX MEMORY</div>
@@ -66,6 +74,10 @@ export default function ChartResult({ data }) {
         <li className="info">
           <div className="name">MIN MEMORY</div>
           <div className="data">{minMemory}bytes</div>
+        </li>
+        <li className="info">
+          <div className="name">TOTAL NODE COUNT</div>
+          <div className="data">{nodeCount}</div>
         </li>
       </ul>
     </StyledWrapper>

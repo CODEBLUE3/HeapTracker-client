@@ -3,7 +3,7 @@ import LineChart from "../utils/msChart";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 
-const CHART_DURATION_TIME = 5000;
+const CHART_DURATION_TIME = 6000;
 
 const Button = styled.button`
   display: flex;
@@ -24,16 +24,15 @@ const Controller = styled.div`
   display: flex;
 `;
 
-export default function Chart() {
+export default function Chart({ data }) {
   const [chart, setChart] = useState();
 
-  const setMemoryArray = (datas) => {
-    setChart(new LineChart("lineChart", datas.result, CHART_DURATION_TIME));
-  };
-
   useEffect(() => {
-    window.electronAPI.executeHeapTrackerReply(setMemoryArray);
-  }, []);
+    if (!data) {
+      return;
+    }
+    setChart(new LineChart("lineChart", data.result, CHART_DURATION_TIME));
+  }, [data]);
 
   function handleChartPlay() {
     if (chart) {
@@ -55,7 +54,7 @@ export default function Chart() {
 
   return (
     <>
-      <canvas id="lineChart" width="400px" height="300px"></canvas>
+      <canvas id="lineChart" width="500px" height="300px"></canvas>
       <Controller>
         <Button onClick={handleChartPlay}>시작</Button>
         <Button onClick={handleChartPause}>일시정지</Button>

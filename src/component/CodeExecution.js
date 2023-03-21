@@ -1,10 +1,11 @@
 import styled from "styled-components";
 import CodeMirror from "@uiw/react-codemirror";
+import { style } from "../styles/styleCode";
 import { javascript } from "@codemirror/lang-javascript";
 
 const CodeContainer = styled.div`
   flex-direction: column;
-  margin: 20px 5px;
+  margin: 20px ${style.defaultComponentMargin};
   width: 85%;
   height: 70px;
 `;

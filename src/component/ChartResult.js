@@ -40,7 +40,9 @@ const StyledWrapper = styled.div`
 `;
 
 export default function ChartResult() {
-  const memoryData = useSelector((state) => state.heapMemory.memoryData.result);
+  const memoryData = useSelector(
+    (state) => state.heapMemory.heapMemoryData.result,
+  );
   const duration = memoryData?.at(-1).timeStamp - memoryData?.at(0).timeStamp;
   let minMemory = Infinity;
   let maxMemory = 0;
@@ -52,30 +54,28 @@ export default function ChartResult() {
 
   return (
     <StyledWrapper>
-      {memoryData && (
-        <ul>
-          <li className="title">RESULT</li>
-          <li className="info">
-            <div className="name">TOTAL RUN TIME</div>
-            <div className="data">
-              {duration}ns, {Math.floor(Number(duration) / 1000000)}
-              ms
-            </div>
-          </li>
-          <li className="info">
-            <div className="name">MAX MEMORY</div>
-            <div className="data">{maxMemory}bytes</div>
-          </li>
-          <li className="info">
-            <div className="name">MIN MEMORY</div>
-            <div className="data">{minMemory}bytes</div>
-          </li>
-          <li className="info">
-            <div className="name">TOTAL NODE COUNT</div>
-            <div className="data">{memoryData.length}</div>
-          </li>
-        </ul>
-      )}
+      <ul>
+        <li className="title">RESULT</li>
+        <li className="info">
+          <div className="name">TOTAL RUN TIME</div>
+          <div className="data">
+            {memoryData &&
+              `${duration}ns, ${Math.floor(Number(duration) / 1000000)}`}
+          </div>
+        </li>
+        <li className="info">
+          <div className="name">MAX MEMORY</div>
+          <div className="data">{memoryData && maxMemory}bytes</div>
+        </li>
+        <li className="info">
+          <div className="name">MIN MEMORY</div>
+          <div className="data">{memoryData && minMemory}bytes</div>
+        </li>
+        <li className="info">
+          <div className="name">TOTAL NODE COUNT</div>
+          <div className="data">{memoryData && memoryData.length}</div>
+        </li>
+      </ul>
     </StyledWrapper>
   );
 }

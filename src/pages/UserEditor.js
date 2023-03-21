@@ -4,6 +4,8 @@ import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
 import { useState, useEffect } from "react";
 import { color } from "../styles/styleCode";
+import { useDispatch } from "react-redux";
+import { setUserCode } from "../features/userCode/userCodeSlice";
 
 const Button = styled.button`
   display: block;
@@ -21,6 +23,7 @@ export default function UserEditor() {
   const [userInput, setUserInput] = useState("");
   const [userExecution, setUserExecution] = useState("");
   const [codeResult, setCodeResult] = useState("");
+  const dispatch = useDispatch();
 
   function handleUserInput(value) {
     setUserInput(value);
@@ -33,6 +36,12 @@ export default function UserEditor() {
   function sendCode() {
     window.electronAPI.validateUserCode(userInput, userExecution);
     window.electronAPI.validateUserCodeReply(setCodeResult);
+    dispatch(
+      setUserCode({
+        userInput,
+        userExecution,
+      }),
+    );
   }
 
   useEffect(() => {

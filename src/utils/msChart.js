@@ -13,6 +13,10 @@ export default class LineChart {
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext("2d");
 
+    this.xDistance =
+      this.data[this.data.length - 1].timeStamp / this.data.length;
+    this.baseMemory = this.data[0].usedMemory;
+
     this.canvasWidth = this.canvas.clientWidth;
     this.canvasHeight = this.canvas.clientHeight;
     this.chartWidth = this.canvasWidth - Y_PADDING;
@@ -101,9 +105,6 @@ export default class LineChart {
 
   drawChart = () => {
     const { ctx, canvasWidth, canvasHeight, chartHeight, chartWidth } = this;
-    const xDistance =
-      this.data[this.data.length - 1].timeStamp / this.data.length;
-    const baseMemory = this.data[0].usedMemory;
 
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -138,19 +139,21 @@ export default class LineChart {
     this.snapshotCircle = this.data
       .filter(
         (item) =>
-          item.timeStamp > xDistance * this.currentPosition &&
-          item.timeStamp < xDistance * (this.currentPosition + VIEW_NODE_COUNT),
+          item.timeStamp > this.xDistance * this.currentPosition &&
+          item.timeStamp <
+            this.xDistance * (this.currentPosition + VIEW_NODE_COUNT),
       )
       .map((item) => {
         const offset = 25;
         const xPosition =
-          (this.chartWidth / (xDistance * VIEW_NODE_COUNT)) * item.timeStamp -
+          (this.chartWidth / (this.xDistance * VIEW_NODE_COUNT)) *
+            item.timeStamp -
           (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
           offset;
         const yPosition =
           TOP_PADDING +
           this.chartHeight -
-          this.heightPixelWeights * (item.usedMemory - baseMemory);
+          this.heightPixelWeights * (item.usedMemory - this.baseMemory);
 
         return new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item);
       });
@@ -168,7 +171,8 @@ export default class LineChart {
       ctx.fillStyle = "black";
       ctx.fillText(
         Math.floor(
-          (xDistance * this.currentPosition + xDistance * index) / 1000,
+          (this.xDistance * this.currentPosition + this.xDistance * index) /
+            1000,
         ),
         xPosition,
         chartHeight + TOP_PADDING + 10,

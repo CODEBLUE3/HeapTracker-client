@@ -27,7 +27,9 @@ const Controller = styled.div`
 
 export default function Chart() {
   const [chart, setChart] = useState();
-  const memoryData = useSelector((state) => state.heapMemory.memoryData.result);
+  const memoryData = useSelector(
+    (state) => state.heapMemory.heapMemoryData.result,
+  );
 
   useEffect(() => {
     if (!memoryData) {

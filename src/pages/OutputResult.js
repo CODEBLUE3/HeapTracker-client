@@ -3,7 +3,7 @@ import { useDispatch } from "react-redux";
 
 import Chart from "../component/Chart";
 import ChartResult from "../component/ChartResult";
-import { setNodeData } from "../features/heapMemory/heapMemorySlice";
+import { setHeapMemoryData } from "../features/heapMemory/heapMemorySlice";
 
 export default function OutputResult() {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ export default function OutputResult() {
         element.timeStamp = Number(element.timeStamp) - baseTime;
       });
 
-      dispatch(setNodeData(data));
+      dispatch(setHeapMemoryData(data));
     }
   };
 

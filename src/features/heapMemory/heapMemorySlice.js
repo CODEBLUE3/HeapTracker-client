@@ -1,19 +1,19 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  memoryData: {},
+  heapMemoryData: {},
 };
 
 export const heapMemorySlice = createSlice({
   name: "heapMemory",
   initialState,
   reducers: {
-    setNodeData: (state, action) => {
-      state.memoryData = action.payload;
+    setHeapMemoryData: (state, action) => {
+      state.heapMemoryData = action.payload;
     },
   },
 });
 
-export const { setNodeData } = heapMemorySlice.actions;
+export const { setHeapMemoryData } = heapMemorySlice.actions;
 
 export default heapMemorySlice.reducer;

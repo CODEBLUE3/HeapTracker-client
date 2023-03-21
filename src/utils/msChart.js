@@ -36,6 +36,7 @@ export default class LineChart {
     this.circle = [];
     this.snapshotCircle = [];
 
+    // node 모달 창 생성
     this.canvas.addEventListener("mousemove", (e) => {
       const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
       const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
@@ -61,8 +62,8 @@ export default class LineChart {
         });
       }
     });
-
-    this.parseMemoryArray(); // heightPixelWeights 얻기
+    // heightPixelWeights 얻기
+    this.parseMemoryArray();
 
     return this;
   }
@@ -133,8 +134,8 @@ export default class LineChart {
 
     ctx.beginPath();
     ctx.moveTo(Y_PADDING, TOP_PADDING);
-
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
+
     const yInterval =
       (this.maxMemoryText - this.minMemoryText) / (Y_TICK_COUNT - 1);
     ctx.textAlign = "right";
@@ -150,24 +151,24 @@ export default class LineChart {
     ctx.lineTo(canvasWidth, chartHeight + TOP_PADDING);
     ctx.stroke();
 
+    /* Y축 좌측으로 노드가
+    그려지지 않게 해당 부분을 가림 */
     ctx.save();
     ctx.beginPath();
     ctx.rect(Y_PADDING, 0, chartWidth, canvasHeight);
     ctx.clip();
 
-    ctx.beginPath();
-
-    // 동적으로 움직이는 차트내 한 장면의 노드 갯수를 filter하고
-    // map으로 Circle객체를 생성하고 저장하였습니다.
+    /* 동적으로 움직이는 차트 내
+    한 장면의 노드 개수만큼 Circle 객체 생성 */
+    const offset = 25;
     this.snapshotCircle = this.data
       .filter(
         (item) =>
-          item.timeStamp > xDistance * BigInt(this.currentPosition) &&
+          item.timeStamp > xDistance * BigInt(this.currentPosition - offset) &&
           item.timeStamp <
-            xDistance * BigInt(this.currentPosition + VIEW_NODE_COUNT),
+            xDistance * BigInt(this.currentPosition + VIEW_NODE_COUNT + offset),
       )
       .map((item) => {
-        const offset = 25;
         const xPosition =
           (this.chartWidth / (Number(xDistance) * VIEW_NODE_COUNT)) *
             Number(item.timeStamp) -
@@ -183,7 +184,16 @@ export default class LineChart {
 
     // 동적으로 움직이는 한 장면에 노드를 표현하였습니다.
     // FIXME: 노드가 x축과 겹치는 현상 해결 필요.
-    this.snapshotCircle.forEach((item) => {
+    ctx.beginPath();
+    this.snapshotCircle.forEach((item, index) => {
+      const xPosition = item.x;
+      const yPosition = item.y;
+
+      ctx.lineTo(xPosition, yPosition);
+      ctx.stroke();
+      ctx.save();
+
+      ctx.moveTo(xPosition, yPosition);
       item.draw(color.chartDot);
     });
 

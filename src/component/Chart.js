@@ -3,7 +3,7 @@ import LineChart from "../utils/msChart";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 
-const CHART_DURATION_TIME = 6000;
+const CHART_DURATION_TIME = 30000;
 
 const Button = styled.button`
   display: flex;

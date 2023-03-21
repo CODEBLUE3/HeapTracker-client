@@ -9,7 +9,7 @@
   "rules": {
     "no-var": "error",
     "no-multiple-empty-lines": "error",
-    "no-console": ["error", { "allow": ["warn", "error", "info"] }],
+    // "no-console": ["error", { "allow": ["warn", "error", "info"] }],
     "eqeqeq": "error",
     "no-unused-vars": "warn"
   }

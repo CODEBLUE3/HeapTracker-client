@@ -4,17 +4,18 @@ import { color, style } from "../styles/styleCode";
 const Terminal = styled.div`
   background-color: black;
   color: ${color.defaultBoxBackground};
-  height: 200px;
-  margin: 30px;
-  padding: 30px;
-  border-radius: ${style.borderRadius};
+  height: 10%;
+  margin: 10px;
+  padding: 5px;
   overflow: scroll;
 `;
 
 export default function CodeResult({ result }) {
   return (
     <Terminal style={{ color: result.isError ? "red" : "white" }}>
-      code exec success : {result.isError ? "failed" : "ok"}
+      {result.result
+        ? `code exec ${result.isError ? "failed" : "success"}`
+        : "ready..."}
       <br />
       {result.result}
     </Terminal>

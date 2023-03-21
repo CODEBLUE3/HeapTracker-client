@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 
-const StyledWrapper = styled.div`
+const ResultContainer = styled.div`
   height: 30%;
 
   ul {
@@ -52,7 +52,7 @@ const StyledWrapper = styled.div`
 
 export default function ChartResult({ resultData }) {
   return (
-    <StyledWrapper>
+    <ResultContainer>
       <ul>
         <li className="title">RESULT</li>
         <li className="info">
@@ -60,14 +60,8 @@ export default function ChartResult({ resultData }) {
           <div className="data">
             {Number(resultData.duration ? resultData.duration : 0)
               .toString()
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
-            us,{" "}
-            {Math.floor(
-              (Number(resultData.duration ? resultData.duration : 0) / 1000000)
-                .toString()
-                .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ","),
-            )}
-            ms
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
+            us
           </div>
         </li>
         <li className="info">
@@ -75,7 +69,7 @@ export default function ChartResult({ resultData }) {
           <div className="data">
             {(resultData.maxMemory ? resultData.maxMemory : 0)
               .toString()
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
             bytes
           </div>
         </li>
@@ -84,21 +78,19 @@ export default function ChartResult({ resultData }) {
           <div className="data">
             {(resultData.minMemory ? resultData.minMemory : 0)
               .toString()
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
             bytes
           </div>
         </li>
         <li className="info">
           <div className="name">USED MEMORY</div>
           <div className="data">
-            {(resultData.maxMemory
-              ? resultData.maxMemory
-              : 0 - resultData.minMemory
-              ? resultData.minMemory
-              : 0
+            {(
+              (resultData.maxMemory ? resultData.maxMemory : 0) -
+              (resultData.minMemory ? resultData.minMemory : 0)
             )
               .toString()
-              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
+              .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
             bytes
           </div>
         </li>
@@ -111,6 +103,6 @@ export default function ChartResult({ resultData }) {
           </div>
         </li>
       </ul>
-    </StyledWrapper>
+    </ResultContainer>
   );
 }

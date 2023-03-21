@@ -5,23 +5,24 @@ import { color, style } from "../styles/styleCode";
 
 const CHART_DURATION_TIME = 30000;
 
-const Button = styled.button`
+const ChartControlButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: row;
   color: white;
-  font-size: 18px;
+  font-size: ${style.controlButtonSize};
   height: 30px;
   width: 100px;
   background-color: ${color.defaultButton};
-  margin: 10px;
+  margin: ${style.controlButtonMargin};
   border: none;
   border-radius: ${style.borderRadius};
 `;
 
 const Controller = styled.div`
   display: flex;
+  justify-content: center;
 `;
 
 export default function Chart({ data }) {
@@ -54,11 +55,13 @@ export default function Chart({ data }) {
 
   return (
     <>
-      <canvas id="lineChart" width="500px" height="400px"></canvas>
+      <canvas id="lineChart" width="550px" height="400px"></canvas>
       <Controller>
-        <Button onClick={handleChartPlay}>시작</Button>
-        <Button onClick={handleChartPause}>일시정지</Button>
-        <Button onClick={handleChartStop}>종료</Button>
+        <ChartControlButton onClick={handleChartPlay}>시작</ChartControlButton>
+        <ChartControlButton onClick={handleChartPause}>
+          일시정지
+        </ChartControlButton>
+        <ChartControlButton onClick={handleChartStop}>종료</ChartControlButton>
       </Controller>
     </>
   );

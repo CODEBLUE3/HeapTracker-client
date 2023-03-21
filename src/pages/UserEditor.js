@@ -3,23 +3,23 @@ import CodeInput from "../component/CodeInput";
 import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
 import { useState, useEffect } from "react";
-import { color } from "../styles/styleCode";
+import { color, style } from "../styles/styleCode";
 
 const Container = styled.div`
   flex-direction: column;
   height: 100%;
 `;
 
-const Button = styled.button`
+const ExecButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
   color: ${color.defaultBoxBackground};
-  font-size: 20px;
+  font-size: 1.3rem;
   background-color: ${color.defaultButton};
   border: none;
   border-radius: 20px;
-  margin: 5px;
+  margin: ${style.defaultComponentMargin};
   margin-top: 40px;
   width: 15%;
 `;
@@ -57,7 +57,7 @@ export default function UserEditor() {
       <CodeInput value={userInput} onChange={handleUserInput} />
       <RowContainer>
         <CodeExecution value={userExecution} onChange={handleUserExeution} />
-        <Button onClick={sendCode}>실행</Button>
+        <ExecButton onClick={sendCode}>실행</ExecButton>
       </RowContainer>
       <CodeResult result={codeResult} />
     </Container>

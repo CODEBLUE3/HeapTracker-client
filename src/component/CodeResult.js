@@ -5,9 +5,10 @@ const Terminal = styled.div`
   background-color: black;
   color: ${color.defaultBoxBackground};
   height: 10%;
-  margin: 10px;
+  margin: ${style.defaultComponentMargin};
+  margin-top: 15px;
   padding: 5px;
-  overflow: scroll;
+  word-break: break-all;
 `;
 
 export default function CodeResult({ result }) {

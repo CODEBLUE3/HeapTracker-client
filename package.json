@@ -58,6 +58,7 @@
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
     "husky": "^8.0.3",
-    "prettier": "^2.8.4"
+    "prettier": "^2.8.4",
+    "redux-logger": "^3.0.6"
   }
 }

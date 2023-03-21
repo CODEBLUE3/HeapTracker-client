@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 
@@ -38,32 +39,43 @@ const StyledWrapper = styled.div`
   }
 `;
 
-export default function ChartResult({ resultData }) {
+export default function ChartResult() {
+  const memoryData = useSelector((state) => state.heapMemory.memoryData.result);
+  const duration = memoryData?.at(-1).timeStamp - memoryData?.at(0).timeStamp;
+  let minMemory = Infinity;
+  let maxMemory = 0;
+
+  memoryData?.forEach((element) => {
+    minMemory = Math.min(minMemory, element.usedMemory);
+    maxMemory = Math.max(maxMemory, element.usedMemory);
+  });
+
   return (
     <StyledWrapper>
-      <ul>
-        <li className="title">RESULT</li>
-        <li className="info">
-          <div className="name">TOTAL RUN TIME</div>
-          <div className="data">
-            {Number(resultData.duration)}ns,{" "}
-            {Math.floor(Number(resultData.duration) / 1000000)}
-            ms
-          </div>
-        </li>
-        <li className="info">
-          <div className="name">MAX MEMORY</div>
-          <div className="data">{resultData.maxMemory}bytes</div>
-        </li>
-        <li className="info">
-          <div className="name">MIN MEMORY</div>
-          <div className="data">{resultData.minMemory}bytes</div>
-        </li>
-        <li className="info">
-          <div className="name">TOTAL NODE COUNT</div>
-          <div className="data">{resultData.count}</div>
-        </li>
-      </ul>
+      {memoryData && (
+        <ul>
+          <li className="title">RESULT</li>
+          <li className="info">
+            <div className="name">TOTAL RUN TIME</div>
+            <div className="data">
+              {duration}ns, {Math.floor(Number(duration) / 1000000)}
+              ms
+            </div>
+          </li>
+          <li className="info">
+            <div className="name">MAX MEMORY</div>
+            <div className="data">{maxMemory}bytes</div>
+          </li>
+          <li className="info">
+            <div className="name">MIN MEMORY</div>
+            <div className="data">{minMemory}bytes</div>
+          </li>
+          <li className="info">
+            <div className="name">TOTAL NODE COUNT</div>
+            <div className="data">{memoryData.length}</div>
+          </li>
+        </ul>
+      )}
     </StyledWrapper>
   );
 }

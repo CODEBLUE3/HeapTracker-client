@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import LineChart from "../utils/msChart";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
+import { useSelector } from "react-redux";
 
 const CHART_DURATION_TIME = 6000;
 
@@ -24,15 +25,16 @@ const Controller = styled.div`
   display: flex;
 `;
 
-export default function Chart({ data }) {
+export default function Chart() {
   const [chart, setChart] = useState();
+  const memoryData = useSelector((state) => state.heapMemory.memoryData.result);
 
   useEffect(() => {
-    if (!data) {
+    if (!memoryData) {
       return;
     }
-    setChart(new LineChart("lineChart", data.result, CHART_DURATION_TIME));
-  }, [data]);
+    setChart(new LineChart("lineChart", memoryData, CHART_DURATION_TIME));
+  }, [memoryData]);
 
   function handleChartPlay() {
     if (chart) {

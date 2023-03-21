@@ -1,30 +1,22 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
 
 import Chart from "../component/Chart";
 import ChartResult from "../component/ChartResult";
+import { setNodeData } from "../features/heapMemory/heapMemorySlice";
 
 export default function OutputResult() {
-  const [chartData, setChartData] = useState();
-  const [chartResult, setChartResult] = useState({});
+  const dispatch = useDispatch();
 
   const setMemoryArray = (data) => {
     if (data.result.length > 0) {
-      let minMemory = Infinity;
-      let maxMemory = 0;
+      const baseTime = Number(data.result[0].timeStamp);
 
       data.result.forEach((element) => {
-        minMemory = Math.min(minMemory, element.usedMemory);
-        maxMemory = Math.max(maxMemory, element.usedMemory);
+        element.timeStamp = Number(element.timeStamp) - baseTime;
       });
 
-      setChartResult({
-        duration: data.result.at(-1).timeStamp - data.result.at(0).timeStamp,
-        minMemory: minMemory,
-        maxMemory: maxMemory,
-        count: data.result.length,
-      });
-
-      setChartData(data);
+      dispatch(setNodeData(data));
     }
   };
 
@@ -34,8 +26,8 @@ export default function OutputResult() {
 
   return (
     <>
-      <Chart data={chartData} />
-      <ChartResult resultData={chartResult} />
+      <Chart />
+      <ChartResult />
     </>
   );
 }

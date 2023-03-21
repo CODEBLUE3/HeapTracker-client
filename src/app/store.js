@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import heapMemoryReducer from "../features/node/heapMemorySlice";
+import heapMemoryReducer from "../features/heapMemory/heapMemorySlice";
 import logger from "redux-logger";
 
 export const store = configureStore({

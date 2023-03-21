@@ -9,7 +9,7 @@ const NODE_RADIUS = 5;
 
 export default class LineChart {
   constructor(id, data, durationTime) {
-    this.data = data;
+    this.data = [...data];
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext("2d");
 
@@ -81,19 +81,9 @@ export default class LineChart {
 
   parseMemoryArray = () => {
     if (this.data.length) {
-      const baseTime = this.data[0].timeStamp;
-      const baseMemory = this.data[0].usedMemory;
-
       this.data.forEach((item) => {
         this.minMemoryText = Math.min(this.minMemoryText, item.usedMemory);
         this.maxMemoryText = Math.max(this.maxMemoryText, item.usedMemory);
-      });
-
-      this.data = this.data.map((item) => {
-        item.timeStamp = item.timeStamp - baseTime;
-        item.memGap = item.usedMemory - baseMemory;
-        item.usedMemory = (item.usedMemory - this.minMemoryText) / 100;
-        return item;
       });
 
       this.excuteDurationTime = this.data.length;
@@ -112,7 +102,8 @@ export default class LineChart {
   drawChart = () => {
     const { ctx, canvasWidth, canvasHeight, chartHeight, chartWidth } = this;
     const xDistance =
-      this.data[this.data.length - 1].timeStamp / BigInt(this.data.length);
+      this.data[this.data.length - 1].timeStamp / this.data.length;
+    const baseMemory = this.data[0].usedMemory;
 
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -147,21 +138,19 @@ export default class LineChart {
     this.snapshotCircle = this.data
       .filter(
         (item) =>
-          item.timeStamp > xDistance * BigInt(this.currentPosition) &&
-          item.timeStamp <
-            xDistance * BigInt(this.currentPosition + VIEW_NODE_COUNT),
+          item.timeStamp > xDistance * this.currentPosition &&
+          item.timeStamp < xDistance * (this.currentPosition + VIEW_NODE_COUNT),
       )
       .map((item) => {
         const offset = 25;
         const xPosition =
-          (this.chartWidth / (Number(xDistance) * VIEW_NODE_COUNT)) *
-            Number(item.timeStamp) -
+          (this.chartWidth / (xDistance * VIEW_NODE_COUNT)) * item.timeStamp -
           (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
           offset;
         const yPosition =
           TOP_PADDING +
           this.chartHeight -
-          this.heightPixelWeights * item.usedMemory;
+          this.heightPixelWeights * (item.usedMemory - baseMemory);
 
         return new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item);
       });
@@ -178,8 +167,9 @@ export default class LineChart {
 
       ctx.fillStyle = "black";
       ctx.fillText(
-        (xDistance * BigInt(this.currentPosition) + xDistance * BigInt(index)) /
-          BigInt(1000),
+        Math.floor(
+          (xDistance * this.currentPosition + xDistance * index) / 1000,
+        ),
         xPosition,
         chartHeight + TOP_PADDING + 10,
       );

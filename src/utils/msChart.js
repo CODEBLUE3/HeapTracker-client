@@ -10,9 +10,13 @@ const NODE_RADIUS = 2;
 
 export default class LineChart {
   constructor(id, data, durationTime) {
-    this.data = data;
+    this.data = [...data];
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext("2d");
+
+    this.xDistance =
+      this.data[this.data.length - 1].timeStamp / this.data.length;
+    this.baseMemory = this.data[0].usedMemory;
 
     this.canvasWidth = this.canvas.clientWidth;
     this.canvasHeight = this.canvas.clientHeight;
@@ -99,19 +103,9 @@ export default class LineChart {
 
   parseMemoryArray = () => {
     if (this.data.length) {
-      const baseTime = this.data[0].timeStamp;
-      const baseMemory = this.data[0].usedMemory;
-
       this.data.forEach((item) => {
         this.minMemoryText = Math.min(this.minMemoryText, item.usedMemory);
         this.maxMemoryText = Math.max(this.maxMemoryText, item.usedMemory);
-      });
-
-      this.data = this.data.map((item) => {
-        item.timeStamp = item.timeStamp - baseTime;
-        item.memGap = item.usedMemory - baseMemory;
-        item.usedMemory = (item.usedMemory - this.minMemoryText) / 100;
-        return item;
       });
 
       this.excuteDurationTime = this.data.length;
@@ -129,8 +123,6 @@ export default class LineChart {
 
   drawChart = () => {
     const { ctx, canvasWidth, canvasHeight, chartHeight, chartWidth } = this;
-    const xDistance =
-      this.data[this.data.length - 1].timeStamp / BigInt(this.data.length);
 
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
@@ -190,6 +182,30 @@ export default class LineChart {
 
     ctx.beginPath();
 
+    // 동적으로 움직이는 차트내 한 장면의 노드 갯수를 filter하고
+    // map으로 Circle객체를 생성하고 저장하였습니다.
+    this.snapshotCircle = this.data
+      .filter(
+        (item) =>
+          item.timeStamp > this.xDistance * this.currentPosition &&
+          item.timeStamp <
+            this.xDistance * (this.currentPosition + VIEW_NODE_COUNT),
+      )
+      .map((item) => {
+        const offset = 25;
+        const xPosition =
+          (this.chartWidth / (this.xDistance * VIEW_NODE_COUNT)) *
+            item.timeStamp -
+          (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
+          offset;
+        const yPosition =
+          TOP_PADDING +
+          this.chartHeight -
+          this.heightPixelWeights * (item.usedMemory - this.baseMemory);
+
+        return new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item);
+      });
+
     /* 노드들을 연결하는 선 */
     // FIXME: 노드가 x축과 겹치는 현상 해결 필요
     this.snapshotCircle.forEach((item, index) => {
@@ -210,8 +226,10 @@ export default class LineChart {
 
       ctx.fillStyle = "black";
       ctx.fillText(
-        (xDistance * BigInt(this.currentPosition) + xDistance * BigInt(index)) /
-          BigInt(1000),
+        Math.floor(
+          (this.xDistance * this.currentPosition + this.xDistance * index) /
+            1000,
+        ),
         xPosition,
         chartHeight + TOP_PADDING + 10,
       );

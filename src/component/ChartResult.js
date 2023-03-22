@@ -1,4 +1,5 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 
@@ -50,7 +51,19 @@ const ResultContainer = styled.div`
   }
 `;
 
-export default function ChartResult({ resultData }) {
+export default function ChartResult() {
+  const memoryData = useSelector(
+    (state) => state.heapMemory.heapMemoryData.result,
+  );
+  const duration = memoryData?.at(-1).timeStamp - memoryData?.at(0).timeStamp;
+  let minMemory = Infinity;
+  let maxMemory = 0;
+
+  memoryData?.forEach((element) => {
+    minMemory = Math.min(minMemory, element.usedMemory);
+    maxMemory = Math.max(maxMemory, element.usedMemory);
+  });
+
   return (
     <ResultContainer>
       <ul>
@@ -58,7 +71,7 @@ export default function ChartResult({ resultData }) {
         <li className="info">
           <div className="name">RUN TIME</div>
           <div className="data">
-            {Number(resultData.duration ? resultData.duration : 0)
+            {(memoryData ? duration : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
             us
@@ -67,7 +80,7 @@ export default function ChartResult({ resultData }) {
         <li className="info">
           <div className="name">MAX MEMORY</div>
           <div className="data">
-            {(resultData.maxMemory ? resultData.maxMemory : 0)
+            {(memoryData ? maxMemory : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
             bytes
@@ -76,7 +89,7 @@ export default function ChartResult({ resultData }) {
         <li className="info">
           <div className="name">MIN MEMORY</div>
           <div className="data">
-            {(resultData.minMemory ? resultData.minMemory : 0)
+            {(memoryData ? minMemory : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
             bytes
@@ -86,8 +99,8 @@ export default function ChartResult({ resultData }) {
           <div className="name">USED MEMORY</div>
           <div className="data">
             {(
-              (resultData.maxMemory ? resultData.maxMemory : 0) -
-              (resultData.minMemory ? resultData.minMemory : 0)
+              (memoryData ? maxMemory : 0) -
+              (memoryData ? minMemory : 0)
             )
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
@@ -97,7 +110,7 @@ export default function ChartResult({ resultData }) {
         <li className="info">
           <div className="name">NODE COUNT</div>
           <div className="data">
-            {(resultData.count ? resultData.count : 0)
+            {(memoryData ? memoryData.length : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}
           </div>

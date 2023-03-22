@@ -5,6 +5,8 @@ const color = {
   chartModal: "#DFDFE6",
   chartDot: "#BFBDBD",
   chartDotHover: "#1E90FF",
+  defalutGridLine: "#CCCCCC",
+  defalutChartLine: "#000000",
 };
 
 const style = {

@@ -2,7 +2,7 @@ const PI = Math.PI;
 const mousePositionOffset = 0;
 const radiusSizeOffset = 3;
 
-module.exports = class Circle {
+module.exports = class ChartNode {
   constructor(x, y, radius, ctx, data) {
     this.x = x;
     this.y = y;

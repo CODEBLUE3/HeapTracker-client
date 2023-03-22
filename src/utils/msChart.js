@@ -152,6 +152,8 @@ export default class LineChart {
     ctx.rect(Y_PADDING, 0, chartWidth, canvasHeight);
     ctx.clip();
 
+    ctx.beginPath();
+
     const createCircleInChart = () => {
       const offset = 25;
       const merginNode = 5;
@@ -159,52 +161,27 @@ export default class LineChart {
         .filter(
           (item) =>
             item.timeStamp >
-              xDistance * BigInt(this.currentPosition - merginNode) &&
+              this.xDistance * (this.currentPosition - merginNode) &&
             item.timeStamp <
-              xDistance *
-                BigInt(this.currentPosition + VIEW_NODE_COUNT + merginNode),
+              this.xDistance *
+                (this.currentPosition + VIEW_NODE_COUNT + merginNode),
         )
         .map((item) => {
           const xPosition =
-            (this.chartWidth / (Number(xDistance) * VIEW_NODE_COUNT)) *
-              Number(item.timeStamp) -
+            (this.chartWidth / (this.xDistance * VIEW_NODE_COUNT)) *
+              item.timeStamp -
             (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
             offset;
           const yPosition =
             TOP_PADDING +
             this.chartHeight -
-            this.heightPixelWeights * item.usedMemory;
+            this.heightPixelWeights * (item.usedMemory - this.baseMemory);
 
           return new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item);
         });
     };
+
     createCircleInChart();
-
-    ctx.beginPath();
-
-    // 동적으로 움직이는 차트내 한 장면의 노드 갯수를 filter하고
-    // map으로 Circle객체를 생성하고 저장하였습니다.
-    this.snapshotCircle = this.data
-      .filter(
-        (item) =>
-          item.timeStamp > this.xDistance * this.currentPosition &&
-          item.timeStamp <
-            this.xDistance * (this.currentPosition + VIEW_NODE_COUNT),
-      )
-      .map((item) => {
-        const offset = 25;
-        const xPosition =
-          (this.chartWidth / (this.xDistance * VIEW_NODE_COUNT)) *
-            item.timeStamp -
-          (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
-          offset;
-        const yPosition =
-          TOP_PADDING +
-          this.chartHeight -
-          this.heightPixelWeights * (item.usedMemory - this.baseMemory);
-
-        return new Circle(xPosition, yPosition, NODE_RADIUS, ctx, item);
-      });
 
     /* 노드들을 연결하는 선 */
     // FIXME: 노드가 x축과 겹치는 현상 해결 필요

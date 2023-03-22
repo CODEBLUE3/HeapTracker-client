@@ -6,7 +6,8 @@ const Y_PADDING = 50;
 const TOP_PADDING = 15;
 const VIEW_NODE_COUNT = 13;
 const Y_TICK_COUNT = 7;
-const NODE_RADIUS = 2;
+const NODE_RADIUS = 4;
+const CHART_MARGIN_NODE = 5;
 
 export default class LineChart {
   constructor(id, data, durationTime) {
@@ -39,8 +40,11 @@ export default class LineChart {
 
     this.circle = [];
     this.snapshotCircle = [];
+    this.removeCodeTypeArray = ["Statement", "Declaration", "Expression"];
 
     this.canvas.addEventListener("mousemove", (e) => {
+      if (this.intervalID) return;
+
       const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
       const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
 
@@ -60,7 +64,22 @@ export default class LineChart {
             modal.style.backgroundColor = `${color.chartModal}`;
             modal.style.borderRadius = "10px";
             modal.style.padding = "10px 20px";
-            modal.innerText = `${item.data.codeType}`;
+            modal.style.fontSize = "1rem";
+            modal.innerText = `${item.data.count}th node
+            ${
+              item.data.codeType
+                ? `Type : ` +
+                  this.removeCodeTypeArray
+                    .map((type) => {
+                      if (item.data.codeType.includes(type)) {
+                        return item.data.codeType.replace(type, "");
+                      }
+                    })
+                    .filter((item) => item)
+                : `Code Position : ` + item.data.codePosition
+            }
+            Used Memory : ${item.data.usedMemory}
+            Time : ${Math.floor(Number(item.data.timeStamp)) / 1000} us`;
 
             item.draw(color.chartDotHover);
           } else {
@@ -76,6 +95,11 @@ export default class LineChart {
 
   playback = () => {
     if (this.intervalID < 1) {
+      this.snapshotCircle.forEach((item) => {
+        item.clearModal();
+      });
+      this.snapshotCircle = [];
+
       this.intervalID = setInterval(() => {
         this.updateData();
       }, this.chartDurationTime / this.excuteDurationTime);
@@ -92,13 +116,6 @@ export default class LineChart {
     clearInterval(this.intervalID);
     this.intervalID = 0;
     this.currentPosition = 0;
-  };
-
-  setTime = () => {
-    this.startTime = this.data[0].timeStamp;
-    this.intervalID = setInterval(() => {
-      this.updateData();
-    }, this.chartDurationTime / this.excuteDurationTime);
   };
 
   parseMemoryArray = () => {
@@ -127,21 +144,32 @@ export default class LineChart {
     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
     ctx.beginPath();
+    ctx.strokeStyle = color.defalutChartLine;
     ctx.moveTo(Y_PADDING, TOP_PADDING);
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
+    ctx.stroke();
 
     const yInterval =
       (this.maxMemoryText - this.minMemoryText) / (Y_TICK_COUNT - 1);
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
 
+    ctx.beginPath();
     for (let i = 0; i < Y_TICK_COUNT; i++) {
       const value = Math.floor(i * yInterval + this.minMemoryText);
       const yPoint =
         TOP_PADDING + chartHeight - i * (chartHeight / Y_TICK_COUNT);
-      ctx.fillText(value, Y_PADDING - 3, yPoint);
+      ctx.fillText(value, Y_PADDING - 3, yPoint - TOP_PADDING);
+
+      ctx.strokeStyle = color.defalutGridLine;
+      ctx.moveTo(Y_PADDING, yPoint - TOP_PADDING);
+      ctx.lineTo(Y_PADDING + canvasWidth, yPoint - TOP_PADDING);
+      ctx.stroke();
     }
 
+    ctx.beginPath();
+    ctx.strokeStyle = color.defalutChartLine;
+    ctx.moveTo(Y_PADDING, chartHeight + TOP_PADDING);
     ctx.lineTo(canvasWidth, chartHeight + TOP_PADDING);
     ctx.stroke();
 
@@ -156,15 +184,14 @@ export default class LineChart {
 
     const createCircleInChart = () => {
       const offset = 25;
-      const merginNode = 5;
       this.snapshotCircle = this.data
         .filter(
           (item) =>
             item.timeStamp >
-              this.xDistance * (this.currentPosition - merginNode) &&
+              this.xDistance * (this.currentPosition - CHART_MARGIN_NODE) &&
             item.timeStamp <
               this.xDistance *
-                (this.currentPosition + VIEW_NODE_COUNT + merginNode),
+                (this.currentPosition + VIEW_NODE_COUNT + CHART_MARGIN_NODE),
         )
         .map((item) => {
           const xPosition =
@@ -173,7 +200,6 @@ export default class LineChart {
             (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
             offset;
           const yPosition =
-            TOP_PADDING +
             this.chartHeight -
             this.heightPixelWeights * (item.usedMemory - this.baseMemory);
 
@@ -220,12 +246,11 @@ export default class LineChart {
     if (!this.data.length) {
       return;
     }
-
     this.circle.length = 0;
     this.drawChart();
     this.currentPosition += 1;
 
-    if (this.currentPosition - VIEW_NODE_COUNT / 2 > this.data.length) {
+    if (this.currentPosition + VIEW_NODE_COUNT / 2 > this.data.length) {
       clearInterval(this.intervalID);
       this.intervalID = 0;
       this.currentPosition = 0;

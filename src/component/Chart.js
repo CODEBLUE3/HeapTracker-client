@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 import { useSelector } from "react-redux";
 
-const CHART_DURATION_TIME = 30000;
+const CHART_DURATION_TIME = 10000;
 
 const ChartControlButton = styled.button`
   display: flex;

@@ -179,35 +179,29 @@ export default class LineChart {
 
     ctx.beginPath();
 
-    const createNodeInChart = () => {
-      const offset = 25;
-      this.snapshotNodes = this.data
-        .filter(
-          (item) =>
-            item.timeStamp >
-              this.xDistance * (this.currentPosition - CHART_MARGIN_NODE) &&
-            item.timeStamp <
-              this.xDistance *
-                (this.currentPosition + VIEW_NODE_COUNT + CHART_MARGIN_NODE),
-        )
-        .map((item) => {
-          const xPosition =
-            (this.chartWidth / (this.xDistance * VIEW_NODE_COUNT)) *
-              item.timeStamp -
-            (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
-            offset;
-          const yPosition =
-            this.chartHeight -
-            this.heightPixelWeights * (item.usedMemory - this.baseMemory);
+    const offset = 25;
+    this.snapshotNodes = this.data
+      .filter(
+        (item) =>
+          item.timeStamp >
+            this.xDistance * (this.currentPosition - CHART_MARGIN_NODE) &&
+          item.timeStamp <
+            this.xDistance *
+              (this.currentPosition + VIEW_NODE_COUNT + CHART_MARGIN_NODE),
+      )
+      .map((item) => {
+        const xPosition =
+          (this.chartWidth / (this.xDistance * VIEW_NODE_COUNT)) *
+            item.timeStamp -
+          (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
+          offset;
+        const yPosition =
+          this.chartHeight -
+          this.heightPixelWeights * (item.usedMemory - this.baseMemory);
 
-          return new ChartNode(xPosition, yPosition, NODE_RADIUS, ctx, item);
-        });
-    };
+        return new ChartNode(xPosition, yPosition, NODE_RADIUS, ctx, item);
+      });
 
-    createNodeInChart();
-
-    /* 노드들을 연결하는 선 */
-    // FIXME: 노드가 x축과 겹치는 현상 해결 필요
     this.snapshotNodes.forEach((node, index) => {
       const xPosition = node.x;
       const yPosition = node.y;

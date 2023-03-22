@@ -1,16 +1,25 @@
+import styled from "styled-components";
 import CodeMirror from "@uiw/react-codemirror";
+import { style } from "../styles/styleCode";
 import { javascript } from "@codemirror/lang-javascript";
+
+const CodeContainer = styled.div`
+  flex-direction: column;
+  margin: 20px ${style.defaultComponentMargin};
+  width: 85%;
+  height: 70px;
+`;
 
 export default function CodeExecution({ value, onChange }) {
   return (
-    <>
-      <div>코드 실행문 입력</div>
+    <CodeContainer>
+      <div>함수실행 코드</div>
       <CodeMirror
         value={value}
-        height="100px"
+        height="70px"
         extensions={[javascript({ jsx: false })]}
         onChange={onChange}
       />
-    </>
+    </CodeContainer>
   );
 }

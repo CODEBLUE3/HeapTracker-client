@@ -3,20 +3,31 @@ import CodeInput from "../component/CodeInput";
 import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
 import { useState, useEffect } from "react";
-import { color } from "../styles/styleCode";
+import { color, style } from "../styles/styleCode";
 import { useDispatch } from "react-redux";
 import { setUserCode } from "../features/userCode/userCodeSlice";
 
-const Button = styled.button`
-  display: block;
+const Container = styled.div`
+  flex-direction: column;
+  height: 100%;
+`;
+
+const ExecButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   color: ${color.defaultBoxBackground};
-  font-size: 20px;
-  height: 50px;
-  width: 200px;
+  font-size: 1.3rem;
   background-color: ${color.defaultButton};
-  margin: 10px;
   border: none;
   border-radius: 20px;
+  margin: ${style.defaultComponentMargin};
+  margin-top: 40px;
+  width: 15%;
+`;
+
+const RowContainer = styled.div`
+  display: flex;
 `;
 
 export default function UserEditor() {
@@ -51,11 +62,13 @@ export default function UserEditor() {
   }, [codeResult]);
 
   return (
-    <>
+    <Container>
       <CodeInput value={userInput} onChange={handleUserInput} />
-      <CodeExecution value={userExecution} onChange={handleUserExeution} />
-      <Button onClick={sendCode}>제출하기</Button>
+      <RowContainer>
+        <CodeExecution value={userExecution} onChange={handleUserExeution} />
+        <ExecButton onClick={sendCode}>실행</ExecButton>
+      </RowContainer>
       <CodeResult result={codeResult} />
-    </>
+    </Container>
   );
 }

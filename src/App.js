@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { color } from "./styles/styleCode";
+import { color, style } from "./styles/styleCode";
 
 import UserEditor from "./pages/UserEditor";
 import OutputResult from "./pages/OutputResult";
@@ -10,22 +10,24 @@ const Main = styled.div`
   background-color: ${color.defaultBackground};
   display: flex;
   width: 100%;
+  height: 100%;
   flex-direction: row;
 `;
 
 const LeftContainer = styled.div`
   float: left;
-  width: 48%;
+  width: 50%;
   flex-direction: column;
-  margin: 5px;
+  margin: ${style.defaultComponentMargin};
   padding: 10px;
 `;
 
 const RightContainer = styled.div`
   float: right;
-  width: 48%;
+  width: 50%;
   flex-direction: column;
-  margin: 5px;
+  margin: ${style.defaultComponentMargin};
+  padding: 10px;
 `;
 
 export default function App() {

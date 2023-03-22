@@ -33,11 +33,14 @@ export default function Chart() {
   );
 
   useEffect(() => {
-    if (!memoryData) {
-      return;
-    }
-    setChart(new LineChart("lineChart", memoryData, CHART_DURATION_TIME));
+    if (!memoryData) return;
+
+    chart.setData(memoryData, CHART_DURATION_TIME);
   }, [memoryData]);
+
+  useEffect(() => {
+    setChart(new LineChart("lineChart"));
+  }, []);
 
   function handleChartPlay() {
     if (chart) {

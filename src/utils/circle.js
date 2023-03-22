@@ -1,4 +1,6 @@
 const PI = Math.PI;
+const mousePositionOffset = 0;
+const radiusSizeOffset = 3;
 
 module.exports = class Circle {
   constructor(x, y, radius, ctx, data) {
@@ -27,11 +29,18 @@ module.exports = class Circle {
       return position;
     };
 
+    this.clearModal = () => {
+      if (this.modal) {
+        document.body.removeChild(this.modal);
+        this.modal = null;
+      }
+    };
+
     this.isMouseOver = (x, y) => {
       const position = this.getPosition();
-      const radius = this.radius;
-      const centerX = position.x + radius;
-      const centerY = position.y + radius;
+      const radius = this.radius + radiusSizeOffset;
+      const centerX = position.x - mousePositionOffset;
+      const centerY = position.y - mousePositionOffset;
       const distance = Math.sqrt(
         Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2),
       );

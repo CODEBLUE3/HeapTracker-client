@@ -10,7 +10,7 @@ const NODE_RADIUS = 4;
 const CHART_MARGIN_NODE = 5;
 
 export default class LineChart {
-  constructor(id, callback) {
+  constructor(id, modalCallback) {
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext("2d");
 
@@ -30,9 +30,8 @@ export default class LineChart {
     this.heightPixelWeights = 0;
 
     this.snapshotNodes = [];
-    this.removeCodeTypeArray = ["Statement", "Declaration", "Expression"];
 
-    this.checkNodeHover = callback;
+    this.checkNodeHover = modalCallback;
 
     this.canvas.addEventListener("mousemove", (e) => {
       if (this.intervalID) return;
@@ -46,6 +45,7 @@ export default class LineChart {
         cursorPositionY < this.chartHeight + TOP_PADDING
       ) {
         this.checkNodeHover(false);
+
         this.snapshotNodes.forEach((node) => {
           if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
             const chartModalData = {

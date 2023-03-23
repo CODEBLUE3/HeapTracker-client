@@ -46,3 +46,5 @@ web_modules/
 .rts2_cache_umd/
 
 forge.config.js
+
+out/

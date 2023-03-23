@@ -98,10 +98,7 @@ export default function ChartResult() {
         <li className="info">
           <div className="name">USED MEMORY</div>
           <div className="data">
-            {(
-              (memoryData ? maxMemory : 0) -
-              (memoryData ? minMemory : 0)
-            )
+            {((memoryData ? maxMemory : 0) - (memoryData ? minMemory : 0))
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
             bytes

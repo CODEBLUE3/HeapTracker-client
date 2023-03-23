@@ -3,9 +3,10 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   codeCount: 0,
   codeType: "",
+  codePosition: "",
   usedMemory: "",
   timeStamp: "",
-  visibility: false,
+  visibility: true,
 };
 
 export const chartModalSlice = createSlice({

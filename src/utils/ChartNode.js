@@ -9,7 +9,6 @@ module.exports = class ChartNode {
     this.radius = radius;
     this.ctx = ctx;
     this.data = data;
-    this.modal = null;
 
     this.draw = (color) => {
       this.ctx.beginPath();
@@ -45,20 +44,7 @@ module.exports = class ChartNode {
         Math.pow(x - centerX, 2) + Math.pow(y - centerY, 2),
       );
 
-      if (Math.round(distance) <= radius) {
-        if (!this.modal) {
-          this.modal = document.createElement("div");
-          this.modal.id = `chartModal-${this.data.timestamp}`;
-          document.body.appendChild(this.modal);
-        }
-
-        return true;
-      } else {
-        if (this.modal) {
-          document.body.removeChild(this.modal);
-          this.modal = null;
-        }
-      }
+      if (Math.round(distance) <= radius) return true;
 
       return false;
     };

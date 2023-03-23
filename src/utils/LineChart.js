@@ -10,7 +10,7 @@ const NODE_RADIUS = 4;
 const CHART_MARGIN_NODE = 5;
 
 export default class LineChart {
-  constructor(id) {
+  constructor(id, callback) {
     this.canvas = document.getElementById(id);
     this.ctx = this.canvas.getContext("2d");
 
@@ -32,6 +32,8 @@ export default class LineChart {
     this.snapshotNodes = [];
     this.removeCodeTypeArray = ["Statement", "Declaration", "Expression"];
 
+    this.checkNodeHover = callback;
+
     this.canvas.addEventListener("mousemove", (e) => {
       if (this.intervalID) return;
 
@@ -43,34 +45,23 @@ export default class LineChart {
         cursorPositionX > Y_PADDING &&
         cursorPositionY < this.chartHeight + TOP_PADDING
       ) {
+        this.checkNodeHover(false);
         this.snapshotNodes.forEach((node) => {
           if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
-            const modal = document.getElementById(`${node.modal.id}`);
+            const chartModalData = {
+              codeCount: node.data.count,
+              codeType: node.data.codeType,
+              codePosition: node.data.codePosition,
+              usedMemory: node.data.usedMemory,
+              timeStamp: node.data.timeStamp,
+            };
+            const chartModalStyles = {
+              visibility: true,
+              top: e.pageY,
+              left: e.pageX,
+            };
 
-            modal.style.visibility = "visible";
-            modal.style.position = "absolute";
-            modal.style.left = e.pageX + "px";
-            modal.style.top = e.pageY + "px";
-            modal.style.backgroundColor = `${color.chartModal}`;
-            modal.style.borderRadius = "10px";
-            modal.style.padding = "10px 20px";
-            modal.style.fontSize = "1rem";
-            modal.innerText = `${node.data.count}th node
-            ${
-              node.data.codeType
-                ? `Type : ` +
-                  this.removeCodeTypeArray
-                    .map((type) => {
-                      if (node.data.codeType.includes(type)) {
-                        return node.data.codeType.replace(type, "");
-                      }
-                    })
-                    .filter((node) => node)
-                : `Code Position : ` + node.data.codePosition
-            }
-            Used Memory : ${node.data.usedMemory}
-            Time : ${Math.floor(Number(node.data.timeStamp)) / 1000} us`;
-
+            this.checkNodeHover(true, chartModalData, chartModalStyles);
             node.draw(color.chartDotHover);
           } else {
             node.draw(color.chartDot);

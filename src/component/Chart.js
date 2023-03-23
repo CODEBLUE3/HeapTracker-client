@@ -2,7 +2,12 @@ import React, { useEffect, useState } from "react";
 import LineChart from "../utils/LineChart";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  setChartModalData,
+  setChartModalStyle,
+  hiddenChartModal,
+} from "../features/chartModal/chartModalSlice";
 
 const CHART_DURATION_TIME = 10000;
 
@@ -28,19 +33,22 @@ const Controller = styled.div`
 
 export default function Chart() {
   const [chart, setChart] = useState();
+  const dispatch = useDispatch();
   const memoryData = useSelector(
     (state) => state.heapMemory.heapMemoryData.result,
   );
 
-  useEffect(() => {
-    if (!memoryData) return;
+  function checkNodeHover(isHover, ...node) {
+    const [data, style] = node;
 
-    chart.setData(memoryData, CHART_DURATION_TIME);
-  }, [memoryData]);
+    if (isHover) {
+      dispatch(setChartModalData(data));
+      dispatch(setChartModalStyle(style));
+      return;
+    }
 
-  useEffect(() => {
-    setChart(new LineChart("lineChart"));
-  }, []);
+    dispatch(hiddenChartModal(false));
+  }
 
   function handleChartPlay() {
     if (chart) {
@@ -59,6 +67,16 @@ export default function Chart() {
       chart.stop();
     }
   }
+
+  useEffect(() => {
+    if (!memoryData) return;
+
+    chart.setData(memoryData, CHART_DURATION_TIME);
+  }, [memoryData]);
+
+  useEffect(() => {
+    setChart(new LineChart("lineChart", checkNodeHover));
+  }, []);
 
   return (
     <>

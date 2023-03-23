@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-
+import ChartModal from "../component/ChartModal";
 import Chart from "../component/Chart";
 import ChartResult from "../component/ChartResult";
+
 import { setHeapMemoryData } from "../features/heapMemory/heapMemorySlice";
 
 export default function OutputResult() {
@@ -27,6 +28,7 @@ export default function OutputResult() {
   return (
     <>
       <Chart />
+      <ChartModal />
       <ChartResult />
     </>
   );

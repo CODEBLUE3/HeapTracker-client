@@ -65,7 +65,7 @@ export default function ChartResult() {
   });
 
   return (
-    <ResultContainer>
+    <ResultContainer data-testid="chartResult">
       <ul>
         <li className="title">RESULT</li>
         <li className="info">

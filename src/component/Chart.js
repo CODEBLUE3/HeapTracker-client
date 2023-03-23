@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import LineChart from "../utils/msChart";
+import LineChart from "../utils/LineChart";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 import { useSelector } from "react-redux";

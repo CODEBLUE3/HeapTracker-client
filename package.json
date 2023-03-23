@@ -55,9 +55,11 @@
   },
   "devDependencies": {
     "@electron-forge/cli": "^6.0.5",
+    "@playwright/test": "^1.32.0",
     "eslint": "^8.36.0",
     "eslint-config-prettier": "^8.7.0",
     "husky": "^8.0.3",
+    "playwright": "^1.32.0",
     "prettier": "^2.8.4",
     "redux-logger": "^3.0.6"
   }

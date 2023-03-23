@@ -46,3 +46,6 @@ web_modules/
 .rts2_cache_umd/
 
 forge.config.js
+/test-results/
+/playwright-report/
+/playwright/.cache/

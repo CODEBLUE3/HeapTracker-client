@@ -1,4 +1,3 @@
-//import renderer from "react-test-renderer";
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";

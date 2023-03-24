@@ -5,6 +5,7 @@ const config = {
   moduleNameMapper: {
     "^@/(.*)$": "<rootDir>/$1",
   },
+  setupFiles: ["jest-canvas-mock"],
   setupFilesAfterEnv: ["<rootDir>/tests/unit/setupTests.js"],
   testMatch: ["<rootDir>/tests/unit/**/*.test.js"],
   testPathIgnorePatterns: ["/node_modules/", "/tests/E2E/"],

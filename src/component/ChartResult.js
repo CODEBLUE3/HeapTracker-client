@@ -106,7 +106,7 @@ export default function ChartResult() {
         </li>
         <li className="info">
           <div className="name">NODE COUNT</div>
-          <div className="data">
+          <div className="data" data-testid="memoryCount">
             {(memoryData ? memoryData.length : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}

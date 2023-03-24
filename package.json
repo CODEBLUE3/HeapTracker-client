@@ -23,11 +23,7 @@
   "scripts": {
     "start": "concurrently \"react-scripts start\" \"npm run electron\" ",
     "build": "react-scripts build",
-<<<<<<< HEAD
     "test": "jest",
-=======
-    "test": "jest --env=jsdom",
->>>>>>> b98381a (test:line-chart-unit-test+jest-env-jsdom)
     "eject": "react-scripts eject",
     "electron": "wait-on http://localhost:3000 && electron .",
     "package": "electron-forge package",

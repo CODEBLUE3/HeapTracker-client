@@ -69,13 +69,13 @@ export default function Chart() {
   }
 
   useEffect(() => {
-    if (!memoryData) return;
-
-    chart.setData(memoryData, CHART_DURATION_TIME);
+    if (chart) {
+      chart.setData(memoryData, CHART_DURATION_TIME);
+    }
   }, [memoryData]);
 
   useEffect(() => {
-    setChart(new LineChart("lineChart", checkNodeHover));
+    setChart(new LineChart("lineChart", checkNodeHover).drawChart());
   }, []);
 
   return (

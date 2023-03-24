@@ -4,9 +4,10 @@ const radiusSizeOffset = 3;
 
 module.exports = class ChartNode {
   constructor(x, y, radius, ctx, data) {
+    const dpr = window.devicePixelRatio;
     this.x = x;
     this.y = y;
-    this.radius = radius;
+    this.radius = radius * dpr;
     this.ctx = ctx;
     this.data = data;
 

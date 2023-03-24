@@ -2,9 +2,9 @@
 const { _electron: electron } = require("playwright");
 const { test, expect } = require("@playwright/test");
 
-let page;
-
 test.describe("e2e test", () => {
+  let page;
+
   test("launch app", async () => {
     const electronApp = await electron.launch({
       args: [__dirname + "/../src/electron/main.js"],

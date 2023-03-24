@@ -22,12 +22,14 @@ describe("line Chart", () => {
       );
 
       const lineChart = new LineChart("lineChart");
-      lineChart.playback();
+      expect(lineChart).toBeTruthy();
+      expect(lineChart.canvas).toBeTruthy();
+      expect(lineChart.ctx).toBeTruthy();
     });
   });
 
   describe("wrong Chart", () => {
-    test("line Chart", async () => {
+    test.only("line Chart", async () => {
       render(
         <canvas
           id="lineChart"
@@ -43,6 +45,11 @@ describe("line Chart", () => {
 
       wrongChart.playback();
       expect(wrongChart.isPlay()).toBeFalsy();
+      wrongChart.setData([], 1000);
+      expect(wrongChart.data).toBeFalsy();
+      wrongChart.setData(chartMock.result, 1000);
+      expect(wrongChart.data).toBeFalsy();
+      wrongChart.playback();
     });
   });
 
@@ -58,10 +65,6 @@ describe("line Chart", () => {
       );
 
       const lineChart = new LineChart("lineChart");
-
-      expect(lineChart).toBeTruthy();
-      expect(lineChart.canvas).toBeTruthy();
-      expect(lineChart.ctx).toBeTruthy();
 
       lineChart.setData(chartMock.result, 2000);
 

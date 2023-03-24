@@ -2,7 +2,7 @@ import ChartNode from "./ChartNode";
 import { color } from "../styles/styleCode";
 
 const X_PADDING = 25;
-const Y_PADDING = 50;
+const Y_PADDING = 70;
 const TOP_PADDING = 15;
 const VIEW_NODE_COUNT = 13;
 const Y_TICK_COUNT = 7;
@@ -12,12 +12,24 @@ const CHART_MARGIN_NODE = 5;
 export default class LineChart {
   constructor(id, modalCallback) {
     this.canvas = document.getElementById(id);
-    this.ctx = this.canvas.getContext("2d");
 
+    if (!this.canvas) return null;
+
+    this.data = [];
     this.canvasWidth = this.canvas.clientWidth;
     this.canvasHeight = this.canvas.clientHeight;
-    this.chartWidth = this.canvasWidth - Y_PADDING;
-    this.chartHeight = this.canvasHeight - X_PADDING - TOP_PADDING;
+    this.canvas.style.width = `${this.canvasWidth}px`;
+    this.canvas.style.height = `${this.canvasHeight}px`;
+    const dpr = window.devicePixelRatio;
+
+    this.canvas.width = this.canvasWidth * dpr;
+    this.canvas.height = this.canvasHeight * dpr;
+    this.ctx = this.canvas.getContext("2d");
+    this.ctx.scale(dpr / 2, dpr / 2);
+    this.ctx.font = "1.2rem Arial";
+
+    this.chartWidth = this.canvas.width;
+    this.chartHeight = this.canvas.height - X_PADDING - TOP_PADDING;
 
     this.excuteDurationTime = 0;
     this.intervalID = 0;
@@ -30,7 +42,6 @@ export default class LineChart {
     this.heightPixelWeights = 0;
 
     this.snapshotNodes = [];
-
     this.checkNodeHover = modalCallback;
 
     this.canvas.addEventListener("mousemove", (e) => {
@@ -74,6 +85,8 @@ export default class LineChart {
   }
 
   setData = (data, durationTime) => {
+    if (!this.canvas) return;
+
     this.data = [...data];
 
     if (!this.data.length) return;
@@ -124,9 +137,9 @@ export default class LineChart {
   };
 
   drawChart = () => {
-    const { ctx, canvasWidth, canvasHeight, chartHeight, chartWidth } = this;
+    const { ctx, canvas, chartHeight, chartWidth } = this;
 
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.beginPath();
     ctx.strokeStyle = color.defalutChartLine;
@@ -135,34 +148,34 @@ export default class LineChart {
     ctx.stroke();
 
     const yInterval =
-      (this.maxMemoryText - this.minMemoryText) / (Y_TICK_COUNT - 1);
+      (this.maxMemoryValue - this.minMemoryValue) / Y_TICK_COUNT;
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
 
     ctx.beginPath();
     for (let i = 0; i < Y_TICK_COUNT; i++) {
-      const value = Math.floor(i * yInterval + this.minMemoryText);
+      const value = Math.floor(i * yInterval);
       const yPoint =
         TOP_PADDING + chartHeight - i * (chartHeight / Y_TICK_COUNT);
-      ctx.fillText(value, Y_PADDING - 3, yPoint - TOP_PADDING);
+      ctx.fillText(value ? value : 0, Y_PADDING - 3, yPoint - TOP_PADDING);
 
       ctx.strokeStyle = color.defalutGridLine;
       ctx.moveTo(Y_PADDING, yPoint - TOP_PADDING);
-      ctx.lineTo(Y_PADDING + canvasWidth, yPoint - TOP_PADDING);
+      ctx.lineTo(Y_PADDING + canvas.width, yPoint - TOP_PADDING);
       ctx.stroke();
     }
 
     ctx.beginPath();
     ctx.strokeStyle = color.defalutChartLine;
     ctx.moveTo(Y_PADDING, chartHeight + TOP_PADDING);
-    ctx.lineTo(canvasWidth, chartHeight + TOP_PADDING);
+    ctx.lineTo(canvas.width, chartHeight + TOP_PADDING);
     ctx.stroke();
 
     /* Y축 좌측으로 노드가
     그려지지 않게 함 */
     ctx.save();
     ctx.beginPath();
-    ctx.rect(Y_PADDING, 0, chartWidth, canvasHeight);
+    ctx.rect(Y_PADDING, 0, chartWidth, canvas.height);
     ctx.clip();
 
     ctx.beginPath();
@@ -185,6 +198,7 @@ export default class LineChart {
           offset;
         const yPosition =
           this.chartHeight -
+          TOP_PADDING -
           this.heightPixelWeights * (item.usedMemory - this.baseMemory);
 
         return new ChartNode(xPosition, yPosition, NODE_RADIUS, ctx, item);
@@ -206,13 +220,13 @@ export default class LineChart {
     for (let index = 0; index < VIEW_NODE_COUNT; index += 1) {
       const xPosition = (this.chartWidth / VIEW_NODE_COUNT) * (index + 1);
 
+      const x_guideValue = Math.floor(
+        (this.xDistance * this.currentPosition + this.xDistance * index) / 1000,
+      );
       ctx.fillStyle = "black";
       ctx.fillText(
-        Math.floor(
-          (this.xDistance * this.currentPosition + this.xDistance * index) /
-            1000,
-        ),
-        xPosition,
+        x_guideValue ? x_guideValue : 0,
+        xPosition + 40,
         chartHeight + TOP_PADDING + 10,
       );
     }
@@ -232,5 +246,12 @@ export default class LineChart {
       this.intervalID = 0;
       this.currentPosition = 0;
     }
+  };
+
+  isPlay = () => {
+    if (this.intervalID) {
+      return true;
+    }
+    return false;
   };
 }

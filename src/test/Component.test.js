@@ -10,7 +10,7 @@ test("CodeResult success", () => {
     <CodeResult result={{ isError: false, result: 10 }} />,
   );
 
-  const codeResult = getByTestId("codeResult");
+  const codeResult = getByTestId("code-result");
   expect(codeResult).toHaveTextContent("success");
   expect(codeResult).toHaveTextContent(10);
 });
@@ -20,7 +20,7 @@ test("CodeResult failed", () => {
     <CodeResult result={{ isError: true, result: "try error test" }} />,
   );
 
-  const codeResult = getByTestId("codeResult");
+  const codeResult = getByTestId("code-result");
   expect(codeResult).toHaveTextContent("code exec failed");
   expect(codeResult).toHaveTextContent("try error test");
 });

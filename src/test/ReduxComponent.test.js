@@ -16,7 +16,7 @@ test.only("ChartResult success", () => {
     </Provider>,
   );
 
-  expect(getByTestId("memoryCount")).toHaveTextContent(0);
-  fireEvent.click(getByTestId("dispatchButton"));
-  expect(getByTestId("memoryCount")).toHaveTextContent(30);
+  expect(getByTestId("memory-count")).toHaveTextContent(0);
+  fireEvent.click(getByTestId("dispatch-button"));
+  expect(getByTestId("memory-count")).toHaveTextContent(30);
 });

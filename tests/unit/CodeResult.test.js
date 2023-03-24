@@ -8,6 +8,13 @@ import CodeResult from "../../src/component/CodeResult";
 
 afterEach(cleanup);
 
+test("CodeResult init", () => {
+  const { getByTestId } = render(<CodeResult result="" />);
+
+  const codeResult = getByTestId("code-result");
+  expect(codeResult).toHaveTextContent("ready");
+});
+
 test("CodeResult success", () => {
   const { getByTestId } = render(
     <CodeResult result={{ isError: false, result: 10 }} />,

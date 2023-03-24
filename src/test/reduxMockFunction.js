@@ -7,13 +7,12 @@ export default function ReduxMockFunction() {
   const dispatch = useDispatch();
 
   function setMemoryArray() {
-    console.log("setMemoryArray");
     dispatch(setHeapMemoryData(chartMock));
   }
 
   return (
     <>
-      <button data-testid="dispatchButton" onClick={setMemoryArray}></button>
+      <button data-testid="dispatch-button" onClick={setMemoryArray}></button>
     </>
   );
 }

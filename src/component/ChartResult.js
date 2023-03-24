@@ -65,7 +65,7 @@ export default function ChartResult() {
   });
 
   return (
-    <ResultContainer data-testid="chartResult">
+    <ResultContainer data-testid="chart-result">
       <ul>
         <li className="title">RESULT</li>
         <li className="info">
@@ -106,7 +106,7 @@ export default function ChartResult() {
         </li>
         <li className="info">
           <div className="name">NODE COUNT</div>
-          <div className="data" data-testid="memoryCount">
+          <div className="data" data-testid="memory-count">
             {(memoryData ? memoryData.length : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}

@@ -14,7 +14,7 @@ const Terminal = styled.div`
 export default function CodeResult({ result }) {
   return (
     <Terminal
-      data-testid="codeResult"
+      data-testid="code-result"
       style={{ color: result.isError ? "red" : "white" }}
     >
       {result.result

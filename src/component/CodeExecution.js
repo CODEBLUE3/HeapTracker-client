@@ -19,6 +19,7 @@ export default function CodeExecution({ value, onChange }) {
         height="70px"
         extensions={[javascript({ jsx: false })]}
         onChange={onChange}
+        data-testid="codemirror"
       />
     </CodeContainer>
   );

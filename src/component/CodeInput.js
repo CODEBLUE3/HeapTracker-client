@@ -14,6 +14,7 @@ export default function CodeInput({ value, onChange }) {
     <CodeContainer>
       <div>함수 코드</div>
       <CodeMirror
+        data-testid="codemirror-input"
         value={value}
         height="500px"
         minHeight="400px"

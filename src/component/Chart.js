@@ -82,11 +82,21 @@ export default function Chart() {
     <>
       <canvas id="lineChart" width="550px" height="400px"></canvas>
       <Controller>
-        <ChartControlButton onClick={handleChartPlay}>시작</ChartControlButton>
-        <ChartControlButton onClick={handleChartPause}>
+        <ChartControlButton
+          onClick={handleChartPlay}
+          data-testid="start-button"
+        >
+          시작
+        </ChartControlButton>
+        <ChartControlButton
+          onClick={handleChartPause}
+          data-testid="pause-button"
+        >
           일시정지
         </ChartControlButton>
-        <ChartControlButton onClick={handleChartStop}>종료</ChartControlButton>
+        <ChartControlButton onClick={handleChartStop} data-testid="stop-button">
+          종료
+        </ChartControlButton>
       </Controller>
     </>
   );

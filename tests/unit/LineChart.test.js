@@ -1,8 +1,8 @@
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
 import { expect, test } from "@jest/globals";
-import { chartMock } from "../mock/chartMock.js";
-import LineChart from "../utils/LineChart.js";
+import { chartMock } from "../mock/ChartMockData.js";
+import LineChart from "../../src/utils/LineChart.js";
 
 afterEach(cleanup);
 
@@ -22,6 +22,7 @@ describe("line Chart", () => {
       );
 
       const lineChart = new LineChart("lineChart");
+
       expect(lineChart).toBeTruthy();
       expect(lineChart.canvas).toBeTruthy();
       expect(lineChart.ctx).toBeTruthy();
@@ -29,7 +30,7 @@ describe("line Chart", () => {
   });
 
   describe("wrong Chart", () => {
-    test.only("line Chart", async () => {
+    test("line Chart", async () => {
       render(
         <canvas
           id="lineChart"
@@ -40,6 +41,7 @@ describe("line Chart", () => {
       );
 
       const wrongChart = new LineChart("wrong-ID");
+
       expect(wrongChart.canvas).toBeFalsy();
       expect(wrongChart.ctx).toBeFalsy();
 

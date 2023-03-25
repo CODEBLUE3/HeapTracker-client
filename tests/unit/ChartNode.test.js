@@ -1,4 +1,4 @@
-import ChartNode from "../utils/ChartNode";
+import ChartNode from "../../src/utils/ChartNode";
 
 describe("ChartNode util test", () => {
   let chartNode;

@@ -1,7 +1,10 @@
+/**
+ * @jest-environment jsdom
+ */
 import React from "react";
 import { cleanup, render } from "@testing-library/react";
 import "@testing-library/jest-dom/extend-expect";
-import CodeResult from "../component/CodeResult";
+import CodeResult from "../../src/component/CodeResult";
 
 afterEach(cleanup);
 

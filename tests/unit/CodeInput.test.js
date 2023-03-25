@@ -1,6 +1,6 @@
-import "@testing-library/jest-dom";
-import { render, screen, fireEvent } from "@testing-library/react";
-import CodeInput from "../component/CodeInput";
+import "@testing-library/jest-dom/extend-expect";
+import { render, screen } from "@testing-library/react";
+import CodeInput from "../../src/component/CodeInput";
 
 describe("ChartInput Component Test", () => {
   test("value와 onChange 이벤트 없이 랜더링됩니다", () => {

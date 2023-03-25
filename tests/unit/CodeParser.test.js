@@ -1,5 +1,5 @@
 import { expect, test } from "@jest/globals";
-const CodeParser = require("../utils/CodeParser.js");
+import CodeParser from "../../src/utils/codeParser";
 
 test("Code parser", () => {
   const usercode = `function add(a, b) {

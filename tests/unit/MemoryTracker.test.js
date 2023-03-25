@@ -1,6 +1,6 @@
 import { expect, test } from "@jest/globals";
-const MemoryTracker = require("../utils/MemoryTracker.js");
-const { getMemoryTrackingCode } = require("../utils/CodeParser");
+const MemoryTracker = require("../../src/utils/MemoryTracker.js");
+const { getMemoryTrackingCode } = require("../../src/utils/CodeParser");
 
 test("MemoryTracker execute", () => {
   const usercode = `function add(a, b) {

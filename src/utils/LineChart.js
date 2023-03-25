@@ -102,9 +102,6 @@ export default class LineChart {
 
   playback = () => {
     if (this.intervalID < 1) {
-      this.snapshotNodes.forEach((node) => {
-        node.clearModal();
-      });
       this.snapshotNodes = [];
 
       this.intervalID = setInterval(() => {

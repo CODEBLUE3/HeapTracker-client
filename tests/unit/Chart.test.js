@@ -1,9 +1,9 @@
 import React from "react";
-import Chart from "../component/Chart";
+import Chart from "../../src/component/Chart";
 import { fireEvent, render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import { Provider } from "react-redux";
-import { store } from "../app/store";
+import { store } from "../../src/app/store";
 
 describe("Chart Component 테스트", () => {
   test("시작, 일시정지, 종료 버튼이 있는가?", () => {

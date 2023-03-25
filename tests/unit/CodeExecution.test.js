@@ -1,7 +1,7 @@
 import React from "react";
 import "@testing-library/jest-dom";
 import { render, screen } from "@testing-library/react";
-import CodeExecution from "../component/CodeExecution";
+import CodeExecution from "../../src/component/CodeExecution";
 
 describe("CodeExecution Component Test", () => {
   test("value와 onChange 이벤트 없이 렌더링됩니다", () => {

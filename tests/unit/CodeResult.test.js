@@ -12,6 +12,7 @@ test("CodeResult init", () => {
   const { getByTestId } = render(<CodeResult result="" />);
 
   const codeResult = getByTestId("code-result");
+
   expect(codeResult).toHaveTextContent("ready");
 });
 
@@ -21,6 +22,7 @@ test("CodeResult success", () => {
   );
 
   const codeResult = getByTestId("code-result");
+
   expect(codeResult).toHaveTextContent("success");
   expect(codeResult).toHaveTextContent(10);
 });
@@ -31,6 +33,7 @@ test("CodeResult failed", () => {
   );
 
   const codeResult = getByTestId("code-result");
+
   expect(codeResult).toHaveTextContent("code exec failed");
   expect(codeResult).toHaveTextContent("try error test");
 });

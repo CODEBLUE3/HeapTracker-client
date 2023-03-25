@@ -3,6 +3,14 @@ import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { color, style } from "../styles/styleCode";
 
+const POSITION_UNIT = "px";
+const REMOVE_CODE_TYPE_ARRAY = [
+  "statement",
+  "Declaration",
+  "Expression",
+  "Statement",
+];
+
 const Container = styled.div`
   visibility: ${(props) =>
     props.visibility === "true" ? "visible" : "hidden"};
@@ -15,14 +23,6 @@ const Container = styled.div`
   border-radius: ${style.borderRadius};
   font-size: 1rem;
 `;
-
-const POSITION_UNIT = "px";
-const REMOVE_CODE_TYPE_ARRAY = [
-  "statement",
-  "Declaration",
-  "Expression",
-  "Statement",
-];
 
 export default function ChartModal() {
   const { codeCount, codeType, codePosition, usedMemory, timeStamp } =

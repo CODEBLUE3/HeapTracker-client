@@ -28,13 +28,6 @@ module.exports = class ChartNode {
       return position;
     };
 
-    this.clearModal = () => {
-      if (this.modal) {
-        document.body.removeChild(this.modal);
-        this.modal = null;
-      }
-    };
-
     this.isMouseOver = (x, y) => {
       const position = this.getPosition();
       const radius = this.radius + radiusSizeOffset;

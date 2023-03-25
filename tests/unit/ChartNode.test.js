@@ -40,21 +40,6 @@ describe("ChartNode util test", () => {
     });
   });
 
-  describe("clearModal", () => {
-    test("띄운 Modal창 초기화", () => {
-      const modal = document.createElement("div");
-
-      modal.classList.add("modal");
-      document.body.appendChild(modal);
-      chartNode.modal = modal;
-
-      chartNode.clearModal();
-
-      expect(document.body.contains(modal)).toBe(false);
-      expect(chartNode.modal).toBe(null);
-    });
-  });
-
   describe("isMouseOver", () => {
     test("마우스 좌표가 설정한 범위 내에 있으면 true를 반환합니다.", () => {
       const x = 50;

@@ -233,6 +233,7 @@ export default class LineChart {
 
     ctx.stroke();
     ctx.restore();
+    return this;
   };
 
   updateData = () => {

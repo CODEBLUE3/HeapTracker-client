@@ -43,6 +43,7 @@ export default function ChartModal() {
       visibility={String(visibility)}
       top={top + POSITION_UNIT}
       left={left + POSITION_UNIT}
+      data-testid="chartModal"
     >
       <div className="codeCount">{codeCount && codeCount}th node</div>
       <div className="codeType">

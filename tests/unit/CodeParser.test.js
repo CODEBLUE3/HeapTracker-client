@@ -12,10 +12,10 @@ describe("CodeParser util test", () => {
   });
 
   test("CodeParser getPositionCodeInfo test", () => {
-    expect(CodeParser.getPositionCodeInfo(usercode, 31)).toBeTruthy();
+    expect(CodeParser.getPositionCodeInfo(usercode, 1)).toBeTruthy();
   });
 
   test("CodeParser getPositionCodeInfo error test", () => {
-    expect(CodeParser.getPositionCodeInfo(usercode, 23)).toBeNull();
+    expect(CodeParser.getPositionCodeInfo(usercode, 100)).toBeNull();
   });
 });

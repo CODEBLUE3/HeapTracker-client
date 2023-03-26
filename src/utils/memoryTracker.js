@@ -1,4 +1,5 @@
 const vm = require("vm");
+
 module.exports = function MemoryTracker() {
   this.storage = [];
   this.count = 0;

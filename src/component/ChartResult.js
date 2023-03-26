@@ -70,7 +70,7 @@ export default function ChartResult() {
         <li className="title">RESULT</li>
         <li className="info">
           <div className="name">RUN TIME</div>
-          <div className="data">
+          <div className="data" data-testid="memory-duration">
             {(memoryData ? duration : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
@@ -79,7 +79,7 @@ export default function ChartResult() {
         </li>
         <li className="info">
           <div className="name">MAX MEMORY</div>
-          <div className="data">
+          <div className="data" data-testid="memory-max">
             {(memoryData ? maxMemory : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
@@ -88,7 +88,7 @@ export default function ChartResult() {
         </li>
         <li className="info">
           <div className="name">MIN MEMORY</div>
-          <div className="data">
+          <div className="data" data-testid="memory-min">
             {(memoryData ? minMemory : 0)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
@@ -97,7 +97,7 @@ export default function ChartResult() {
         </li>
         <li className="info">
           <div className="name">USED MEMORY</div>
-          <div className="data">
+          <div className="data" data-testid="memory-used">
             {((memoryData ? maxMemory : 0) - (memoryData ? minMemory : 0))
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}

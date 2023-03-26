@@ -66,7 +66,9 @@ export default function UserEditor() {
       <CodeInput value={userInput} onChange={handleUserInput} />
       <RowContainer>
         <CodeExecution value={userExecution} onChange={handleUserExeution} />
-        <ExecButton onClick={sendCode}>실행</ExecButton>
+        <ExecButton data-testid="execute-button" onClick={sendCode}>
+          실행
+        </ExecButton>
       </RowContainer>
       <CodeResult result={codeResult} />
     </Container>

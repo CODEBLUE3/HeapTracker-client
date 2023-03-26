@@ -6,7 +6,7 @@ let page;
 
 test("launch app", async () => {
   const electronApp = await electron.launch({
-    args: [__dirname + "/../src/electron/main.js"],
+    args: [__dirname + "/../../src/electron/main.js"],
   });
 
   page = await electronApp.firstWindow();

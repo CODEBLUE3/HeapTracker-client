@@ -53,6 +53,14 @@ module.exports = class modifyCode {
             );
           }
           break;
+        case "IfStatement":
+          if (node.consequent) {
+            this.parseNodeObject(node.consequent);
+          }
+          if (node.alternate) {
+            this.parseNodeObject(node.alternate);
+          }
+          break;
       }
     };
 

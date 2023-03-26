@@ -16,7 +16,6 @@ test.describe("e2e test", () => {
 
     await page.locator("execute-button", { hasText: "실행" });
     await page.locator("code-result", { hasText: "ready" });
-    await page.locator("code-result", { hasText: "ready" });
 
     await page.locator("start-button", { hasText: "시작" });
     await page.locator("pause-button", { hasText: "일시정지" });
@@ -48,12 +47,16 @@ test.describe("e2e test", () => {
 
     const duration = await page.getByTestId("memory-duration").textContent();
     expect(Number(duration?.replace(/[^0-9]/g, ""))).toBeGreaterThan(1);
+
     const max = await page.getByTestId("memory-duration").textContent();
     expect(Number(max?.replace(/[^0-9]/g, ""))).toBeGreaterThan(1);
+
     const min = await page.getByTestId("memory-duration").textContent();
     expect(Number(min?.replace(/[^0-9]/g, ""))).toBeGreaterThan(1);
+
     const used = await page.getByTestId("memory-duration").textContent();
     expect(Number(used?.replace(/[^0-9]/g, ""))).toBeGreaterThan(1);
+
     const count = await page.getByTestId("memory-duration").textContent();
     expect(Number(count?.replace(/[^0-9]/g, ""))).toBeGreaterThan(1);
 

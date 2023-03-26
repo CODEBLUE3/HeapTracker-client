@@ -20,13 +20,8 @@ export default class LineChart {
     this.canvasHeight = this.canvas.clientHeight;
     this.canvas.style.width = `${this.canvasWidth}px`;
     this.canvas.style.height = `${this.canvasHeight}px`;
-    const dpr = window.devicePixelRatio;
-
-    this.canvas.width = this.canvasWidth * dpr;
-    this.canvas.height = this.canvasHeight * dpr;
     this.ctx = this.canvas.getContext("2d");
-    this.ctx.scale(dpr / 2, dpr / 2);
-    this.ctx.font = "1.2rem Arial";
+    this.ctx.font = "0.7rem Arial";
 
     this.chartWidth = this.canvas.width;
     this.chartHeight = this.canvas.height - X_PADDING - TOP_PADDING;
@@ -114,6 +109,9 @@ export default class LineChart {
   };
 
   playback = () => {
+    if (!this.data) return;
+    if (!this.data.length) return;
+
     if (this.intervalID < 1) {
       this.snapshotNodes = [];
 

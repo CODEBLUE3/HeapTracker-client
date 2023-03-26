@@ -9,7 +9,7 @@ import ReduxMockFunction from "../mock/reduxMockFunction";
 afterEach(cleanup);
 
 describe("ChartResult Component test", () => {
-  test("init test ", () => {
+  test("init test", () => {
     const { getByTestId } = render(
       <Provider store={store}>
         <ReduxMockFunction />

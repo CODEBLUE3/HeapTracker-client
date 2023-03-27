@@ -34,10 +34,9 @@ describe("MemoryTracker", () => {
     }
     m()
     add(1,2)`;
-    const m = () => {};
-
+    const mockMemoryTracker = jest.fn(() => {});
     const memoryTracker = new MemoryTracker();
 
-    expect(memoryTracker.extractMemory(code, m)).toBe(3);
+    expect(memoryTracker.extractMemory(code, mockMemoryTracker)).toBe(3);
   });
 });

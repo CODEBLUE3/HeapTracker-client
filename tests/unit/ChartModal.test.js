@@ -1,7 +1,6 @@
 import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
 
-// import "@testing-library/jest-dom/extend-expect";
 import { render, screen } from "@testing-library/react";
 import ChartModal from "../../src/component/ChartModal";
 

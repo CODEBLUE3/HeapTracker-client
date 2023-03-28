@@ -8,8 +8,14 @@ import {
   setChartModalStyle,
   hiddenChartModal,
 } from "../features/chartModal/chartModalSlice";
+import VariableBarChart from "../utils/VariableBarChart";
+import {
+  hiddenVariableChartModal,
+  setVariableBarModalData,
+  setVariableBarModalStyle,
+} from "../features/chartModal/variableBarModalSlice";
 
-const CHART_DURATION_TIME = 10000;
+const CHART_DURATION_TIME = 3000;
 
 const ChartControlButton = styled.button`
   display: flex;
@@ -56,6 +62,7 @@ export default function Chart() {
   const memoryData = useSelector(
     (state) => state.heapMemory.heapMemoryData.result,
   );
+  const codeData = useSelector((state) => state.userCode.userInput);
 
   useEffect(() => {
     if (!chart) return;
@@ -73,6 +80,18 @@ export default function Chart() {
     }
 
     dispatch(hiddenChartModal(false));
+  }
+
+  function checkBarHover(isHover, ...node) {
+    const [data, style] = node;
+
+    if (isHover) {
+      dispatch(setVariableBarModalData(data));
+      dispatch(setVariableBarModalStyle(style));
+      return;
+    }
+
+    dispatch(hiddenVariableChartModal(false));
   }
 
   function handleChartPlay() {
@@ -111,7 +130,13 @@ export default function Chart() {
   }, [memoryData]);
 
   useEffect(() => {
-    setChart(new LineChart("lineChart", checkNodeHover, darkTheme).drawChart());
+    if (chart) {
+      chart.setCodeData(codeData);
+    }
+  }, [codeData]);
+
+  useEffect(() => {
+    setChart(new VariableBarChart("chart", checkBarHover).drawAxis());
   }, []);
 
   return (
@@ -123,7 +148,7 @@ export default function Chart() {
           <button>Value-UsedChart</button>
         </Item>
       </RowContainer>
-      <canvas id="lineChart" width="530px" height="400px"></canvas>
+      <canvas id="chart" width="530px" height="400px"></canvas>
       <Controller>
         <ChartControlButton
           onClick={handleChartPlay}

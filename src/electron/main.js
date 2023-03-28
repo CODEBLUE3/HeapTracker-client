@@ -6,7 +6,7 @@ const MemoryTracker = require("../utils/MemoryTracker");
 function createWindow() {
   const win = new BrowserWindow({
     width: 1200,
-    height: 800,
+    height: 780,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: true,

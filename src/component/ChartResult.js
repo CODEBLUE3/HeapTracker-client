@@ -1,43 +1,48 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { color, style } from "../styles/styleCode";
+import { style } from "../styles/styleCode";
+import ToggleButton from "./ToggleButton";
 
 const ResultContainer = styled.div`
-  height: 30%;
+  height: 32vh;
+  margin: 0px 30px;
+  border-radius: ${style.borderRadius};
+  background-color: ${(props) => props.theme.boxBackground};
 
   ul {
-    padding: 20px;
-    height: 30vh;
-
-    background-color: ${color.defaultBoxBackground};
-    border-radius: ${style.borderRadius};
+    height: 80vh;
+    margin: 10px;
+    margin-top: -5px;
   }
 
   .title {
+    height: 3.9vh;
+    line-height: 3.9vh;
     text-align: center;
-    line-height: 4vh;
-    height: 4vh;
 
     font-size: 1.6rem;
     font-weight: 900;
+
+    color: ${(props) => props.theme.defaultFont};
   }
 
   .info {
     display: flex;
     justify-content: space-around;
     align-items: center;
+    height: 3.9vh;
 
     font-size: 1rem;
-    height: 4vh;
-    margin-top: 1vh;
-
+    margin-top: 0.5vh;
     border-bottom: 0.2px solid gray;
+
+    color: ${(props) => props.theme.defaultFont};
   }
 
   .name {
-    margin-left: 4vh;
     width: 180px;
+    margin-left: 4vh;
   }
 
   .name::before {
@@ -51,57 +56,105 @@ const ResultContainer = styled.div`
   }
 `;
 
+const RowContainer = styled.div`
+  display: float;
+  flex-direction: row;
+  font-size: 1.8rem;
+  margin: 5px 0px;
+`;
+
+const Title = styled.div`
+  display: flex;
+  float: left;
+  width: 57%;
+  justify-content: flex-end;
+  padding: 10px 10px;
+  font-weight: bold;
+  color: ${(props) => props.theme.defaultFont};
+`;
+
+const ColorButton = styled.div`
+  display: flex;
+  float: right;
+  width: 30%;
+  justify-content: flex-end;
+  padding: 10px;
+`;
+
 export default function ChartResult() {
   const memoryData = useSelector(
     (state) => state.heapMemory.heapMemoryData.result,
   );
-  const duration = memoryData?.at(-1).timeStamp - memoryData?.at(0).timeStamp;
-  let minMemory = Infinity;
-  let maxMemory = 0;
 
-  memoryData?.forEach((element) => {
-    minMemory = Math.min(minMemory, element.usedMemory);
-    maxMemory = Math.max(maxMemory, element.usedMemory);
-  });
+  const [duration, setDuration] = useState(0);
+  const [maxMemory, setMaxMemory] = useState(0);
+  const [minMemory, setMinMemory] = useState(0);
+  const [usedMemory, setUsedMemory] = useState(0);
+  const [unitToggle, setUnitToggle] = useState(true);
+
+  useEffect(() => {
+    if (!memoryData) return;
+
+    let min = Infinity;
+    let max = 0;
+    memoryData?.forEach((element) => {
+      min = Math.min(min, element.usedMemory);
+      max = Math.max(max, element.usedMemory);
+    });
+
+    setMaxMemory(max);
+    setMinMemory(min);
+    setUsedMemory((memoryData ? max : 0) - (memoryData ? min : 0));
+    setDuration(memoryData?.at(-1).timeStamp - memoryData?.at(0).timeStamp);
+  }, [memoryData]);
+
+  const toggleState = (toggle) => {
+    setUnitToggle(toggle);
+  };
 
   return (
     <ResultContainer data-testid="chart-result">
+      <RowContainer>
+        <Title>RESULT</Title>
+        <ColorButton>
+          <ToggleButton click={toggleState} />
+        </ColorButton>
+      </RowContainer>
       <ul>
-        <li className="title">RESULT</li>
         <li className="info">
           <div className="name">RUN TIME</div>
           <div className="data" data-testid="memory-duration">
-            {(memoryData ? duration : 0)
+            {Math.floor(unitToggle ? duration : duration / 1000)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
-            us
+            {unitToggle ? "us" : "ms"}
           </div>
         </li>
         <li className="info">
           <div className="name">MAX MEMORY</div>
           <div className="data" data-testid="memory-max">
-            {(memoryData ? maxMemory : 0)
+            {Math.floor(unitToggle ? maxMemory : maxMemory / 1000)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
-            bytes
+            {unitToggle ? "bytes" : "kilobytes"}
           </div>
         </li>
         <li className="info">
           <div className="name">MIN MEMORY</div>
           <div className="data" data-testid="memory-min">
-            {(memoryData ? minMemory : 0)
+            {Math.floor(unitToggle ? minMemory : minMemory / 1000)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
-            bytes
+            {unitToggle ? "bytes" : "kilobytes"}
           </div>
         </li>
         <li className="info">
           <div className="name">USED MEMORY</div>
           <div className="data" data-testid="memory-used">
-            {((memoryData ? maxMemory : 0) - (memoryData ? minMemory : 0))
+            {Math.floor(unitToggle ? usedMemory : usedMemory / 1000)
               .toString()
               .replace(/\B(?<!\.\d*)(?=(\d{3})+(?!\d))/g, ",")}{" "}
-            bytes
+            {unitToggle ? "bytes" : "kilobytes"}
           </div>
         </li>
         <li className="info">

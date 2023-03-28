@@ -38,7 +38,7 @@ const RightContainer = styled.div`
 
 export default function App() {
   const [theme, setTheme] = useState(darkTheme);
-  const themeType = useSelector((state) => state.appGlobal.colorTheme);
+  const themeType = useSelector((state) => state.appTheme.colorTheme);
 
   useEffect(() => {
     if (themeType === "dark") {

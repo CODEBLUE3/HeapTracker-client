@@ -4,8 +4,8 @@ const initialState = {
   colorTheme: "dark",
 };
 
-export const appGlobalSlice = createSlice({
-  name: "appGlobal",
+export const appThemeSlice = createSlice({
+  name: "appTheme",
   initialState,
   reducers: {
     setColorTheme: (state, action) => {
@@ -14,6 +14,6 @@ export const appGlobalSlice = createSlice({
   },
 });
 
-export const { setColorTheme } = appGlobalSlice.actions;
+export const { setColorTheme } = appThemeSlice.actions;
 
-export default appGlobalSlice.reducer;
+export default appThemeSlice.reducer;

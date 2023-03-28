@@ -9,7 +9,7 @@ const lightTheme = {
   defaultBorder: "#1E90FF",
 
   chartModal: "#AFAFB6",
-  chartDot: "#BFBDBD",
+  chartDot: "#1E90FF",
   chartDotHover: "#1E90FF",
   gridLine: "#CCCCCC",
   borderLine: "#000000",
@@ -28,7 +28,7 @@ const darkTheme = {
   defaultBorder: "#1E90FF",
 
   chartModal: "#AFAFB6",
-  chartDot: "#BFBDBD",
+  chartDot: "#1E90FF",
   chartDotHover: "#1E90FF",
   gridLine: "#555555",
   borderLine: "#EEEEEE",

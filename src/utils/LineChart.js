@@ -1,5 +1,4 @@
 import ChartNode from "./ChartNode";
-import { color } from "../styles/styleCode";
 
 const X_PADDING = 25;
 const Y_PADDING = 70;
@@ -10,7 +9,7 @@ const NODE_RADIUS = 4;
 const CHART_MARGIN_NODE = 5;
 
 export default class LineChart {
-  constructor(id, modalCallback) {
+  constructor(id, modalCallback, theme) {
     this.canvas = document.getElementById(id);
 
     if (!this.canvas) return null;
@@ -38,6 +37,14 @@ export default class LineChart {
 
     this.snapshotNodes = [];
     this.checkNodeHover = modalCallback;
+
+    this.backgroundColor = theme.boxBackground;
+    this.gridColor = theme.gridLine;
+    this.lineColor = theme.borderLine;
+    this.textColor = theme.unitText;
+    this.nodeLineColor = theme.nodeLine;
+    this.nodeColor = theme.chartDot;
+    this.nodeHoverColor = theme.chartDotHover;
 
     this.canvas.addEventListener("mousemove", (e) => {
       if (this.intervalID) return;
@@ -68,9 +75,9 @@ export default class LineChart {
             };
 
             this.checkNodeHover(true, chartModalData, chartModalStyles);
-            node.draw(color.chartDotHover);
+            node.draw(this.nodeHoverColor);
           } else {
-            node.draw(color.chartDot);
+            node.draw(this.nodeColor);
           }
         });
       }
@@ -131,7 +138,12 @@ export default class LineChart {
     this.intervalID = 0;
     this.currentPosition = 0;
     this.snapshotNodes.length = 0;
-    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight - X_PADDING);
+    this.ctx.clearRect(
+      Y_PADDING,
+      0,
+      this.canvasWidth,
+      this.canvasHeight - X_PADDING,
+    );
   };
 
   drawChart = () => {
@@ -140,9 +152,11 @@ export default class LineChart {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.beginPath();
-    ctx.strokeStyle = color.defalutChartLine;
+    ctx.strokeStyle = this.lineColor;
+
     ctx.moveTo(Y_PADDING, TOP_PADDING);
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
+    ctx.closePath();
     ctx.stroke();
 
     const yInterval =
@@ -151,22 +165,28 @@ export default class LineChart {
     ctx.textBaseline = "middle";
 
     ctx.beginPath();
+    ctx.fillStyle = this.textColor;
+    ctx.strokeStyle = this.gridColor;
+
     for (let i = 0; i < Y_TICK_COUNT; i++) {
       const value = Math.floor(i * yInterval);
       const yPoint =
         TOP_PADDING + chartHeight - i * (chartHeight / Y_TICK_COUNT);
+
       ctx.fillText(value ? value : 0, Y_PADDING - 3, yPoint - TOP_PADDING);
 
-      ctx.strokeStyle = color.defalutGridLine;
       ctx.moveTo(Y_PADDING, yPoint - TOP_PADDING);
       ctx.lineTo(Y_PADDING + canvas.width, yPoint - TOP_PADDING);
-      ctx.stroke();
     }
 
+    ctx.closePath();
+    ctx.stroke();
+
     ctx.beginPath();
-    ctx.strokeStyle = color.defalutChartLine;
+    ctx.strokeStyle = this.lineColor;
     ctx.moveTo(Y_PADDING, chartHeight + TOP_PADDING);
     ctx.lineTo(canvas.width, chartHeight + TOP_PADDING);
+    ctx.closePath();
     ctx.stroke();
 
     /* Y축 좌측으로 노드가
@@ -202,26 +222,27 @@ export default class LineChart {
         return new ChartNode(xPosition, yPosition, NODE_RADIUS, ctx, item);
       });
 
+    ctx.beginPath();
+    ctx.strokeStyle = this.nodeLineColor;
+
     this.snapshotNodes.forEach((node, index) => {
       const xPosition = node.x;
       const yPosition = node.y;
 
       ctx.lineTo(xPosition, yPosition);
       ctx.stroke();
-      ctx.save();
 
       ctx.moveTo(xPosition, yPosition);
-      node.draw(color.chartDot);
+      node.draw(this.nodeColor);
     });
 
-    /* x축 좌표 ns 표현 */
+    ctx.fillStyle = this.textColor;
     for (let index = 0; index < VIEW_NODE_COUNT; index += 1) {
       const xPosition = (this.chartWidth / VIEW_NODE_COUNT) * (index + 1);
 
       const x_guideValue = Math.floor(
         (this.xDistance * this.currentPosition + this.xDistance * index) / 1000,
       );
-      ctx.fillStyle = "black";
       ctx.fillText(
         x_guideValue ? x_guideValue : 0,
         xPosition + 40,
@@ -229,8 +250,8 @@ export default class LineChart {
       );
     }
 
-    ctx.stroke();
     ctx.restore();
+
     return this;
   };
 
@@ -252,5 +273,24 @@ export default class LineChart {
       return true;
     }
     return false;
+  };
+
+  setColor = (theme) => {
+    this.backgroundColor = theme.boxBackground;
+    this.gridColor = theme.gridLine;
+    this.lineColor = theme.borderLine;
+    this.textColor = theme.unitText;
+    this.nodeLineColor = theme.nodeLine;
+    this.nodeColor = theme.chartDot;
+    this.nodeHoverColor = theme.chartDotHover;
+
+    return this;
+  };
+
+  setLineColor = (color) => {
+    this.nodeColor = color;
+    this.nodeLineColor = color;
+
+    return this;
   };
 }

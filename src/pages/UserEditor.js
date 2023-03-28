@@ -4,9 +4,9 @@ import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
 import { useState, useEffect } from "react";
 import { style } from "../styles/styleCode";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { setUserCode } from "../features/userCode/userCodeSlice";
-import { setColorTheme } from "../features/appGlobal/appGlobalSlice";
+import { setColorTheme } from "../features/appTheme/appThemeSlice";
 
 const Container = styled.div.attrs((props) => ({
   transform: props.checked ? "translateX(0px)" : "translateX(20px)",
@@ -59,7 +59,6 @@ export default function UserEditor() {
   const [userExecution, setUserExecution] = useState("");
   const [codeResult, setCodeResult] = useState("");
   const dispatch = useDispatch();
-  const theme = useSelector((state) => state.appGlobal.colorTheme);
 
   function handleUserInput(value) {
     setUserInput(value);
@@ -70,7 +69,6 @@ export default function UserEditor() {
   }
 
   function handleSelectChange({ target }) {
-    console.info("handleSelectChange", target.value);
     dispatch(setColorTheme(target.value));
   }
 

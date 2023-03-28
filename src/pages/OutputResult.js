@@ -1,10 +1,14 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
+import styled from "styled-components";
 import ChartModal from "../component/ChartModal";
-import Chart from "../component/Chart";
 import ChartResult from "../component/ChartResult";
-
+import Chart from "../component/Chart";
 import { setHeapMemoryData } from "../features/heapMemory/heapMemorySlice";
+
+const Container = styled.div`
+  height: 100vh;
+`;
 
 export default function OutputResult() {
   const dispatch = useDispatch();
@@ -26,10 +30,10 @@ export default function OutputResult() {
   }, []);
 
   return (
-    <>
+    <Container>
       <Chart />
       <ChartModal />
       <ChartResult />
-    </>
+    </Container>
   );
 }

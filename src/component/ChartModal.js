@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { color, style } from "../styles/styleCode";
+import { style } from "../styles/styleCode";
 
 const POSITION_UNIT = "px";
 const REMOVE_CODE_TYPE_ARRAY = [
@@ -12,16 +12,17 @@ const REMOVE_CODE_TYPE_ARRAY = [
 ];
 
 const Container = styled.div`
-  visibility: ${(props) =>
-    props.visibility === "true" ? "visible" : "hidden"};
   position: absolute;
   top: ${(props) => props.top};
   left: ${(props) => props.left};
-  padding: 10px 20px;
 
-  background-color: ${color.chartModal};
+  padding: 10px 20px;
   border-radius: ${style.borderRadius};
   font-size: 1rem;
+
+  background-color: ${(props) => props.theme.chartModal};
+  visibility: ${(props) =>
+    props.visibility === "true" ? "visible" : "hidden"};
 `;
 
 export default function ChartModal() {

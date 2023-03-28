@@ -1,25 +1,29 @@
+import { useSelector } from "react-redux";
 import styled from "styled-components";
-import CodeMirror from "@uiw/react-codemirror";
 import { style } from "../styles/styleCode";
 import { javascript } from "@codemirror/lang-javascript";
+import CodeMirror from "@uiw/react-codemirror";
 
 const CodeContainer = styled.div`
   flex-direction: column;
+  height: 61.5vh;
   margin: ${style.defaultComponentMargin};
-  height: 70%;
+  border: 2px solid ${(props) => props.theme.defaultBorder};
 `;
 
 export default function CodeInput({ value, onChange }) {
+  const theme = useSelector((state) => state.appGlobal.colorTheme);
+
   return (
     <CodeContainer>
-      <div>함수 코드</div>
       <CodeMirror
         data-testid="codemirror-input"
         value={value}
-        height="500px"
+        height="475px"
         minHeight="400px"
         extensions={[javascript({ jsx: false })]}
         onChange={onChange}
+        theme={theme}
       />
     </CodeContainer>
   );

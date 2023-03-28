@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import LineChart from "../utils/LineChart";
 import styled from "styled-components";
-import { color, style } from "../styles/styleCode";
+import { style, lightTheme, darkTheme } from "../styles/styleCode";
 import { useSelector, useDispatch } from "react-redux";
 import {
   setChartModalData,
@@ -20,10 +20,13 @@ const ChartControlButton = styled.button`
   font-size: ${style.controlButtonSize};
   height: 30px;
   width: 100px;
-  background-color: ${color.defaultButton};
+  background-color: ${(props) => props.theme.buttonBackground};
   margin: ${style.controlButtonMargin};
   border: none;
   border-radius: ${style.borderRadius};
+  :disabled {
+    background-color: ${(props) => props.theme.buttonDisabled};
+  }
 `;
 
 const Controller = styled.div`
@@ -31,12 +34,34 @@ const Controller = styled.div`
   justify-content: center;
 `;
 
+const RowContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  margin: 0px 20px;
+`;
+
+const Item = styled.div`
+  position: relative;
+  display: flex;
+  margin-top: 5px;
+  margin: 0px 20px;
+`;
+
 export default function Chart() {
-  const [chart, setChart] = useState();
   const dispatch = useDispatch();
+  const [chart, setChart] = useState();
+  const [playStatus, setPlayStatus] = useState("stop");
+
+  const themeType = useSelector((state) => state.appTheme.colorTheme);
   const memoryData = useSelector(
     (state) => state.heapMemory.heapMemoryData.result,
   );
+
+  useEffect(() => {
+    if (!chart) return;
+
+    chart.setColor(themeType === "dark" ? darkTheme : lightTheme).drawChart();
+  }, [themeType]);
 
   function checkNodeHover(isHover, ...node) {
     const [data, style] = node;
@@ -51,50 +76,76 @@ export default function Chart() {
   }
 
   function handleChartPlay() {
-    if (chart) {
-      chart.playback();
-    }
+    if (playStatus === "play") return;
+
+    if (!chart) return;
+
+    chart.playback();
+    setPlayStatus("play");
   }
 
   function handleChartPause() {
-    if (chart) {
-      chart.pause();
-    }
+    if (playStatus === "stop") return;
+
+    if (!chart) return;
+
+    chart.pause();
+    setPlayStatus("pause");
   }
 
   function handleChartStop() {
-    if (chart) {
-      chart.stop();
-    }
+    if (playStatus === "stop") return;
+
+    if (!chart) return;
+
+    chart.stop();
+    setPlayStatus("stop");
   }
 
   useEffect(() => {
-    if (chart) {
-      chart.setData(memoryData, CHART_DURATION_TIME);
-    }
+    if (!chart) return;
+
+    chart.setData(memoryData, CHART_DURATION_TIME);
+
+    handleChartStop();
   }, [memoryData]);
 
   useEffect(() => {
-    setChart(new LineChart("lineChart", checkNodeHover).drawChart());
+    setChart(new LineChart("lineChart", checkNodeHover, darkTheme).drawChart());
   }, []);
 
   return (
     <>
-      <canvas id="lineChart" width="550px" height="400px"></canvas>
+      <RowContainer>
+        <Item>
+          <button>Memory-LineChart</button>
+          <button>Memory-BarChart</button>
+          <button>Value-UsedChart</button>
+        </Item>
+      </RowContainer>
+      <canvas id="lineChart" width="530px" height="400px"></canvas>
       <Controller>
         <ChartControlButton
           onClick={handleChartPlay}
           data-testid="start-button"
+          disabled={playStatus === "play" ? true : false}
         >
           시작
         </ChartControlButton>
         <ChartControlButton
           onClick={handleChartPause}
           data-testid="pause-button"
+          disabled={
+            playStatus === "pause" || playStatus === "stop" ? true : false
+          }
         >
           일시정지
         </ChartControlButton>
-        <ChartControlButton onClick={handleChartStop} data-testid="stop-button">
+        <ChartControlButton
+          onClick={handleChartStop}
+          data-testid="stop-button"
+          disabled={playStatus === "stop" ? true : false}
+        >
           종료
         </ChartControlButton>
       </Controller>

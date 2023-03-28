@@ -12,7 +12,7 @@ const CodeContainer = styled.div`
 `;
 
 export default function CodeInput({ value, onChange }) {
-  const theme = useSelector((state) => state.appGlobal.colorTheme);
+  const theme = useSelector((state) => state.appTheme.colorTheme);
 
   return (
     <CodeContainer>

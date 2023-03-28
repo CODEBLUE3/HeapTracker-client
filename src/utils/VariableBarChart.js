@@ -1,4 +1,3 @@
-import { color } from "../styles/styleCode";
 import BarNode from "./BarNode";
 import { getPositionCodeInfo } from "./codeParser";
 
@@ -10,7 +9,7 @@ const X_AXIS_OFFSET = 10;
 const BAR_WIDTH_RATIO = 0.8;
 
 export default class VariableBarChart {
-  constructor(id, modalCallbacks) {
+  constructor(id, modalCallbacks, theme) {
     this.canvas = document.getElementById(id);
 
     if (!this.canvas) return null;
@@ -32,8 +31,6 @@ export default class VariableBarChart {
     this.intervalID = 0;
     this.currentPosition = 0;
 
-    this.heightPixelWeights = 0;
-
     this.barNodeArray = [];
     this.codePositionArray = [];
     this.variableArray = [];
@@ -41,6 +38,13 @@ export default class VariableBarChart {
     this.maxCodePositionCount = 0;
 
     this.checkNodeHover = modalCallbacks;
+
+    this.backgroundColor = theme.boxBackground;
+    this.gridColor = theme.gridLine;
+    this.lineColor = theme.borderLine;
+    this.textColor = theme.unitText;
+    this.nodeColor = theme.chartDot;
+    this.nodeHoverColor = theme.chartDotHover;
 
     this.canvas.addEventListener("mousemove", (e) => {
       const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
@@ -76,26 +80,26 @@ export default class VariableBarChart {
     this.chartDurationTime = durationTime;
     this.excuteDurationTime = this.data.length;
 
-    this.codePositionArray = this.data.map((element) => {
-      return element.codePosition;
+    this.codePositionArray = this.data.map((node) => {
+      return node.codePosition;
     });
     this.codePositionArray = [...new Set(this.codePositionArray)].filter(
-      (element) => element !== null,
+      (node) => node !== null,
     );
 
-    this.variableArray = this.codePositionArray.map((element) => {
-      return getPositionCodeInfo(this.codeData, element);
+    this.variableArray = this.codePositionArray.map((node) => {
+      return getPositionCodeInfo(this.codeData, node);
     });
 
-    this.data.forEach((element) => {
-      const position = element.codePosition;
+    this.data.forEach((node) => {
+      const position = node.codePosition;
 
-      if (position !== null) {
-        if (this.codePositionCount[position] === undefined) {
-          this.codePositionCount[position] = 1;
-        } else {
-          this.codePositionCount[position] += 1;
-        }
+      if (!position) return;
+
+      if (this.codePositionCount[position] === undefined) {
+        this.codePositionCount[position] = 1;
+      } else {
+        this.codePositionCount[position] += 1;
       }
     });
 
@@ -117,9 +121,9 @@ export default class VariableBarChart {
       this.barNodeArray.push(
         new BarNode(
           Y_PADDING + xPosition + X_AXIS_OFFSET,
-          TOP_PADDING + this.chartHeight - this.currentPosition,
+          TOP_PADDING + this.chartHeight,
           (this.chartWidth / xDistance) * BAR_WIDTH_RATIO,
-          this.currentPosition,
+          0,
           this.ctx,
           { variableName, variableCount },
         ),
@@ -181,7 +185,7 @@ export default class VariableBarChart {
         const height = barNodeArray[i].getHeight() + heightPerUnit;
 
         barNodeArray[i].setHeight(height);
-        barNodeArray[i].draw();
+        barNodeArray[i].draw(this.nodeColor);
       }
     }
   };
@@ -202,14 +206,9 @@ export default class VariableBarChart {
     const { ctx, chartHeight, chartWidth } = this;
 
     ctx.beginPath();
-    ctx.strokeStyle = color.defalutChartLine;
+    ctx.strokeStyle = this.lineColor;
     ctx.moveTo(Y_PADDING, TOP_PADDING);
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.strokeStyle = color.defalutChartLine;
-    ctx.moveTo(Y_PADDING, chartHeight + TOP_PADDING);
     ctx.lineTo(chartWidth, chartHeight + TOP_PADDING);
     ctx.stroke();
 
@@ -221,6 +220,7 @@ export default class VariableBarChart {
     ctx.textAlign = "center";
     ctx.textBaseline = "middle";
 
+    ctx.fillStyle = this.textColor;
     ctx.fillText(
       "Variable Name (Hover for details)",
       (chartWidth - Y_PADDING) / 2,
@@ -234,6 +234,7 @@ export default class VariableBarChart {
     const yInterval = maxCodePositionCount / Y_TICK_COUNT;
     ctx.textAlign = "right";
     ctx.textBaseline = "bottom";
+    ctx.fillStyle = this.textColor;
 
     for (let i = 0; i < Y_TICK_COUNT; i++) {
       const value = Math.floor(i * yInterval);
@@ -241,11 +242,31 @@ export default class VariableBarChart {
         TOP_PADDING + chartHeight - i * (chartHeight / Y_TICK_COUNT);
       ctx.fillText(value ? value : 0, Y_PADDING - 3, yPoint - TOP_PADDING + 20);
 
-      ctx.strokeStyle = color.defalutGridLine;
+      ctx.strokeStyle = this.gridColor;
       ctx.moveTo(Y_PADDING, yPoint);
       ctx.lineTo(Y_PADDING + chartWidth, yPoint);
       ctx.stroke();
     }
+  };
+
+  setColor = (theme) => {
+    this.backgroundColor = theme.boxBackground;
+    this.gridColor = theme.gridLine;
+    this.lineColor = theme.borderLine;
+    this.textColor = theme.unitText;
+    this.nodeColor = theme.chartDot;
+    this.nodeHoverColor = theme.chartDotHover;
+
+    this.fillTextX();
+    this.fillTextY();
+    this.drawAxis();
+
+    for (const node of this.barNodeArray) {
+      node.setHeight(node.getHeight());
+      node.draw(this.nodeColor);
+    }
+
+    return this;
   };
 
   isPlay = () => {

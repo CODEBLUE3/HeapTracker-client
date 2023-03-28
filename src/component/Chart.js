@@ -136,7 +136,9 @@ export default function Chart() {
   }, [codeData]);
 
   useEffect(() => {
-    setChart(new VariableBarChart("chart", checkBarHover).drawAxis());
+    setChart(
+      new VariableBarChart("chart", checkBarHover, darkTheme).drawAxis(),
+    );
   }, []);
 
   return (

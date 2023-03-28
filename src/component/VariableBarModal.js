@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
-import { color, style } from "../styles/styleCode";
+import { style } from "../styles/styleCode";
 
 const POSITION_UNIT = "px";
 
@@ -13,7 +13,7 @@ const Container = styled.div`
   left: ${(props) => props.left};
   padding: 10px 20px;
 
-  background-color: ${color.chartModal};
+  background-color: ${(props) => props.theme.chartModal};
   border-radius: ${style.borderRadius};
   font-size: 1rem;
 `;

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LineChart from "../utils/LineChart";
+import BarChart from "../utils/BarChart";
 import styled from "styled-components";
 import { style, lightTheme, darkTheme } from "../styles/styleCode";
 import { useSelector, useDispatch } from "react-redux";

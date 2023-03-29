@@ -12,7 +12,7 @@ const Container = styled.div.attrs((props) => ({
   color: props.checked ? "yellow" : "#398ab3",
 }))`
   height: 100vh;
-  padding: 20px 40px;
+  padding: 10px 40px;
 `;
 
 const ThemeSelect = styled.select`

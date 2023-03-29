@@ -7,7 +7,7 @@ const CodeContainer = styled.div`
   flex-direction: column;
   width: 85%;
   height: 70px;
-  border: 2px solid ${(props) => props.theme.defaultBorder};
+  box-shadow: 0 0 10px ${(props) => props.theme.defaultBorder};
 `;
 
 export default function CodeExecution({ value, onChange }) {

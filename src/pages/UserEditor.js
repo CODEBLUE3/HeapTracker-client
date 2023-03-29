@@ -3,7 +3,6 @@ import CodeInput from "../component/CodeInput";
 import CodeExecution from "../component/CodeExecution";
 import CodeResult from "../component/CodeResult";
 import { useState, useEffect } from "react";
-import { style } from "../styles/styleCode";
 import { useDispatch } from "react-redux";
 import { setUserCode } from "../features/userCode/userCodeSlice";
 import { setColorTheme } from "../features/appTheme/appThemeSlice";
@@ -13,23 +12,26 @@ const Container = styled.div.attrs((props) => ({
   color: props.checked ? "yellow" : "#398ab3",
 }))`
   height: 100vh;
+  padding: 20px 40px;
 `;
 
 const ThemeSelect = styled.select`
   display: flex;
+  margin: 40px 0 20px;
 `;
 
 const ExecButton = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
+
   color: ${(props) => props.theme.buttonFont};
-  font-size: 1.3rem;
+  font-size: 1rem;
   background-color: ${(props) => props.theme.buttonBackground};
-  border: none;
-  border-radius: 20px;
-  margin: 0px ${style.defaultComponentMargin};
-  width: 15%;
+  border: 2px solid ${(props) => props.theme.defaultBorder};
+  border-radius: 5px;
+
+  width: 12%;
   :disabled {
     background-color: ${(props) => props.theme.buttonDisabled};
   }
@@ -37,21 +39,21 @@ const ExecButton = styled.button`
 
 const RowContainer = styled.div`
   display: flex;
-  flex-direction: row;
-  margin: ${style.defaultComponentMargin};
-  margin-top: 5px;
+  justify-content: space-between;
 `;
 
 const RowTitle = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 0px 5px;
 `;
 
 const Title = styled.div`
   display: flex;
-  margin-top: 5px;
+
   color: ${(props) => props.theme.defaultFont};
+  font-weight: 600;
+
+  margin: 40px 0 20px;
 `;
 
 export default function UserEditor() {
@@ -112,6 +114,7 @@ export default function UserEditor() {
           실행
         </ExecButton>
       </RowContainer>
+      <Title>실행 결과</Title>
       <CodeResult result={codeResult} />
     </Container>
   );

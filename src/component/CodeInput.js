@@ -6,9 +6,7 @@ import CodeMirror from "@uiw/react-codemirror";
 
 const CodeContainer = styled.div`
   flex-direction: column;
-  height: 61.5vh;
-  margin: ${style.defaultComponentMargin};
-  border: 2px solid ${(props) => props.theme.defaultBorder};
+  box-shadow: 0 0 10px ${(props) => props.theme.defaultBorder};
 `;
 
 export default function CodeInput({ value, onChange }) {
@@ -19,7 +17,7 @@ export default function CodeInput({ value, onChange }) {
       <CodeMirror
         data-testid="codemirror-input"
         value={value}
-        height="475px"
+        height="400px"
         minHeight="400px"
         extensions={[javascript({ jsx: false })]}
         onChange={onChange}

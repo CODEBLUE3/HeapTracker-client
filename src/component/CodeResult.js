@@ -3,11 +3,8 @@ import { style } from "../styles/styleCode";
 
 const Terminal = styled.div`
   height: 7vh;
-
-  margin: ${style.defaultComponentMargin};
-  margin-top: 15px;
-  padding: 5px;
-  border: 2px solid ${(props) => props.theme.defaultBorder};
+  padding: 10px;
+  box-shadow: 0 0 10px ${(props) => props.theme.defaultBorder};
 
   color: ${(props) => props.theme.defaultFont};
   background-color: ${(props) => props.theme.boxBackground};

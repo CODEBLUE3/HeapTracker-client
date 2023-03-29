@@ -1,5 +1,4 @@
 import BarNode from "./BarNode";
-// import { color } from "../styles/styleCode";
 
 const X_PADDING = 25;
 const Y_PADDING = 70;

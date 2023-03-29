@@ -7,7 +7,7 @@ import UserEditor from "./pages/UserEditor";
 import OutputResult from "./pages/OutputResult";
 import GlobalStyle from "./styles/GlobalStyle";
 
-const Main = styled.main`
+const Main = styled.div`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -16,27 +16,28 @@ const Main = styled.main`
 `;
 
 const Header = styled.header`
-  height: 60px;
-  padding: 20px;
-  line-height: 60px;
+  box-sizing: border-box;
+  width: 100vw;
+  height: 15vh;
+  line-height: 10vh;
+  padding: 20px 40px;
 
-  background-color: ${(props) => props.theme.defaultColor};
-
-  font-size: 2.6rem;
   font-weight: 900;
+  font-size: 2.2rem;
   font-style: italic;
-  color: ${(props) => props.theme.buttonFont};
+  background-color: ${(props) => props.theme.defaultColor};
+  color: ${(props) => props.theme.defaultFont};
 `;
 
 const LeftContainer = styled.div`
-  width: 50vw;
+  width: 50%;
   float: left;
   flex-direction: column;
   padding: 5px 0px;
 `;
 
 const RightContainer = styled.div`
-  width: 50vw;
+  width: 50%;
   float: right;
   flex-direction: column;
   padding: 5px 0px;

@@ -16,6 +16,7 @@ pids
 *.seed
 *.pid.lock
 
+
 # Optional npm cache directory
 .npm
 
@@ -31,6 +32,9 @@ web_modules/
 
 # Optional eslint cache
 .eslintcache
+
+# etc
+.DS_Store
 
 # dotenv environment variable files
 .env
@@ -49,3 +53,4 @@ forge.config.js
 /test-results/
 /playwright-report/
 /playwright/.cache/
+

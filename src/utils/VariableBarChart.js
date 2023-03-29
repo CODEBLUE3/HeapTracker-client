@@ -22,7 +22,7 @@ export default class VariableBarChart {
     this.canvas.style.height = `${this.canvasHeight}px`;
 
     this.ctx = this.canvas.getContext("2d");
-    this.ctx.font = "1.2rem Arial";
+    this.ctx.font = "0.8rem Arial";
 
     this.chartWidth = this.canvas.width;
     this.chartHeight = this.canvas.height - X_PADDING - TOP_PADDING;
@@ -51,17 +51,20 @@ export default class VariableBarChart {
       const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
 
       this.checkNodeHover(false);
+
       this.barNodeArray.forEach((node) => {
         if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
           const chartModalData = {
             variableCount: node.data.variableCount,
             variableName: node.data.variableName,
           };
+
           const chartModalStyles = {
             visibility: true,
             top: e.pageY,
             left: e.pageX,
           };
+
           this.checkNodeHover(true, chartModalData, chartModalStyles);
         }
       });
@@ -139,8 +142,7 @@ export default class VariableBarChart {
 
   playback = () => {
     if (this.intervalID < 1 && this.currentPosition === 0) {
-      this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-
+      this.drawClear();
       this.fillTextX();
       this.fillTextY();
       this.drawAxis();
@@ -152,20 +154,32 @@ export default class VariableBarChart {
   };
 
   // TODO: 멈춘 순간의 데이터가 필요 없기에 구현하지 않았지만 남겨놓았습니다.
-  pause = () => {};
+  pause = () => {
+    this.ctx.restore();
+  };
 
   stop = () => {
+    this.ctx.restore();
     clearInterval(this.intervalID);
     this.intervalID = 0;
     this.currentPosition = 0;
-    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-    this.fillTextX();
-    this.fillTextY();
-    this.drawAxis();
+    this.data.length = 0;
+    this.barNodeArray.length = 0;
+    this.codePositionArray.length = 0;
+    this.codePositionCount = {};
+    this.maxCodePositionCount = 0;
+    this.variableArray = [];
 
-    for (let i = 0; i < this.codePositionArray.length; i += 1) {
-      this.barNodeArray[i].setHeight(0);
+    for (const node of this.barNodeArray) {
+      node.setHeight(0);
     }
+
+    this.ctx.clearRect(
+      Y_PADDING,
+      0,
+      this.canvasWidth,
+      this.canvasHeight - X_PADDING,
+    );
   };
 
   drawChart = () => {
@@ -188,6 +202,13 @@ export default class VariableBarChart {
         barNodeArray[i].draw(this.nodeColor);
       }
     }
+
+    this.ctx.restore();
+  };
+
+  drawClear = () => {
+    this.ctx.restore();
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
   };
 
   updateData = () => {
@@ -226,6 +247,8 @@ export default class VariableBarChart {
       (chartWidth - Y_PADDING) / 2,
       chartHeight + TOP_PADDING + 15,
     );
+
+    return this;
   };
 
   fillTextY = () => {
@@ -247,6 +270,20 @@ export default class VariableBarChart {
       ctx.lineTo(Y_PADDING + chartWidth, yPoint);
       ctx.stroke();
     }
+
+    return this;
+  };
+
+  resetBackround = () => {
+    const { ctx, canvasWidth, canvasHeight } = this;
+
+    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+    this.fillTextX();
+    this.fillTextY();
+    this.drawAxis();
+
+    return this;
   };
 
   setColor = (theme) => {

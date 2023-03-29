@@ -14,7 +14,16 @@ const Container = styled.div`
 
 const ThemeSelect = styled.select`
   display: flex;
-  margin: 40px 0 20px;
+  margin: 30px 0 20px;
+`;
+
+const Title = styled.div`
+  display: flex;
+
+  color: ${(props) => props.theme.defaultFont};
+  font-weight: 600;
+
+  margin: 30px 0 20px;
 `;
 
 const ExecButton = styled.button`
@@ -42,15 +51,6 @@ const RowContainer = styled.div`
 const RowTitle = styled.div`
   display: flex;
   justify-content: space-between;
-`;
-
-const Title = styled.div`
-  display: flex;
-
-  color: ${(props) => props.theme.defaultFont};
-  font-weight: 600;
-
-  margin: 40px 0 20px;
 `;
 
 export default function UserEditor() {

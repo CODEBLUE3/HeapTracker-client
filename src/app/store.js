@@ -16,5 +16,5 @@ export const store = configureStore({
     variableBarModal: variableBarModalReducer,
     chartType: chartTypeReducer,
   },
-  // middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(logger),
 });

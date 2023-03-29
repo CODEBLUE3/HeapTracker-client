@@ -23,7 +23,7 @@ const ChartNavigation = styled.nav`
     color: ${(props) => props.theme.defaultFont};
 
     margin: 0 10px 0;
-    padding: 10px;
+    padding: 7px 10px;
     border-radius: 10px;
 
     transition: all 0.6s;

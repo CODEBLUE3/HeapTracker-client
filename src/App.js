@@ -18,9 +18,9 @@ const Main = styled.div`
 const Header = styled.header`
   box-sizing: border-box;
   width: 100vw;
-  height: 15vh;
+  height: 10vh;
   line-height: 10vh;
-  padding: 20px 40px;
+  padding: 5px 40px;
 
   font-weight: 900;
   font-size: 2.2rem;

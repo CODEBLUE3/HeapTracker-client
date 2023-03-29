@@ -2,6 +2,7 @@ import BarNode from "./BarNode";
 
 const X_PADDING = 25;
 const Y_PADDING = 70;
+const LAST_BAR_X_POS_OFFSET = 10;
 const TOP_PADDING = 15;
 const VIEW_NODE_COUNT = 10;
 const Y_TICK_COUNT = 7;
@@ -20,7 +21,7 @@ export default class LineChart {
     this.canvas.style.height = `${this.canvasHeight}px`;
 
     this.ctx = this.canvas.getContext("2d");
-    this.ctx.font = "0.7rem Arial";
+    this.ctx.font = "0.8rem Arial";
 
     this.chartWidth = this.canvas.width - Y_PADDING - 5;
     this.chartHeight = this.canvas.height - TOP_PADDING - X_PADDING;
@@ -110,7 +111,7 @@ export default class LineChart {
     ctx.textBaseline = "middle";
     ctx.fillStyle = this.textColor;
 
-    for (let i = 0; i < Y_TICK_COUNT; i++) {
+    for (let i = 0; i <= Y_TICK_COUNT; i++) {
       const value = Math.floor(i * yInterval);
       const yPoint =
         chartHeight - i * (chartHeight / Y_TICK_COUNT) + TOP_PADDING;
@@ -125,10 +126,9 @@ export default class LineChart {
     /**
      * y축 좌측 생략
      */
-    ctx.save();
     ctx.beginPath();
     ctx.rect(Y_PADDING, 0, chartWidth, canvas.height);
-    ctx.clip();
+    ctx.save();
 
     ctx.beginPath();
     ctx.strokeStyle = this.lineColor;
@@ -161,10 +161,11 @@ export default class LineChart {
      */
     this.barNodes = this.data.map((node, index) => {
       const startX =
-        (this.chartWidth / this.data[this.data.length - 1].timeStamp) *
+        ((this.chartWidth - LAST_BAR_X_POS_OFFSET) /
+          this.data[this.data.length - 1].timeStamp) *
           node.timeStamp +
         Y_PADDING;
-      const startY = this.chartHeight + TOP_PADDING;
+      const startY = this.chartHeight + TOP_PADDING - 2;
       const width =
         Math.floor(this.minGap) /
         Math.floor(this.data[this.data.length - 1].timeStamp / this.chartWidth);
@@ -174,14 +175,58 @@ export default class LineChart {
       return new BarNode(startX, startY, width, height, ctx, node);
     });
 
-    this.barNodes.forEach((node, index) => {
-      setTimeout(() => node.draw(this.nodeColor), 30 * index);
-    });
-
     ctx.stroke();
-    ctx.restore();
 
     return this;
+  };
+
+  drawClear = () => {
+    const { ctx, canvas } = this;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
+
+  playback = () => {
+    if (!this.data) return;
+
+    if (!this.data.length) return;
+
+    this.drawChart();
+
+    this.intervalID = setInterval(() => {
+      if (this.barNodes.length <= this.currentPosition) {
+        return;
+      }
+
+      this.barNodes[this.currentPosition++].draw(this.nodeColor);
+      this.ctx.stroke();
+      this.ctx.restore();
+    }, this.chartDurationTime / this.excuteDurationTime);
+  };
+
+  pause = () => {
+    if (!this.data) return;
+
+    if (!this.data.length) return;
+
+    this.ctx.restore();
+    clearInterval(this.intervalID);
+    this.intervalID = 0;
+  };
+
+  stop = () => {
+    this.ctx.restore();
+    clearInterval(this.intervalID);
+
+    this.intervalID = 0;
+    this.currentPosition = 0;
+    this.barNodes.length = 0;
+
+    this.ctx.clearRect(
+      Y_PADDING,
+      0,
+      this.canvasWidth,
+      this.canvasHeight - X_PADDING,
+    );
   };
 
   setData = (data, durationTime) => {
@@ -213,8 +258,7 @@ export default class LineChart {
     });
 
     this.heightPixelWeights =
-      (this.chartHeight - Y_PADDING) /
-      (this.maxMemoryValue - this.minMemoryValue);
+      this.chartHeight / (this.maxMemoryValue - this.minMemoryValue);
 
     this.runTime =
       (this.data[this.data.length - 1].timeStamp - this.data[0].timeStamp) /
@@ -226,8 +270,10 @@ export default class LineChart {
         this.data[i + 1].timeStamp - this.data[i].timeStamp,
       );
     }
+  };
 
-    this.drawChart();
+  setCodeData = (codeData) => {
+    if (!this.canvas) return;
   };
 
   setColor = (theme) => {

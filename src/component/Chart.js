@@ -89,13 +89,9 @@ export default function Chart() {
   }
 
   function handleChartPlay() {
-    console.log("play11", playStatus);
     if (playStatus === "play") return;
 
-    console.log("play22", playStatus);
     if (!chart) return;
-
-    console.log("play");
 
     chart.setCodeData(userInput);
     chart.setData(memoryData, CHART_DURATION_TIME);
@@ -108,7 +104,6 @@ export default function Chart() {
 
     if (!chart) return;
 
-    console.log("pause");
     chart.pause();
     setPlayStatus("pause");
   }
@@ -118,10 +113,7 @@ export default function Chart() {
 
     if (!chart) return;
 
-    console.log("stop");
-
     chart.stop();
-
     setPlayStatus("stop");
   }
 
@@ -133,7 +125,7 @@ export default function Chart() {
     ).drawChart();
 
     setlineChart(initChart);
-    setBarChart(new BarChart("chart", checkBarHover, darkTheme));
+    setBarChart(new BarChart("chart", checkNodeHover, darkTheme));
     setVariableBarChart(
       new VariableBarChart("chart", checkBarHover, darkTheme),
     );
@@ -142,6 +134,7 @@ export default function Chart() {
 
   useEffect(() => {
     if (!chart) return;
+    handleChartStop();
 
     chart.setData(memoryData, CHART_DURATION_TIME);
   }, [memoryData]);

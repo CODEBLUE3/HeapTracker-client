@@ -259,10 +259,11 @@ export default class VariableBarChart {
     ctx.textBaseline = "bottom";
     ctx.fillStyle = this.textColor;
 
-    for (let i = 0; i < Y_TICK_COUNT; i++) {
+    for (let i = 0; i <= Y_TICK_COUNT; i++) {
       const value = Math.floor(i * yInterval);
       const yPoint =
         TOP_PADDING + chartHeight - i * (chartHeight / Y_TICK_COUNT);
+
       ctx.fillText(value ? value : 0, Y_PADDING - 3, yPoint - TOP_PADDING + 20);
 
       ctx.strokeStyle = this.gridColor;

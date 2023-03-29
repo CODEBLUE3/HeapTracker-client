@@ -35,7 +35,7 @@ export default function VariableBarModal() {
       <div className="variableName">
         변수 이름 : {variableName && variableName}
       </div>
-      <div className="count">{variableCount && variableCount} 번 할당됨</div>
+      <div className="count">호출 횟수 : {variableCount && variableCount}</div>
     </Container>
   );
 }

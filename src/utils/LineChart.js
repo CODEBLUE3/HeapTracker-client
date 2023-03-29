@@ -3,6 +3,7 @@ import ChartNode from "./ChartNode";
 const X_PADDING = 25;
 const Y_PADDING = 70;
 const TOP_PADDING = 15;
+const NODE_FLOAT_OFFSET = 10;
 const VIEW_NODE_COUNT = 13;
 const Y_TICK_COUNT = 7;
 const NODE_RADIUS = 4;
@@ -100,6 +101,11 @@ export default class LineChart {
 
     if (!this.data.length) return;
 
+    this.minMemoryText = Infinity;
+    this.maxMemoryText = 0;
+    this.minMemoryValue = Infinity;
+    this.maxMemoryValue = 0;
+
     this.baseMemory = this.data[0].usedMemory;
     this.chartDurationTime = durationTime;
     this.excuteDurationTime = this.data.length;
@@ -118,8 +124,7 @@ export default class LineChart {
     });
 
     this.heightPixelWeights =
-      (this.chartHeight - Y_PADDING) /
-      (this.maxMemoryValue - this.minMemoryValue);
+      this.chartHeight / (this.maxMemoryValue - this.minMemoryValue);
   };
 
   setCodeData = (codeData) => {
@@ -167,7 +172,7 @@ export default class LineChart {
     ctx.beginPath();
     ctx.strokeStyle = this.lineColor;
 
-    ctx.moveTo(Y_PADDING, TOP_PADDING);
+    ctx.moveTo(Y_PADDING, TOP_PADDING - NODE_FLOAT_OFFSET);
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
     ctx.stroke();
 
@@ -180,15 +185,19 @@ export default class LineChart {
     ctx.fillStyle = this.textColor;
     ctx.strokeStyle = this.gridColor;
 
-    for (let i = 0; i < Y_TICK_COUNT; i++) {
+    for (let i = 0; i <= Y_TICK_COUNT; i++) {
       const value = Math.floor(i * yInterval);
       const yPoint =
         TOP_PADDING + chartHeight - i * (chartHeight / Y_TICK_COUNT);
 
-      ctx.fillText(value ? value : 0, Y_PADDING - 3, yPoint - TOP_PADDING);
+      ctx.fillText(
+        value ? value : 0,
+        Y_PADDING - 3,
+        yPoint - NODE_FLOAT_OFFSET,
+      );
 
-      ctx.moveTo(Y_PADDING, yPoint - TOP_PADDING);
-      ctx.lineTo(Y_PADDING + canvas.width, yPoint - TOP_PADDING);
+      ctx.moveTo(Y_PADDING, yPoint - NODE_FLOAT_OFFSET);
+      ctx.lineTo(Y_PADDING + canvas.width, yPoint - NODE_FLOAT_OFFSET);
     }
 
     ctx.stroke();
@@ -224,8 +233,8 @@ export default class LineChart {
           (this.chartWidth / VIEW_NODE_COUNT) * this.currentPosition +
           offset;
         const yPosition =
-          this.chartHeight -
-          TOP_PADDING -
+          this.chartHeight +
+          5 -
           this.heightPixelWeights * (item.usedMemory - this.baseMemory);
 
         return new ChartNode(xPosition, yPosition, NODE_RADIUS, ctx, item);

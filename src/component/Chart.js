@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import LineChart from "../utils/LineChart";
-import BarChart from "../utils/BarChart";
 import styled from "styled-components";
 import { style, lightTheme, darkTheme } from "../styles/styleCode";
 import { useSelector, useDispatch } from "react-redux";
@@ -9,14 +7,17 @@ import {
   setChartModalStyle,
   hiddenChartModal,
 } from "../features/chartModal/chartModalSlice";
-import VariableBarChart from "../utils/VariableBarChart";
 import {
   hiddenVariableChartModal,
   setVariableBarModalData,
   setVariableBarModalStyle,
 } from "../features/chartModal/variableBarModalSlice";
 
-const CHART_DURATION_TIME = 3000;
+import LineChart from "../utils/LineChart";
+import VariableBarChart from "../utils/VariableBarChart";
+import BarChart from "../utils/BarChart";
+
+const CHART_DURATION_TIME = 30000;
 
 const ChartControlButton = styled.button`
   display: flex;
@@ -41,19 +42,6 @@ const Controller = styled.div`
   justify-content: center;
 `;
 
-const RowContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin: 0px 20px;
-`;
-
-const Item = styled.div`
-  position: relative;
-  display: flex;
-  margin-top: 5px;
-  margin: 0px 20px;
-`;
-
 export default function Chart() {
   const dispatch = useDispatch();
   const [chart, setChart] = useState();
@@ -64,12 +52,7 @@ export default function Chart() {
     (state) => state.heapMemory.heapMemoryData.result,
   );
   const codeData = useSelector((state) => state.userCode.userInput);
-
-  useEffect(() => {
-    if (!chart) return;
-
-    chart.setColor(themeType === "dark" ? darkTheme : lightTheme).drawChart();
-  }, [themeType]);
+  const chartType = useSelector((state) => state.chartType.type);
 
   function checkNodeHover(isHover, ...node) {
     const [data, style] = node;
@@ -126,32 +109,51 @@ export default function Chart() {
     if (!chart) return;
 
     chart.setData(memoryData, CHART_DURATION_TIME);
-
     handleChartStop();
   }, [memoryData]);
 
   useEffect(() => {
-    if (chart) {
+    if (!chart) return;
+
+    chart.setColor(themeType === "dark" ? darkTheme : lightTheme).drawChart();
+  }, [themeType]);
+
+  useEffect(() => {
+    if (!chart) return;
+
+    if (chartType === "variableBarChart") {
       chart.setCodeData(codeData);
     }
   }, [codeData]);
 
   useEffect(() => {
-    setChart(
-      new VariableBarChart("chart", checkBarHover, darkTheme).drawAxis(),
-    );
-  }, []);
+    if (chartType === "lineChart") {
+      setChart(
+        new LineChart("lineChart", checkNodeHover, darkTheme).drawChart(),
+      );
+      return;
+    }
+
+    if (chartType === "barChart") {
+      setChart(new BarChart("barChart", checkNodeHover, darkTheme).drawChart());
+      return;
+    }
+
+    if (chartType === "variableBarChart") {
+      setChart(
+        new VariableBarChart(
+          "variableBarChart",
+          checkBarHover,
+          darkTheme,
+        ).drawAxis(),
+      );
+      return;
+    }
+  }, [chartType]);
 
   return (
     <>
-      <RowContainer>
-        <Item>
-          <button>Memory-LineChart</button>
-          <button>Memory-BarChart</button>
-          <button>Value-UsedChart</button>
-        </Item>
-      </RowContainer>
-      <canvas id="chart" width="530px" height="400px"></canvas>
+      <canvas id="lineChart" width="550px" height="400px"></canvas>
       <Controller>
         <ChartControlButton
           onClick={handleChartPlay}

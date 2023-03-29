@@ -7,7 +7,7 @@ import UserEditor from "./pages/UserEditor";
 import OutputResult from "./pages/OutputResult";
 import GlobalStyle from "./styles/GlobalStyle";
 
-const Main = styled.div`
+const Main = styled.main`
   width: 100vw;
   height: 100vh;
   display: flex;
@@ -15,22 +15,28 @@ const Main = styled.div`
   background-color: ${(props) => props.theme.background};
 `;
 
-const Header = styled.div`
-  width: 100vw;
-  height: 50px;
-  display: inline-block;
+const Header = styled.header`
+  height: 60px;
+  padding: 20px;
+  line-height: 60px;
+
   background-color: ${(props) => props.theme.defaultColor};
+
+  font-size: 2.6rem;
+  font-weight: 900;
+  font-style: italic;
+  color: ${(props) => props.theme.buttonFont};
 `;
 
 const LeftContainer = styled.div`
-  width: 50%;
+  width: 50vw;
   float: left;
   flex-direction: column;
   padding: 5px 0px;
 `;
 
 const RightContainer = styled.div`
-  width: 50%;
+  width: 50vw;
   float: right;
   flex-direction: column;
   padding: 5px 0px;
@@ -52,7 +58,7 @@ export default function App() {
     <>
       <GlobalStyle />
       <ThemeProvider theme={theme}>
-        <Header></Header>
+        <Header>Heap Tracker</Header>
         <Main>
           <LeftContainer>
             <UserEditor />

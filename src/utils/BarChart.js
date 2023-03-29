@@ -1,5 +1,5 @@
 import BarNode from "./BarNode";
-import { color } from "../styles/styleCode";
+// import { color } from "../styles/styleCode";
 
 const X_PADDING = 25;
 const Y_PADDING = 70;
@@ -8,7 +8,7 @@ const VIEW_NODE_COUNT = 10;
 const Y_TICK_COUNT = 7;
 
 export default class LineChart {
-  constructor(id, modalCallback) {
+  constructor(id, modalCallback, theme) {
     this.canvas = document.getElementById(id);
 
     if (!this.canvas) return null;
@@ -24,7 +24,7 @@ export default class LineChart {
     this.ctx.font = "0.7rem Arial";
 
     this.chartWidth = this.canvas.width - Y_PADDING - 5;
-    this.chartHeight = this.canvas.height - X_PADDING - TOP_PADDING;
+    this.chartHeight = this.canvas.height - TOP_PADDING - X_PADDING;
 
     this.excuteDurationTime = 0;
     this.currentPosition = 0;
@@ -40,6 +40,13 @@ export default class LineChart {
     this.runTime = 0;
 
     this.minGap = Infinity;
+
+    this.backgroundColor = theme.boxBackground;
+    this.gridColor = theme.gridLine;
+    this.lineColor = theme.borderLine;
+    this.textColor = theme.unitText;
+    this.nodeColor = theme.chartDot;
+    this.nodeHoverColor = theme.chartDotHover;
 
     this.canvas.addEventListener("mousemove", (e) => {
       const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
@@ -68,9 +75,9 @@ export default class LineChart {
             };
 
             this.checkNodeHover(true, chartModalData, chartModalStyles);
-            node.draw(color.chartDotHover);
+            node.draw(this.nodeHoverColor);
           } else {
-            node.draw(color.chartDot);
+            node.draw(this.nodeColor);
           }
         });
       }
@@ -88,7 +95,7 @@ export default class LineChart {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     ctx.beginPath();
-    ctx.strokeStyle = color.defalutChartLine;
+    ctx.strokeStyle = this.gridColor.defalutChartLine;
     ctx.moveTo(Y_PADDING, TOP_PADDING);
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
     ctx.stroke();
@@ -102,14 +109,15 @@ export default class LineChart {
       (this.maxMemoryValue - this.minMemoryValue) / Y_TICK_COUNT;
     ctx.textAlign = "right";
     ctx.textBaseline = "middle";
+    ctx.fillStyle = this.textColor;
 
     for (let i = 0; i < Y_TICK_COUNT; i++) {
       const value = Math.floor(i * yInterval);
       const yPoint =
-        TOP_PADDING + chartHeight - i * (chartHeight / Y_TICK_COUNT);
-      ctx.fillText(value ? value : 0, Y_PADDING - 3, yPoint - TOP_PADDING);
+        chartHeight - i * (chartHeight / Y_TICK_COUNT) + TOP_PADDING;
+      ctx.fillText(value ? value : 0, Y_PADDING - 3, yPoint);
 
-      ctx.strokeStyle = color.defalutGridLine;
+      ctx.strokeStyle = this.gridColor;
       ctx.moveTo(Y_PADDING, yPoint);
       ctx.lineTo(Y_PADDING + canvas.width, yPoint);
       ctx.stroke();
@@ -124,7 +132,7 @@ export default class LineChart {
     ctx.clip();
 
     ctx.beginPath();
-    ctx.strokeStyle = color.defalutChartLine;
+    ctx.strokeStyle = this.lineColor;
     ctx.moveTo(Y_PADDING, chartHeight + TOP_PADDING);
     ctx.lineTo(canvas.width, chartHeight + TOP_PADDING);
     ctx.stroke();
@@ -141,7 +149,7 @@ export default class LineChart {
         (this.runTime / VIEW_NODE_COUNT) * (index + 1),
       );
 
-      ctx.fillStyle = "black";
+      ctx.fillStyle = this.textColor;
       ctx.fillText(
         x_guideValue ? x_guideValue : 0,
         xPosition + Y_PADDING,
@@ -157,19 +165,18 @@ export default class LineChart {
         (this.chartWidth / this.data[this.data.length - 1].timeStamp) *
           node.timeStamp +
         Y_PADDING;
-      const startY = chartHeight + TOP_PADDING;
+      const startY = this.chartHeight + TOP_PADDING;
       const width =
         Math.floor(this.minGap) /
         Math.floor(this.data[this.data.length - 1].timeStamp / this.chartWidth);
       const height =
-        this.chartHeight -
         this.heightPixelWeights * (node.usedMemory - this.baseMemory);
 
       return new BarNode(startX, startY, width, height, ctx, node);
     });
 
     this.barNodes.forEach((node, index) => {
-      setTimeout(() => node.draw(color.chartDot), 30 * index);
+      setTimeout(() => node.draw(this.nodeColor), 30 * index);
     });
 
     ctx.stroke();
@@ -222,5 +229,16 @@ export default class LineChart {
     }
 
     this.drawChart();
+  };
+
+  setColor = (theme) => {
+    this.backgroundColor = theme.boxBackground;
+    this.gridColor = theme.gridLine;
+    this.lineColor = theme.borderLine;
+    this.textColor = theme.unitText;
+    this.nodeColor = theme.chartDot;
+    this.nodeHoverColor = theme.chartDotHover;
+
+    return this;
   };
 }

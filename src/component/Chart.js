@@ -14,10 +14,10 @@ import {
 } from "../features/chartModal/variableBarModalSlice";
 
 import LineChart from "../utils/LineChart";
-import VariableBarChart from "../utils/VariableBarChart";
 import BarChart from "../utils/BarChart";
+import VariableBarChart from "../utils/VariableBarChart";
 
-const CHART_DURATION_TIME = 30000;
+const CHART_DURATION_TIME = 5000;
 
 const ChartControlButton = styled.button`
   display: flex;
@@ -45,14 +45,24 @@ const Controller = styled.div`
 export default function Chart() {
   const dispatch = useDispatch();
   const [chart, setChart] = useState();
+  const [lineChart, setlineChart] = useState();
+  const [barChart, setBarChart] = useState();
+  const [variableBarChart, setVariableBarChart] = useState();
+
   const [playStatus, setPlayStatus] = useState("stop");
 
   const themeType = useSelector((state) => state.appTheme.colorTheme);
   const memoryData = useSelector(
     (state) => state.heapMemory.heapMemoryData.result,
   );
-  const codeData = useSelector((state) => state.userCode.userInput);
+  const userInput = useSelector((state) => state.userCode.userInput);
   const chartType = useSelector((state) => state.chartType.type);
+
+  useEffect(() => {
+    if (!chart) return;
+
+    chart.setColor(themeType === "dark" ? darkTheme : lightTheme).drawChart();
+  }, [themeType]);
 
   function checkNodeHover(isHover, ...node) {
     const [data, style] = node;
@@ -79,10 +89,16 @@ export default function Chart() {
   }
 
   function handleChartPlay() {
+    console.log("play11", playStatus);
     if (playStatus === "play") return;
 
+    console.log("play22", playStatus);
     if (!chart) return;
 
+    console.log("play");
+
+    chart.setCodeData(userInput);
+    chart.setData(memoryData, CHART_DURATION_TIME);
     chart.playback();
     setPlayStatus("play");
   }
@@ -92,6 +108,7 @@ export default function Chart() {
 
     if (!chart) return;
 
+    console.log("pause");
     chart.pause();
     setPlayStatus("pause");
   }
@@ -101,59 +118,64 @@ export default function Chart() {
 
     if (!chart) return;
 
+    console.log("stop");
+
     chart.stop();
+
     setPlayStatus("stop");
   }
+
+  useEffect(() => {
+    const initChart = new LineChart(
+      "chart",
+      checkNodeHover,
+      darkTheme,
+    ).drawChart();
+
+    setlineChart(initChart);
+    setBarChart(new BarChart("chart", checkBarHover, darkTheme));
+    setVariableBarChart(
+      new VariableBarChart("chart", checkBarHover, darkTheme),
+    );
+    setChart(initChart);
+  }, []);
 
   useEffect(() => {
     if (!chart) return;
 
     chart.setData(memoryData, CHART_DURATION_TIME);
-    handleChartStop();
   }, [memoryData]);
 
   useEffect(() => {
     if (!chart) return;
 
-    chart.setColor(themeType === "dark" ? darkTheme : lightTheme).drawChart();
-  }, [themeType]);
+    chart.drawClear();
+    if (chart) chart.stop();
+    handleChartStop();
 
-  useEffect(() => {
-    if (!chart) return;
-
-    if (chartType === "variableBarChart") {
-      chart.setCodeData(codeData);
-    }
-  }, [codeData]);
-
-  useEffect(() => {
     if (chartType === "lineChart") {
-      setChart(
-        new LineChart("lineChart", checkNodeHover, darkTheme).drawChart(),
-      );
+      if (!lineChart) return;
+
+      setChart(lineChart.drawChart());
       return;
     }
-
     if (chartType === "barChart") {
-      setChart(new BarChart("barChart", checkNodeHover, darkTheme).drawChart());
+      if (!barChart) return;
+
+      setChart(barChart.drawChart());
       return;
     }
-
     if (chartType === "variableBarChart") {
-      setChart(
-        new VariableBarChart(
-          "variableBarChart",
-          checkBarHover,
-          darkTheme,
-        ).drawAxis(),
-      );
+      if (!variableBarChart) return;
+
+      setChart(variableBarChart.resetBackround());
       return;
     }
   }, [chartType]);
 
   return (
     <>
-      <canvas id="lineChart" width="550px" height="400px"></canvas>
+      <canvas id="chart" width="580px" height="400px"></canvas>
       <Controller>
         <ChartControlButton
           onClick={handleChartPlay}
@@ -176,7 +198,7 @@ export default function Chart() {
           data-testid="stop-button"
           disabled={playStatus === "stop" ? true : false}
         >
-          종료
+          정지
         </ChartControlButton>
       </Controller>
     </>

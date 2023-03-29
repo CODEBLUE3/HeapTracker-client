@@ -20,7 +20,7 @@ export default class LineChart {
     this.canvas.style.width = `${this.canvasWidth}px`;
     this.canvas.style.height = `${this.canvasHeight}px`;
     this.ctx = this.canvas.getContext("2d");
-    this.ctx.font = "0.7rem Arial";
+    this.ctx.font = "0.8rem Arial";
 
     this.chartWidth = this.canvas.width;
     this.chartHeight = this.canvas.height - X_PADDING - TOP_PADDING;
@@ -52,6 +52,11 @@ export default class LineChart {
       const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
       const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
 
+      this.ctx.beginPath();
+      this.ctx.rect(Y_PADDING, 0, this.chartWidth, this.canvas.height);
+      this.ctx.save();
+      this.ctx.clip();
+
       if (
         this.snapshotNodes.length > 0 &&
         cursorPositionX > Y_PADDING &&
@@ -81,6 +86,8 @@ export default class LineChart {
           }
         });
       }
+
+      this.ctx.restore();
     });
 
     return this;
@@ -115,6 +122,10 @@ export default class LineChart {
       (this.maxMemoryValue - this.minMemoryValue);
   };
 
+  setCodeData = (codeData) => {
+    if (!this.canvas) return;
+  };
+
   playback = () => {
     if (!this.data) return;
     if (!this.data.length) return;
@@ -129,11 +140,13 @@ export default class LineChart {
   };
 
   pause = () => {
+    this.ctx.restore();
     clearInterval(this.intervalID);
     this.intervalID = 0;
   };
 
   stop = () => {
+    this.ctx.restore();
     clearInterval(this.intervalID);
     this.intervalID = 0;
     this.currentPosition = 0;
@@ -156,7 +169,6 @@ export default class LineChart {
 
     ctx.moveTo(Y_PADDING, TOP_PADDING);
     ctx.lineTo(Y_PADDING, chartHeight + TOP_PADDING);
-    ctx.closePath();
     ctx.stroke();
 
     const yInterval =
@@ -179,21 +191,18 @@ export default class LineChart {
       ctx.lineTo(Y_PADDING + canvas.width, yPoint - TOP_PADDING);
     }
 
-    ctx.closePath();
     ctx.stroke();
 
-    ctx.beginPath();
     ctx.strokeStyle = this.lineColor;
     ctx.moveTo(Y_PADDING, chartHeight + TOP_PADDING);
     ctx.lineTo(canvas.width, chartHeight + TOP_PADDING);
-    ctx.closePath();
     ctx.stroke();
 
     /* Y축 좌측으로 노드가
     그려지지 않게 함 */
-    ctx.save();
     ctx.beginPath();
     ctx.rect(Y_PADDING, 0, chartWidth, canvas.height);
+    ctx.save();
     ctx.clip();
 
     ctx.beginPath();
@@ -253,6 +262,11 @@ export default class LineChart {
     ctx.restore();
 
     return this;
+  };
+
+  drawClear = () => {
+    this.ctx.restore();
+    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
   };
 
   updateData = () => {

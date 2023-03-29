@@ -16,8 +16,7 @@ const Container = styled.div`
 const ChartNavigation = styled.nav`
   display: flex;
   justify-content: center;
-  margin: 40px 0 20px;
-
+  margin: 10px 0 20px;
   button {
     background-color: ${(props) => props.theme.background};
     border: 2px solid ${(props) => props.theme.defaultFont};
@@ -45,12 +44,10 @@ export default function OutputResult() {
       dispatch(setChartType("lineChart"));
       return;
     }
-
     if (e.target.className === "barChart") {
       dispatch(setChartType("barChart"));
       return;
     }
-
     if (e.target.className === "variableBarChart") {
       dispatch(setChartType("variableBarChart"));
       return;
@@ -60,11 +57,9 @@ export default function OutputResult() {
   function setMemoryArray(data) {
     if (data.result.length > 0) {
       const baseTime = Number(data.result[0].timeStamp);
-
       data.result.forEach((element) => {
         element.timeStamp = Number(element.timeStamp) - baseTime;
       });
-
       dispatch(setHeapMemoryData(data));
     }
   }

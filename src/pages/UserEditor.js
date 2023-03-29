@@ -7,10 +7,7 @@ import { useDispatch } from "react-redux";
 import { setUserCode } from "../features/userCode/userCodeSlice";
 import { setColorTheme } from "../features/appTheme/appThemeSlice";
 
-const Container = styled.div.attrs((props) => ({
-  transform: props.checked ? "translateX(0px)" : "translateX(20px)",
-  color: props.checked ? "yellow" : "#398ab3",
-}))`
+const Container = styled.div`
   height: 100vh;
   padding: 10px 40px;
 `;

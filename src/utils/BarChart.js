@@ -286,4 +286,11 @@ export default class LineChart {
 
     return this;
   };
+
+  setLineColor = (color) => {
+    this.nodeColor = color;
+    this.nodeLineColor = color;
+
+    return this;
+  };
 }

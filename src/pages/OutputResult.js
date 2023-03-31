@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ChartModal from "../component/ChartModal";
 import ChartResult from "../component/ChartResult";
 import Chart from "../component/Chart";
+import ColorPalletButton from "../component/ColorPalletButton";
 
 import { setHeapMemoryData } from "../features/heapMemory/heapMemorySlice";
 import { setChartType } from "../features/chartType/chartTypeSlice";
@@ -15,14 +16,14 @@ const Container = styled.div`
 
 const ChartNavigation = styled.nav`
   display: flex;
-  justify-content: center;
+  justify-content: space-around;
   margin: 10px 0 20px;
   button {
     background-color: ${(props) => props.theme.background};
     border: 2px solid ${(props) => props.theme.defaultFont};
     color: ${(props) => props.theme.defaultFont};
 
-    margin: 0 10px 0;
+    margin: 0 7px 0;
     padding: 7px 10px;
     border-radius: 10px;
 
@@ -74,6 +75,7 @@ export default function OutputResult() {
         <button className="lineChart">Memory-LineChart</button>
         <button className="barChart">Memory-BarChart</button>
         <button className="variableBarChart">Value-UsedChart</button>
+        <ColorPalletButton />
       </ChartNavigation>
       <Chart />
       <ChartModal />

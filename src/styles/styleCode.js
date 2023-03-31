@@ -42,6 +42,7 @@ const style = {
   controlButtonMargin: "10px",
   controlButtonSize: "1rem",
   buttonFontSize: "1.3rem",
+  HelpButtonRadius: "13px",
 };
 
 export { lightTheme, darkTheme, style };

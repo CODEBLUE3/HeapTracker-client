@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { style } from "../styles/styleCode";
+import HelpButton from "./HelpButton";
 import ToggleButton from "./ToggleButton";
 
 const ResultContainer = styled.div`
@@ -41,7 +42,7 @@ const ResultContainer = styled.div`
   }
 
   .name {
-    width: 180px;
+    width: 220px;
     margin-left: 4vh;
   }
 
@@ -122,7 +123,10 @@ export default function ChartResult() {
       </RowContainer>
       <ul>
         <li className="info">
-          <div className="name">RUN TIME</div>
+          <div className="name">
+            RUN TIME{" "}
+            <HelpButton modalId="help1" info="함수의 총 실행 시간입니다." />
+          </div>
           <div className="data" data-testid="memory-duration">
             {Math.floor(unitToggle ? duration : duration / 1000)
               .toString()
@@ -131,7 +135,13 @@ export default function ChartResult() {
           </div>
         </li>
         <li className="info">
-          <div className="name">MAX MEMORY</div>
+          <div className="name">
+            MAX MEMORY{" "}
+            <HelpButton
+              modalId="help2"
+              info="코드 실행 중의 최대 메모리 할당 값 입니다."
+            />
+          </div>
           <div className="data" data-testid="memory-max">
             {Math.floor(unitToggle ? maxMemory : maxMemory / 1000)
               .toString()
@@ -140,7 +150,13 @@ export default function ChartResult() {
           </div>
         </li>
         <li className="info">
-          <div className="name">MIN MEMORY</div>
+          <div className="name">
+            MIN MEMORY{" "}
+            <HelpButton
+              modalId="help3"
+              info="코드가 시작되는 시점의 메모리 할당 값 입니다. "
+            />
+          </div>
           <div className="data" data-testid="memory-min">
             {Math.floor(unitToggle ? minMemory : minMemory / 1000)
               .toString()
@@ -149,7 +165,13 @@ export default function ChartResult() {
           </div>
         </li>
         <li className="info">
-          <div className="name">USED MEMORY</div>
+          <div className="name">
+            USED MEMORY{" "}
+            <HelpButton
+              modalId="help4"
+              info="힙메모리의 최대 값에서 시작 값을 뺀 순수 사용된 값 입니다."
+            />
+          </div>
           <div className="data" data-testid="memory-used">
             {Math.floor(unitToggle ? usedMemory : usedMemory / 1000)
               .toString()
@@ -158,7 +180,13 @@ export default function ChartResult() {
           </div>
         </li>
         <li className="info">
-          <div className="name">NODE COUNT</div>
+          <div className="name">
+            NODE COUNT{" "}
+            <HelpButton
+              modalId="help5"
+              info="메모리 탐색을 위해 실행된 트랙킹 함수 실행 횟수입니다."
+            />
+          </div>
           <div className="data" data-testid="memory-count">
             {(memoryData ? memoryData.length : 0)
               .toString()

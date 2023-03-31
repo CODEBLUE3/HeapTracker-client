@@ -307,6 +307,13 @@ export default class VariableBarChart {
     return this;
   };
 
+  setLineColor = (color) => {
+    this.nodeColor = color;
+    this.nodeLineColor = color;
+
+    return this;
+  };
+
   isPlay = () => {
     if (this.intervalID) {
       return true;

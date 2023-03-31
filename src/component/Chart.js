@@ -52,6 +52,7 @@ export default function Chart() {
   const [playStatus, setPlayStatus] = useState("stop");
 
   const themeType = useSelector((state) => state.appTheme.colorTheme);
+  const chartColor = useSelector((state) => state.appTheme.chartColor);
   const memoryData = useSelector(
     (state) => state.heapMemory.heapMemoryData.result,
   );
@@ -63,6 +64,14 @@ export default function Chart() {
 
     chart.setColor(themeType === "dark" ? darkTheme : lightTheme).drawChart();
   }, [themeType]);
+
+  useEffect(() => {
+    if (!chart) return;
+
+    lineChart.setLineColor(chartColor);
+    barChart.setLineColor(chartColor);
+    variableBarChart.setLineColor(chartColor);
+  }, [chartColor]);
 
   function checkNodeHover(isHover, ...node) {
     const [data, style] = node;

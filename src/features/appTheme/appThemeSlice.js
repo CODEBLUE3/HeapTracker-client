@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   colorTheme: "dark",
+  chartColor: "#1E90FF",
 };
 
 export const appThemeSlice = createSlice({
@@ -11,9 +12,12 @@ export const appThemeSlice = createSlice({
     setColorTheme: (state, action) => {
       state.colorTheme = action.payload;
     },
+    setChartColor: (state, action) => {
+      state.chartColor = action.payload;
+    },
   },
 });
 
-export const { setColorTheme } = appThemeSlice.actions;
+export const { setColorTheme, setChartColor } = appThemeSlice.actions;
 
 export default appThemeSlice.reducer;

@@ -15,6 +15,29 @@
 
 <br/>
 
+# Table of Contents
+
+- [Motivation](#-🔹-motivation)
+- [Features](#-🔹-features)
+- [Challenges](#-🔹-challenges)
+  - [1. 라이브러리를 사용하지 않고 메모리 사용량 측정하기](#1-라이브러리를-사용하지-않고-메모리-사용량-측정하기)
+    - [1-1. 메모리 측정 방법 선택](#1-1-메모리-측정-방법-선택)
+    - [1-2. V8엔진에서 이야기하는 메모리란](#1-2-v8엔진에서-이야기하는-메모리란)
+    - [1-3. 메모리 측정 기준, AST 선택](#1-3-메모리-측정-기준-ast-선택)
+    - [1-4. Heap 메모리 사용량을 측정을 위한 memory tracking 함수 제작](#1-4-heap-메모리-사용량을-측정을-위한-memory-tracking-함수-제작)
+  - [2. 라이브러리를 사용하지 않고 React에서 동적 차트 구현하기](#2-라이브러리를-사용하지-않고-react에서-동적-차트-구현하기)
+    - [2-1. Canvas.API로 차트 그리기](#2-1-canvasapi로-차트-그리기)
+    - [2-2. Class를 사용한 차트 추상화 시도](#2-2-class를-사용한-차트-추상화-시도)
+    - [2-3. Canvas API를 활용하기 위한 useCanvas() 커스텀 훅을 만들었다면 어땠을까?](<#2-3-Canvas-api를-활용하기-위한-useCanvas()-커스텀-훅을-만들었다면-어땠을까?>)
+    - [커스텀 훅은 컴포넌트간에 로직 공유가 자유롭습니다](#커스텀-훅은-컴포넌트간에-로직-공유가-자유롭습니다)
+    - [useRef()리액트 훅으로 <canvas> 요소에 접근하기](<#useref()리액트-훅으로-canvas-요소에-접근하기>)
+    - [useChart() 커스텀 훅을 만들어 재사용성 높이기](#usechart-커스텀-훅을-만들어-재사용성-높이기)
+- [Schedule](#-🔹-schedule)
+- [Tech Stacks](#-🔹-tech-stacks)
+- [Member](#-🔹-member)
+
+<br>
+
 # 🔹 Callenges
 
 <br/>
@@ -307,7 +330,7 @@ console.log("hello world");
 
 <br/>
 
-### 1-4.실행하면 `Heap` 메모리 사용량을 측정 및 기록할 수 있는, `memory tracking` 함수 제작
+### 1-4. Heap 메모리 사용량을 측정을 위한 memory tracking 함수 제작
 
 `AST` 를 기준으로 메모리를 측정할 수 있는 함수를 위치를 설정한 뒤, 해당 위치에 `Heap` 메모리를 측정할 수 있는 함수를 삽입하고자 하였습니다. 이 함수를 **메모리 트래킹** 함수라고 부르겠습니다. 메모리 트래킹 함수가 수행하는 역할은 총 3가지 입니다.
 
@@ -516,7 +539,7 @@ FrontEnd
 - Redux
 - Styled Components
 
-# Member
+# 🔹 Member
 
 - 강현준 :[steady.kang27@gmail.com](steady.kang27@gmail.com)
 - 정재천 :[isintheskyj@gmail.com](isintheskyj@gmail.com)

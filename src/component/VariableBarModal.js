@@ -1,22 +1,6 @@
 import React from "react";
 import { useSelector } from "react-redux";
-import styled from "styled-components";
-import { style } from "../styles/styleCode";
-
-const POSITION_UNIT = "px";
-
-const Container = styled.div`
-  visibility: ${(props) =>
-    props.visibility === "true" ? "visible" : "hidden"};
-  position: absolute;
-  top: ${(props) => props.top};
-  left: ${(props) => props.left};
-  padding: 10px 20px;
-
-  background-color: ${(props) => props.theme.chartModal};
-  border-radius: ${style.borderRadius};
-  font-size: 1rem;
-`;
+import ModalContainer from "./ModalContainer";
 
 export default function VariableBarModal() {
   const { variableCount, variableName } = useSelector(
@@ -27,15 +11,11 @@ export default function VariableBarModal() {
   );
 
   return (
-    <Container
-      visibility={String(visibility)}
-      top={top + POSITION_UNIT}
-      left={left + POSITION_UNIT}
-    >
+    <ModalContainer visibility={visibility} top={top} left={left}>
       <div className="variableName">
         변수 이름 : {variableName && variableName}
       </div>
       <div className="count">호출 횟수 : {variableCount && variableCount}</div>
-    </Container>
+    </ModalContainer>
   );
 }

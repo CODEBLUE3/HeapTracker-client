@@ -1,46 +1,19 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createModalSlice } from "../modal/createModalSlice";
 
-const initialState = {
-  variableBarData: {
+const variableBarModalSlice = createModalSlice(
+  "variableBarModal",
+  {
     variableName: "",
     variableCount: 0,
   },
-  styles: {
-    visibility: false,
-    top: 0,
-    left: 0,
-  },
-};
+  "variableBarData", // Custom data key to maintain state structure
+);
 
-export const variableBarModalSlice = createSlice({
-  name: "variableBarModal",
-  initialState,
-  reducers: {
-    setVariableBarModalData: (state, action) => {
-      const { variableCount, variableName } = action.payload;
-
-      state.variableBarData.variableCount = variableCount;
-      state.variableBarData.variableName = variableName;
-    },
-    setVariableBarModalStyle: (state, action) => {
-      const { visibility, top, left } = action.payload;
-
-      state.styles.visibility = visibility;
-      state.styles.top = top;
-      state.styles.left = left;
-    },
-    hiddenVariableChartModal: (state, action) => {
-      const hidden = action.payload;
-
-      state.styles.visibility = hidden;
-    },
-  },
-});
-
+// Export actions with original names for backward compatibility
 export const {
-  setVariableBarModalData,
-  setVariableBarModalStyle,
-  hiddenVariableChartModal,
+  setModalData: setVariableBarModalData,
+  setModalStyle: setVariableBarModalStyle,
+  hideModal: hiddenVariableChartModal,
 } = variableBarModalSlice.actions;
 
 export default variableBarModalSlice.reducer;

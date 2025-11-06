@@ -1,50 +1,18 @@
-import { createSlice } from "@reduxjs/toolkit";
+import { createModalSlice } from "../modal/createModalSlice";
 
-const initialState = {
-  data: {
-    codeCount: 0,
-    codeType: "",
-    codePosition: "",
-    usedMemory: "",
-    timeStamp: "",
-  },
-  styles: {
-    visibility: false,
-    top: 0,
-    left: 0,
-  },
-};
-
-export const chartModalSlice = createSlice({
-  name: "chartModal",
-  initialState,
-  reducers: {
-    setChartModalData: (state, action) => {
-      const { codeCount, codeType, codePosition, usedMemory, timeStamp } =
-        action.payload;
-
-      state.data.codeCount = codeCount;
-      state.data.codeType = codeType;
-      state.data.codePosition = codePosition;
-      state.data.usedMemory = usedMemory;
-      state.data.timeStamp = timeStamp;
-    },
-    setChartModalStyle: (state, action) => {
-      const { visibility, top, left } = action.payload;
-
-      state.styles.visibility = visibility;
-      state.styles.top = top;
-      state.styles.left = left;
-    },
-    hiddenChartModal: (state, action) => {
-      const hidden = action.payload;
-
-      state.styles.visibility = hidden;
-    },
-  },
+const chartModalSlice = createModalSlice("chartModal", {
+  codeCount: 0,
+  codeType: "",
+  codePosition: "",
+  usedMemory: "",
+  timeStamp: "",
 });
 
-export const { setChartModalData, setChartModalStyle, hiddenChartModal } =
-  chartModalSlice.actions;
+// Export actions with original names for backward compatibility
+export const {
+  setModalData: setChartModalData,
+  setModalStyle: setChartModalStyle,
+  hideModal: hiddenChartModal,
+} = chartModalSlice.actions;
 
 export default chartModalSlice.reducer;

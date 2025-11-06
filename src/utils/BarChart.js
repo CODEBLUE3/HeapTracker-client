@@ -1,33 +1,78 @@
+import BaseChart, { X_PADDING, Y_PADDING, TOP_PADDING } from "./BaseChart";
 import BarNode from "./BarNode";
 
-const X_PADDING = 25;
-const Y_PADDING = 70;
 const LAST_BAR_X_POS_OFFSET = 10;
-const TOP_PADDING = 15;
 const VIEW_NODE_COUNT = 10;
 const Y_TICK_COUNT = 7;
 
-export default class LineChart {
+export default class BarChart extends BaseChart {
   constructor(id, modalCallback, theme) {
-    this.canvas = document.getElementById(id);
+    super(id, modalCallback, theme);
 
     if (!this.canvas) return null;
 
-    this.data = [];
+    // BarChart-specific state
     this.barNodes = [];
-    this.canvasWidth = this.canvas.clientWidth;
-    this.canvasHeight = this.canvas.clientHeight;
-    this.canvas.style.width = `${this.canvasWidth}px`;
-    this.canvas.style.height = `${this.canvasHeight}px`;
+    this.maxMemoryText = 0;
+    this.minMemoryText = Infinity;
+    this.maxMemoryValue = 0;
+    this.minMemoryValue = Infinity;
+    this.heightPixelWeights = 0;
+    this.runTime = 0;
+    this.minGap = Infinity;
 
-    this.ctx = this.canvas.getContext("2d");
-    this.ctx.font = "0.8rem Arial";
-
+    // Override chartWidth for BarChart
     this.chartWidth = this.canvas.width - Y_PADDING - 5;
-    this.chartHeight = this.canvas.height - TOP_PADDING - X_PADDING;
 
-    this.excuteDurationTime = 0;
-    this.currentPosition = 0;
+    return this;
+  }
+
+  /**
+   * Override: Handle mouse move for bar chart nodes
+   * @protected
+   */
+  _handleMouseMove(cursorPositionX, cursorPositionY, event) {
+    if (
+      this.data.length > 0 &&
+      cursorPositionX > Y_PADDING &&
+      cursorPositionY < this.chartHeight + TOP_PADDING
+    ) {
+      this.checkNodeHover(false);
+
+      this.barNodes.forEach((node) => {
+        if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
+          const chartModalData = this._createChartModalData(node);
+          const chartModalStyles = this._createChartModalStyles(
+            event.pageX,
+            event.pageY,
+          );
+
+          this.checkNodeHover(true, chartModalData, chartModalStyles);
+          node.draw(this.nodeHoverColor);
+        } else {
+          node.draw(this.nodeColor);
+        }
+      });
+    }
+  }
+
+  /**
+   * Override: Stop and clear bar chart state
+   * @public
+   */
+  stop = () => {
+    super.stop();
+    this.barNodes.length = 0;
+  };
+
+  /**
+   * Set data for bar chart
+   * @public
+   */
+  setData = (data, durationTime) => {
+    this.data = [...data];
+
+    if (!this.data.length) return;
 
     this.maxMemoryText = 0;
     this.minMemoryText = Infinity;
@@ -35,57 +80,42 @@ export default class LineChart {
     this.minMemoryValue = Infinity;
     this.heightPixelWeights = 0;
 
-    this.checkNodeHover = modalCallback;
+    this.baseMemory = this.data[0].usedMemory;
+    this.chartDurationTime = durationTime;
+    this.excuteDurationTime = this.data.length;
 
-    this.runTime = 0;
+    this.xDistance =
+      this.data[this.data.length - 1].timeStamp / this.data.length;
 
-    this.minGap = Infinity;
-
-    this.backgroundColor = theme.boxBackground;
-    this.gridColor = theme.gridLine;
-    this.lineColor = theme.borderLine;
-    this.textColor = theme.unitText;
-    this.nodeColor = theme.chartDot;
-    this.nodeHoverColor = theme.chartDotHover;
-
-    this.canvas.addEventListener("mousemove", (e) => {
-      const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
-      const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
-
-      if (
-        this.data.length > 0 &&
-        cursorPositionX > Y_PADDING &&
-        cursorPositionY < this.chartHeight + TOP_PADDING
-      ) {
-        this.checkNodeHover(false);
-
-        this.barNodes.forEach((node) => {
-          if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
-            const chartModalData = {
-              codeCount: node.data.count,
-              codeType: node.data.codeType,
-              codePosition: node.data.codePosition,
-              usedMemory: node.data.usedMemory,
-              timeStamp: node.data.timeStamp,
-            };
-            const chartModalStyles = {
-              visibility: true,
-              top: e.pageY,
-              left: e.pageX,
-            };
-
-            this.checkNodeHover(true, chartModalData, chartModalStyles);
-            node.draw(this.nodeHoverColor);
-          } else {
-            node.draw(this.nodeColor);
-          }
-        });
-      }
+    this.data.forEach((item) => {
+      this.minMemoryText = Math.min(this.minMemoryText, item.usedMemory);
+      this.maxMemoryText = Math.max(this.maxMemoryText, item.usedMemory);
     });
 
-    return this;
-  }
+    this.data.forEach((item) => {
+      this.minMemoryValue = Math.min(this.minMemoryValue, item.usedMemory);
+      this.maxMemoryValue = Math.max(this.maxMemoryValue, item.usedMemory);
+    });
 
+    this.heightPixelWeights =
+      this.chartHeight / (this.maxMemoryValue - this.minMemoryValue);
+
+    this.runTime =
+      (this.data[this.data.length - 1].timeStamp - this.data[0].timeStamp) /
+      1000;
+
+    for (let i = 0; i < this.data.length - 1; i += 1) {
+      this.minGap = Math.min(
+        this.minGap,
+        this.data[i + 1].timeStamp - this.data[i].timeStamp,
+      );
+    }
+  };
+
+  /**
+   * Draw bar chart
+   * @public
+   */
   drawChart = () => {
     const { ctx, canvas, chartHeight, chartWidth } = this;
 
@@ -180,11 +210,10 @@ export default class LineChart {
     return this;
   };
 
-  drawClear = () => {
-    const { ctx, canvas } = this;
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-  };
-
+  /**
+   * Override: Playback for bar chart with custom animation
+   * @public
+   */
   playback = () => {
     if (!this.data) return;
 
@@ -203,6 +232,10 @@ export default class LineChart {
     }, this.chartDurationTime / this.excuteDurationTime);
   };
 
+  /**
+   * Override: Pause bar chart animation
+   * @public
+   */
   pause = () => {
     if (!this.data) return;
 
@@ -213,84 +246,14 @@ export default class LineChart {
     this.intervalID = 0;
   };
 
-  stop = () => {
-    this.ctx.restore();
-    clearInterval(this.intervalID);
-
-    this.intervalID = 0;
-    this.currentPosition = 0;
-    this.barNodes.length = 0;
-
-    this.ctx.clearRect(
-      Y_PADDING,
-      0,
-      this.canvasWidth,
-      this.canvasHeight - X_PADDING,
-    );
-  };
-
-  setData = (data, durationTime) => {
-    this.data = [...data];
-
-    if (!this.data.length) return;
-
-    this.maxMemoryText = 0;
-    this.minMemoryText = Infinity;
-    this.maxMemoryValue = 0;
-    this.minMemoryValue = Infinity;
-    this.heightPixelWeights = 0;
-
-    this.baseMemory = this.data[0].usedMemory;
-    this.chartDurationTime = durationTime;
-    this.excuteDurationTime = this.data.length;
-
-    this.xDistance =
-      this.data[this.data.length - 1].timeStamp / this.data.length;
-
-    this.data.forEach((item) => {
-      this.minMemoryText = Math.min(this.minMemoryText, item.usedMemory);
-      this.maxMemoryText = Math.max(this.maxMemoryText, item.usedMemory);
-    });
-
-    this.data.forEach((item) => {
-      this.minMemoryValue = Math.min(this.minMemoryValue, item.usedMemory);
-      this.maxMemoryValue = Math.max(this.maxMemoryValue, item.usedMemory);
-    });
-
-    this.heightPixelWeights =
-      this.chartHeight / (this.maxMemoryValue - this.minMemoryValue);
-
-    this.runTime =
-      (this.data[this.data.length - 1].timeStamp - this.data[0].timeStamp) /
-      1000;
-
-    for (let i = 0; i < this.data.length - 1; i += 1) {
-      this.minGap = Math.min(
-        this.minGap,
-        this.data[i + 1].timeStamp - this.data[i].timeStamp,
-      );
-    }
-  };
-
-  setCodeData = (codeData) => {
-    if (!this.canvas) return;
-  };
-
-  setColor = (theme) => {
-    this.backgroundColor = theme.boxBackground;
-    this.gridColor = theme.gridLine;
-    this.lineColor = theme.borderLine;
-    this.textColor = theme.unitText;
-    this.nodeColor = theme.chartDot;
-    this.nodeHoverColor = theme.chartDotHover;
-
-    return this;
-  };
-
-  setLineColor = (color) => {
-    this.nodeColor = color;
-    this.nodeLineColor = color;
-
-    return this;
+  /**
+   * Update animation data for bar chart
+   * Note: BarChart uses different playback mechanism,
+   * so this method is less critical than other charts
+   * @protected
+   */
+  updateData = () => {
+    // BarChart uses different animation in playback()
+    // This method is kept for consistency with base class
   };
 }

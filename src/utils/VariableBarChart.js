@@ -1,78 +1,94 @@
+import BaseChart, { X_PADDING, Y_PADDING, TOP_PADDING } from "./BaseChart";
 import BarNode from "./BarNode";
 import { getPositionCodeInfo } from "./codeParser";
 
-const X_PADDING = 25;
-const Y_PADDING = 70;
-const TOP_PADDING = 15;
 const Y_TICK_COUNT = 7;
 const X_AXIS_OFFSET = 10;
 const BAR_WIDTH_RATIO = 0.8;
 
-export default class VariableBarChart {
+export default class VariableBarChart extends BaseChart {
   constructor(id, modalCallbacks, theme) {
-    this.canvas = document.getElementById(id);
+    super(id, modalCallbacks, theme);
 
     if (!this.canvas) return null;
 
-    this.data = [];
+    // VariableBarChart-specific state
     this.codeData = "";
-    this.canvasWidth = this.canvas.clientWidth;
-    this.canvasHeight = this.canvas.clientHeight;
-    this.canvas.style.width = `${this.canvasWidth}px`;
-    this.canvas.style.height = `${this.canvasHeight}px`;
-
-    this.ctx = this.canvas.getContext("2d");
-    this.ctx.font = "0.8rem Arial";
-
-    this.chartWidth = this.canvas.width;
-    this.chartHeight = this.canvas.height - X_PADDING - TOP_PADDING;
-
-    this.excuteDurationTime = 0;
-    this.intervalID = 0;
-    this.currentPosition = 0;
-
     this.barNodeArray = [];
     this.codePositionArray = [];
     this.variableArray = [];
     this.codePositionCount = {};
     this.maxCodePositionCount = 0;
 
-    this.checkNodeHover = modalCallbacks;
-
-    this.backgroundColor = theme.boxBackground;
-    this.gridColor = theme.gridLine;
-    this.lineColor = theme.borderLine;
-    this.textColor = theme.unitText;
-    this.nodeColor = theme.chartDot;
-    this.nodeHoverColor = theme.chartDotHover;
-
-    this.canvas.addEventListener("mousemove", (e) => {
-      const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
-      const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
-
-      this.checkNodeHover(false);
-
-      this.barNodeArray.forEach((node) => {
-        if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
-          const chartModalData = {
-            variableCount: node.data.variableCount,
-            variableName: node.data.variableName,
-          };
-
-          const chartModalStyles = {
-            visibility: true,
-            top: e.pageY,
-            left: e.pageX,
-          };
-
-          this.checkNodeHover(true, chartModalData, chartModalStyles);
-        }
-      });
-    });
-
     return this;
   }
 
+  /**
+   * Override: Handle mouse move for variable bar chart
+   * @protected
+   */
+  _handleMouseMove(cursorPositionX, cursorPositionY, event) {
+    this.checkNodeHover(false);
+
+    this.barNodeArray.forEach((node) => {
+      if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
+        const chartModalData = {
+          variableCount: node.data.variableCount,
+          variableName: node.data.variableName,
+        };
+
+        const chartModalStyles = this._createChartModalStyles(
+          event.pageX,
+          event.pageY,
+        );
+
+        this.checkNodeHover(true, chartModalData, chartModalStyles);
+      }
+    });
+  }
+
+  /**
+   * Override: Prepare for playback
+   * @protected
+   */
+  _beforePlayback() {
+    this.drawClear();
+    this.fillTextX();
+    this.fillTextY();
+    this.drawAxis();
+  }
+
+  /**
+   * Override: Stop and clear variable bar chart state
+   * @public
+   */
+  stop = () => {
+    super.stop();
+
+    this.data.length = 0;
+    this.barNodeArray.length = 0;
+    this.codePositionArray.length = 0;
+    this.codePositionCount = {};
+    this.maxCodePositionCount = 0;
+    this.variableArray = [];
+
+    for (const node of this.barNodeArray) {
+      node.setHeight(0);
+    }
+  };
+
+  /**
+   * Override: Set code data
+   * @public
+   */
+  setCodeData = (codeData) => {
+    this.codeData = codeData;
+  };
+
+  /**
+   * Set data for variable bar chart
+   * @public
+   */
   setData = (data, durationTime) => {
     if (!this.canvas) return;
 
@@ -136,52 +152,10 @@ export default class VariableBarChart {
     this.drawAxis();
   };
 
-  setCodeData = (codeData) => {
-    this.codeData = codeData;
-  };
-
-  playback = () => {
-    if (this.intervalID < 1 && this.currentPosition === 0) {
-      this.drawClear();
-      this.fillTextX();
-      this.fillTextY();
-      this.drawAxis();
-
-      this.intervalID = setInterval(() => {
-        this.updateData();
-      }, this.chartDurationTime / this.excuteDurationTime);
-    }
-  };
-
-  // TODO: 멈춘 순간의 데이터가 필요 없기에 구현하지 않았지만 남겨놓았습니다.
-  pause = () => {
-    this.ctx.restore();
-  };
-
-  stop = () => {
-    this.ctx.restore();
-    clearInterval(this.intervalID);
-    this.intervalID = 0;
-    this.currentPosition = 0;
-    this.data.length = 0;
-    this.barNodeArray.length = 0;
-    this.codePositionArray.length = 0;
-    this.codePositionCount = {};
-    this.maxCodePositionCount = 0;
-    this.variableArray = [];
-
-    for (const node of this.barNodeArray) {
-      node.setHeight(0);
-    }
-
-    this.ctx.clearRect(
-      Y_PADDING,
-      0,
-      this.canvasWidth,
-      this.canvasHeight - X_PADDING,
-    );
-  };
-
+  /**
+   * Draw variable bar chart
+   * @public
+   */
   drawChart = () => {
     const {
       chartHeight,
@@ -206,11 +180,10 @@ export default class VariableBarChart {
     this.ctx.restore();
   };
 
-  drawClear = () => {
-    this.ctx.restore();
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-  };
-
+  /**
+   * Update animation data for variable bar chart
+   * @protected
+   */
   updateData = () => {
     if (!this.data.length) return;
 
@@ -223,6 +196,10 @@ export default class VariableBarChart {
     }
   };
 
+  /**
+   * Draw chart axis
+   * @public
+   */
   drawAxis = () => {
     const { ctx, chartHeight, chartWidth } = this;
 
@@ -236,6 +213,10 @@ export default class VariableBarChart {
     return this;
   };
 
+  /**
+   * Fill X-axis text
+   * @public
+   */
   fillTextX = () => {
     const { ctx, chartWidth, chartHeight } = this;
     ctx.textAlign = "center";
@@ -251,6 +232,10 @@ export default class VariableBarChart {
     return this;
   };
 
+  /**
+   * Fill Y-axis text
+   * @public
+   */
   fillTextY = () => {
     const { ctx, chartHeight, chartWidth, maxCodePositionCount } = this;
 
@@ -275,6 +260,10 @@ export default class VariableBarChart {
     return this;
   };
 
+  /**
+   * Reset background
+   * @public
+   */
   resetBackround = () => {
     const { ctx, canvasWidth, canvasHeight } = this;
 
@@ -287,13 +276,12 @@ export default class VariableBarChart {
     return this;
   };
 
+  /**
+   * Override: Set color with additional redraw logic
+   * @public
+   */
   setColor = (theme) => {
-    this.backgroundColor = theme.boxBackground;
-    this.gridColor = theme.gridLine;
-    this.lineColor = theme.borderLine;
-    this.textColor = theme.unitText;
-    this.nodeColor = theme.chartDot;
-    this.nodeHoverColor = theme.chartDotHover;
+    super.setColor(theme);
 
     this.fillTextX();
     this.fillTextY();
@@ -307,17 +295,12 @@ export default class VariableBarChart {
     return this;
   };
 
-  setLineColor = (color) => {
-    this.nodeColor = color;
-    this.nodeLineColor = color;
-
-    return this;
-  };
-
-  isPlay = () => {
-    if (this.intervalID) {
-      return true;
-    }
-    return false;
+  /**
+   * Override: Pause (no-op for VariableBarChart)
+   * @public
+   */
+  pause = () => {
+    this.ctx.restore();
+    // TODO: 멈춘 순간의 데이터가 필요 없기에 구현하지 않았지만 남겨놓았습니다.
   };
 }

@@ -1,99 +1,88 @@
+import BaseChart, { Y_PADDING, TOP_PADDING } from "./BaseChart";
 import ChartNode from "./ChartNode";
 
-const X_PADDING = 25;
-const Y_PADDING = 70;
-const TOP_PADDING = 15;
 const NODE_FLOAT_OFFSET = 10;
 const VIEW_NODE_COUNT = 13;
 const Y_TICK_COUNT = 7;
 const NODE_RADIUS = 4;
 const CHART_MARGIN_NODE = 5;
 
-export default class LineChart {
+export default class LineChart extends BaseChart {
   constructor(id, modalCallback, theme) {
-    this.canvas = document.getElementById(id);
+    super(id, modalCallback, theme);
 
     if (!this.canvas) return null;
 
-    this.data = [];
-    this.canvasWidth = this.canvas.clientWidth;
-    this.canvasHeight = this.canvas.clientHeight;
-    this.canvas.style.width = `${this.canvasWidth}px`;
-    this.canvas.style.height = `${this.canvasHeight}px`;
-    this.ctx = this.canvas.getContext("2d");
-    this.ctx.font = "0.8rem Arial";
-
-    this.chartWidth = this.canvas.width;
-    this.chartHeight = this.canvas.height - X_PADDING - TOP_PADDING;
-
-    this.excuteDurationTime = 0;
-    this.intervalID = 0;
-    this.currentPosition = 0;
-
+    // LineChart-specific state
     this.maxMemoryText = 0;
     this.minMemoryText = Infinity;
     this.maxMemoryValue = 0;
     this.minMemoryValue = Infinity;
     this.heightPixelWeights = 0;
-
     this.snapshotNodes = [];
-    this.checkNodeHover = modalCallback;
-
-    this.backgroundColor = theme.boxBackground;
-    this.gridColor = theme.gridLine;
-    this.lineColor = theme.borderLine;
-    this.textColor = theme.unitText;
-    this.nodeLineColor = theme.nodeLine;
-    this.nodeColor = theme.chartDot;
-    this.nodeHoverColor = theme.chartDotHover;
-
-    this.canvas.addEventListener("mousemove", (e) => {
-      if (this.intervalID) return;
-
-      const cursorPositionX = e.clientX - this.ctx.canvas.offsetLeft;
-      const cursorPositionY = e.clientY - this.ctx.canvas.offsetTop;
-
-      this.ctx.beginPath();
-      this.ctx.rect(Y_PADDING, 0, this.chartWidth, this.canvas.height);
-      this.ctx.save();
-      this.ctx.clip();
-
-      if (
-        this.snapshotNodes.length > 0 &&
-        cursorPositionX > Y_PADDING &&
-        cursorPositionY < this.chartHeight + TOP_PADDING
-      ) {
-        this.checkNodeHover(false);
-
-        this.snapshotNodes.forEach((node) => {
-          if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
-            const chartModalData = {
-              codeCount: node.data.count,
-              codeType: node.data.codeType,
-              codePosition: node.data.codePosition,
-              usedMemory: node.data.usedMemory,
-              timeStamp: node.data.timeStamp,
-            };
-            const chartModalStyles = {
-              visibility: true,
-              top: e.pageY,
-              left: e.pageX,
-            };
-
-            this.checkNodeHover(true, chartModalData, chartModalStyles);
-            node.draw(this.nodeHoverColor);
-          } else {
-            node.draw(this.nodeColor);
-          }
-        });
-      }
-
-      this.ctx.restore();
-    });
 
     return this;
   }
 
+  /**
+   * Override: Handle mouse move for line chart nodes
+   * @protected
+   */
+  _handleMouseMove(cursorPositionX, cursorPositionY, event) {
+    if (this.intervalID) return;
+
+    this.ctx.beginPath();
+    this.ctx.rect(Y_PADDING, 0, this.chartWidth, this.canvas.height);
+    this.ctx.save();
+    this.ctx.clip();
+
+    if (
+      this.snapshotNodes.length > 0 &&
+      cursorPositionX > Y_PADDING &&
+      cursorPositionY < this.chartHeight + TOP_PADDING
+    ) {
+      this.checkNodeHover(false);
+
+      this.snapshotNodes.forEach((node) => {
+        if (node.isMouseOver(cursorPositionX, cursorPositionY)) {
+          const chartModalData = this._createChartModalData(node);
+          const chartModalStyles = this._createChartModalStyles(
+            event.pageX,
+            event.pageY,
+          );
+
+          this.checkNodeHover(true, chartModalData, chartModalStyles);
+          node.draw(this.nodeHoverColor);
+        } else {
+          node.draw(this.nodeColor);
+        }
+      });
+    }
+
+    this.ctx.restore();
+  }
+
+  /**
+   * Override: Prepare for playback
+   * @protected
+   */
+  _beforePlayback() {
+    this.snapshotNodes = [];
+  }
+
+  /**
+   * Override: Stop and clear line chart state
+   * @public
+   */
+  stop = () => {
+    super.stop();
+    this.snapshotNodes.length = 0;
+  };
+
+  /**
+   * Set data for line chart
+   * @public
+   */
   setData = (data, durationTime) => {
     if (!this.canvas) return;
 
@@ -127,43 +116,10 @@ export default class LineChart {
       this.chartHeight / (this.maxMemoryValue - this.minMemoryValue);
   };
 
-  setCodeData = (codeData) => {
-    if (!this.canvas) return;
-  };
-
-  playback = () => {
-    if (!this.data) return;
-    if (!this.data.length) return;
-
-    if (this.intervalID < 1) {
-      this.snapshotNodes = [];
-
-      this.intervalID = setInterval(() => {
-        this.updateData();
-      }, this.chartDurationTime / this.excuteDurationTime);
-    }
-  };
-
-  pause = () => {
-    this.ctx.restore();
-    clearInterval(this.intervalID);
-    this.intervalID = 0;
-  };
-
-  stop = () => {
-    this.ctx.restore();
-    clearInterval(this.intervalID);
-    this.intervalID = 0;
-    this.currentPosition = 0;
-    this.snapshotNodes.length = 0;
-    this.ctx.clearRect(
-      Y_PADDING,
-      0,
-      this.canvasWidth,
-      this.canvasHeight - X_PADDING,
-    );
-  };
-
+  /**
+   * Draw line chart
+   * @public
+   */
   drawChart = () => {
     const { ctx, canvas, chartHeight, chartWidth } = this;
 
@@ -273,11 +229,10 @@ export default class LineChart {
     return this;
   };
 
-  drawClear = () => {
-    this.ctx.restore();
-    this.ctx.clearRect(0, 0, this.canvasWidth, this.canvasHeight);
-  };
-
+  /**
+   * Update animation data for line chart
+   * @protected
+   */
   updateData = () => {
     if (!this.data.length) return;
 
@@ -289,31 +244,5 @@ export default class LineChart {
       this.intervalID = 0;
       this.currentPosition = 0;
     }
-  };
-
-  isPlay = () => {
-    if (this.intervalID) {
-      return true;
-    }
-    return false;
-  };
-
-  setColor = (theme) => {
-    this.backgroundColor = theme.boxBackground;
-    this.gridColor = theme.gridLine;
-    this.lineColor = theme.borderLine;
-    this.textColor = theme.unitText;
-    this.nodeLineColor = theme.nodeLine;
-    this.nodeColor = theme.chartDot;
-    this.nodeHoverColor = theme.chartDotHover;
-
-    return this;
-  };
-
-  setLineColor = (color) => {
-    this.nodeColor = color;
-    this.nodeLineColor = color;
-
-    return this;
   };
 }

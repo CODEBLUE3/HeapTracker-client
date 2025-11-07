@@ -1,7 +1,5 @@
-import { Provider } from "react-redux";
 import configureMockStore from "redux-mock-store";
-
-import { render, screen } from "@testing-library/react";
+import { renderWithRedux, screen } from "../utils/test-helpers";
 import ChartModal from "../../src/component/ChartModal";
 
 describe("ChartModal Component Test", () => {
@@ -25,11 +23,7 @@ describe("ChartModal Component Test", () => {
     const mockStore = configureMockStore();
     const store = mockStore(initialState);
 
-    render(
-      <Provider store={store}>
-        <ChartModal />
-      </Provider>,
-    );
+    renderWithRedux(<ChartModal />, { store });
 
     const modal = screen.getByTestId("chartModal");
 
@@ -57,11 +51,7 @@ describe("ChartModal Component Test", () => {
     const mockStore = configureMockStore();
     const store = mockStore(visibilityTest);
 
-    render(
-      <Provider store={store}>
-        <ChartModal />
-      </Provider>,
-    );
+    renderWithRedux(<ChartModal />, { store });
 
     const modal = screen.getByTestId("chartModal");
 
@@ -91,11 +81,7 @@ describe("ChartModal Component Test", () => {
     const mockStore = configureMockStore();
     const store = mockStore(moalDataTest);
 
-    render(
-      <Provider store={store}>
-        <ChartModal />
-      </Provider>,
-    );
+    renderWithRedux(<ChartModal />, { store });
 
     expect(screen.getByText("10th node")).toBeInTheDocument();
     expect(screen.getByText("Type: for")).toBeInTheDocument();
@@ -124,11 +110,7 @@ describe("ChartModal Component Test", () => {
     const mockStore = configureMockStore();
     const store = mockStore(moalDataTest);
 
-    render(
-      <Provider store={store}>
-        <ChartModal />
-      </Provider>,
-    );
+    renderWithRedux(<ChartModal />, { store });
 
     expect(screen.getByText("Code Position: 10")).toBeInTheDocument();
   });

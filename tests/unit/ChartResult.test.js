@@ -1,7 +1,5 @@
 import React from "react";
-import { Provider } from "react-redux";
-import { store } from "../../src/app/store";
-import { cleanup, render, fireEvent } from "@testing-library/react";
+import { renderWithRedux, fireEvent, cleanup } from "../utils/test-helpers";
 import "@testing-library/jest-dom/extend-expect";
 import ChartResult from "../../src/component/ChartResult";
 import ReduxMockFunction from "../mock/reduxMockFunction";
@@ -10,11 +8,11 @@ afterEach(cleanup);
 
 describe("ChartResult Component test", () => {
   test("init test", () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
+    const { getByTestId } = renderWithRedux(
+      <>
         <ReduxMockFunction />
         <ChartResult />
-      </Provider>,
+      </>,
     );
 
     expect(getByTestId("memory-duration")).toHaveTextContent(0);
@@ -25,11 +23,11 @@ describe("ChartResult Component test", () => {
   });
 
   test("value change test", () => {
-    const { getByTestId } = render(
-      <Provider store={store}>
+    const { getByTestId } = renderWithRedux(
+      <>
         <ReduxMockFunction />
         <ChartResult />
-      </Provider>,
+      </>,
     );
 
     expect(Number(getByTestId("memory-count").textContent)).toBe(0);

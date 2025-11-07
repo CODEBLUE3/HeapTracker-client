@@ -1,43 +1,57 @@
-module.exports = class BarNode {
+const BaseChartNode = require("./BaseChartNode");
+
+/**
+ * BarNode - Rectangular node for bar charts
+ * Extends BaseChartNode with rectangle-specific rendering and hit detection
+ */
+module.exports = class BarNode extends BaseChartNode {
   constructor(x, y, width, height, ctx, data) {
-    this.x = x;
-    this.y = y;
+    super(x, y, ctx, data);
     this.width = width;
     this.height = height;
-    this.ctx = ctx;
-    this.data = data;
     this.color = "blue";
-
-    return this;
   }
 
+  /**
+   * Draw rectangular bar
+   * @param {string} color - Fill color for the rectangle
+   */
   draw = (color) => {
     this.ctx.fillStyle = color;
     this.ctx.fillRect(this.x, this.y - this.height, this.width, this.height);
   };
 
+  /**
+   * Set bar height
+   * @param {number} height - New height value
+   */
   setHeight = (height) => {
     this.height = height;
   };
 
+  /**
+   * Get current bar height
+   * @returns {number} Current height
+   */
   getHeight = () => {
     return this.height;
   };
 
+  /**
+   * Set bar color
+   * @param {string} color - Color value
+   */
   setColor = (color) => {
     this.color = color;
     this.ctx.fillStyle = this.color;
   };
 
-  getPosition = () => {
-    const position = {
-      x: this.x,
-      y: this.y,
-    };
-
-    return position;
-  };
-
+  /**
+   * Check if mouse is over rectangular bar using boundary detection
+   * @param {number} x - Mouse X coordinate
+   * @param {number} y - Mouse Y coordinate
+   * @returns {boolean} True if mouse is within rectangle bounds
+   */
   isMouseOver = (x, y) => {
     const position = this.getPosition();
 
